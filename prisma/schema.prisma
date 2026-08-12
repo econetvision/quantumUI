@@ -7,7 +7,16 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+
+  // Neon (and any serverless Postgres) needs two URLs:
+  //   DATABASE_URL — the POOLED endpoint (-pooler in the host). Serverless
+  //     functions open a connection per invocation, and a plain endpoint runs
+  //     out of connections under load.
+  //   DIRECT_URL — the unpooled endpoint. Schema migrations cannot run through
+  //     a transaction pooler, so `prisma db push` / `migrate` use this.
+  // Locally both may point at the same server.
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // =====================================================
