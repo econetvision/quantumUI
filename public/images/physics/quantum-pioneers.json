@@ -1,0 +1,66 @@
+{
+  "name": "quantum-pioneers",
+  "fps": 2,
+  "steps": [
+    {
+      "year": 1900,
+      "who": "Max Planck",
+      "equation": "$E = h\\nu$",
+      "note": "Energy comes in discrete packets. Planck called it 'an act of desperation' \u2014 it was the only way to fix the blackbody catastrophe."
+    },
+    {
+      "year": 1905,
+      "who": "Albert Einstein",
+      "equation": "$E_{max} = h\\nu - \\phi$",
+      "note": "The photoelectric effect. Light itself is quantised, not just its emission. This \u2014 not relativity \u2014 won him the Nobel Prize."
+    },
+    {
+      "year": 1913,
+      "who": "Niels Bohr",
+      "equation": "$E_n = -\\frac{13.6\\ \\mathrm{eV}}{n^2}$",
+      "note": "Electrons occupy fixed orbits and jump between them. It explained hydrogen's spectrum exactly, and nothing heavier."
+    },
+    {
+      "year": 1924,
+      "who": "Louis de Broglie",
+      "equation": "$\\lambda = \\frac{h}{p}$",
+      "note": "If waves can be particles, particles can be waves. A PhD thesis so bold his examiners sent it to Einstein to check."
+    },
+    {
+      "year": 1925,
+      "who": "Werner Heisenberg",
+      "equation": "$\\sigma_x\\,\\sigma_p \\geq \\frac{\\hbar}{2}$",
+      "note": "Matrix mechanics, and the uncertainty principle. Position and momentum cannot both be sharp \u2014 not from clumsy measurement, but in principle."
+    },
+    {
+      "year": 1926,
+      "who": "Erwin Schr\u00f6dinger",
+      "equation": "$i\\hbar\\frac{\\partial\\Psi}{\\partial t} = \\hat{H}\\Psi$",
+      "note": "Wave mechanics. A continuous equation that reproduced Bohr's discrete levels as its natural solutions."
+    },
+    {
+      "year": 1926,
+      "who": "Max Born",
+      "equation": "$P(x) = |\\Psi(x)|^2$",
+      "note": "What \u03a8 actually means: not a physical wave, but a probability amplitude. The interpretation Einstein never accepted."
+    },
+    {
+      "year": 1928,
+      "who": "Paul Dirac",
+      "equation": "$(i\\gamma^\\mu\\partial_\\mu - m)\\psi = 0$",
+      "note": "Quantum mechanics made relativistic. The equation demanded antimatter exist \u2014 and four years later the positron was found."
+    },
+    {
+      "year": 1935,
+      "who": "Einstein, Podolsky, Rosen",
+      "equation": "$|\\Psi\\rangle = \\frac{1}{\\sqrt{2}}(|01\\rangle - |10\\rangle)$",
+      "note": "The EPR paradox: entanglement implies 'spooky action at a distance'. Intended to show quantum mechanics was incomplete."
+    },
+    {
+      "year": 1964,
+      "who": "John Bell",
+      "equation": "$|S| \\leq 2 \\quad \\mathrm{(classical)}$",
+      "note": "Bell turned EPR into a testable inequality. Experiments violate it \u2014 nature really is non-local. Nobel Prize, 2022."
+    }
+  ]
+}

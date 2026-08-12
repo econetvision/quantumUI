@@ -1,0 +1,17 @@
+# Vendored QWorld notebooks — 35 MB, and no route reads them at runtime.
+# They are consumed by `npm run db:seed` and the extraction scripts, which run
+# from a checkout rather than from the deployed bundle. Their derived output
+# (src/data/labs/*.json, public/images/**) is committed and does ship.
+content/
+
+# Python service — deployed separately to Railway, see railway.json
+quantum-executor/
+
+# Tooling that never runs in the deployment
+scripts/
+prisma/seed.ts
+prisma/seed-users.ts
+
+# Docs
+*.md
+!README.md

@@ -1,0 +1,26 @@
+{
+  "name": "bohr-hydrogen-spectrum",
+  "fps": 8,
+  "steps": [
+    {
+      "transition": "6->2",
+      "delta_eV": 3.0235,
+      "wavelength_nm": 410.07
+    },
+    {
+      "transition": "5->2",
+      "delta_eV": 2.8572,
+      "wavelength_nm": 433.94
+    },
+    {
+      "transition": "4->2",
+      "delta_eV": 2.5511,
+      "wavelength_nm": 486.01
+    },
+    {
+      "transition": "3->2",
+      "delta_eV": 1.8897,
+      "wavelength_nm": 656.11
+    }
+  ]
+}

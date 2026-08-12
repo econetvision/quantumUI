@@ -1,0 +1,10 @@
+# QpiAI Quantum SDK — pinned to the minor line this service was verified
+# against. 0.2.0 has two quirks that catalog.py corrects at the boundary (Bell
+# Φ/Ψ labels transposed, Grover counts bit-reversed). Re-verify those
+# workarounds before widening this constraint.
+qpiai-quantum>=0.2.0,<0.3.0
+
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.5.0
+python-multipart>=0.0.6

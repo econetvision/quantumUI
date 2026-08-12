@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # PostgreSQL — the schema's declared provider. Postgres enforces real foreign
+  # keys, which is why account-wide progress lives on User rather than on a
+  # UserProgress row pointing at a track that does not exist.
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: quantumui
+      POSTGRES_USER: quantumui
+      POSTGRES_PASSWORD: quantumui
+    ports:
+      - "5432:5432"
+    volumes:
+      - quantumui-db:/var/lib/postgresql/data
+    networks:
+      - quantumui-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U quantumui -d quantumui"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Next.js Frontend Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - QUANTUM_EXECUTOR_URL=http://quantum-executor:8080
+      - DATABASE_URL=postgresql://quantumui:quantumui@db:5432/quantumui?schema=public
+    depends_on:
+      quantum-executor:
+        condition: service_started
+      db:
+        condition: service_healthy
+    networks:
+      - quantumui-network
+
+  # QpiAI Quantum Executor Service
+  quantum-executor:
+    build:
+      context: ./quantum-executor
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - PYTHONUNBUFFERED=1
+    networks:
+      - quantumui-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  quantumui-network:
+    driver: bridge
+
+volumes:
+  quantumui-db:

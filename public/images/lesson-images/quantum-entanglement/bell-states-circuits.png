@@ -1,0 +1,394 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="304.75469pt" height="375.163796pt" viewBox="-66.330728 -66.330724 304.75469 375.163796">
+<style type="text/css">
+@font-face{font-family:cmsy8;src:url(data:application/x-font-woff2;base64,d09GMgABAAAAAAHMAAoAAAAAA1gAAAGEAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAANAo0RwsGAAE2AiQDCAQgBYI4ByAbtAIALg54k9bhgHA4iaLWGg/qEXXTHkZIMssDuPb6ckkBUV5RA6t+WUVgKwyBrRpqcgLIb25TwI4OznW3wvnsQFdBNopIsQTdg+Dnw+FvAwDPLa3F86ObfN5YoD8wSjyzaWPpBFqgqeXxmEBpFmEUV0xlO7uK+iVKYmPMftsgxgKeUET2kHnxb3TrEX5CgRrK0BWjzADV3tcMhP76Vuz+k+PG+BZAAOD/f5AholEU0CjpRZIE+uv//8cz3n2FADKQEFCJakAChMpD8f2dP21y7zt79Oyqv/AdEBB4f+eDTd7v0pjAxwfD84lYQAmlMhBYlLYAPsh+QAZjbX2BD5GpFEAQynInHVDj5CgpUoOKVGhExYr0jJdrNygKqUzQbQooKbeGijQ7QMXKHdXlJt0cF+czzFXUTId1/UzlfLTWeUy8Jl6Lac0aUvPRfMK8TqO3mCVGZEUnpuFWpDE5WFZFnBT9LTImN2qwnLT63GAaxD++40D2rAqTVaZBJuRG5SZEAHsLAA==) format('woff2');}
+@font-face{font-family:cmr8;src:url(data:application/x-font-woff2;base64,d09GMgABAAAAAAHYAAoAAAAAA4AAAAGRAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAANApgZwsGAAE2AiQDCAQgBYIyByAbzgIArg546i0vCPbpNLKOKM87kmABqfAhgnIs95I8FAAUy9bojq9mzapCE2mQjoSpERjD5nxSBUf+469kiVRt45sKPd0pQMUKyKhlTu7pRrJkQnWWF1N27jBGABwon/XQXFPs6TJWP3WT3+MC+i+MYp7nc1G6gVINfEweEzzQBLOdiXqkJDVnbIzZbwPk9B3nGqTH9H/YLqToFGvRAd6ECOi2Dlpgs1otq8gCV1srSMgY5inDhHlEUQRWa61eUN8EgAQKAtOIWQQUQEzH9vfLi827r1+mH1PPt0+rs8F67p7Hp/X969yVS4HrTM6ugHIiZYS1R9YVQCD41C0u4e1cwNd54UdkVr3L0j4BbQkEi2ZukFOS+wSGnl4Rn1Ak0ygIKex0RqBP7GFR9MGGLkOwqZit7zRJ4qJ0CLPCHhZtm7BhVA+b2k7jTuvG4yR+ljmaluN26uxwtfTUeAxNtFoMD7gISCGYx+fFEmoFoqVuMmnosFRUcMgDLgI0RcfSPROgH+/90KCp0oRBAXBBgAPYVQ==) format('woff2');}
+@font-face{font-family:cmmi12;src:url(data:application/x-font-woff2;base64,d09GMgABAAAAAAI4AAoAAAAABDgAAAHvAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAANAqCDIFkCwYAATYCJAMIBCAFgj4HIBtXAwAeBW7LA6tJYXYIl0eeTorgKx4+l+39JLtHKc0ILOh14M5Ri8IzZyygFOPRdGExkoyMubsaeBOTBtEliUjTTnyIb9SPhLm2fRGDdOOy7cu3ZJF/GQu3PU4HTtyMG9PaQAsTDjkb2yZQ2dLAIu2igMf8p0lv9GD/PFW2nrIWwuZhDifk9BsrGtJz+vmfs1zc+BUFcwzDtwiB2tlDCi26sQyoyCLung7VChIy5vItcyC2ABRFoKvV69bXVaIEQep95Ai1A/4y+hPnvnGCPnvaoMVQEdoWbWabOv/Grqvb6vsOSOev2A37tO1T1PHLNjWKjm8HDJg7Z1Rj6+QL/3NeT6ArtcPo4v7D1MF0EIZ/G2gSbccte9AWZQvoTiEfBt+cMj26ZmURIF2teWC+FL6mDh5VxQ/Lk8Nbbjt/hDc+UN+q0ucAEAj2rlvpEO8pr7mAv13Zh3+fWrOD3jEkgWDH67sAfX3PAxwDwnQf8RtAJH0FBJONeARgEoq8aE3WxcaoebHV2loesUIGLMqwsCGQxGLMgdhY0C22xgyKEdsWznL9q65SB7SaLsexUWdobL11NlvHNVLAZnxAZwaEOZg+r9uDZbmBU6YDUJVJrVJBxw0z0jEwEDdstHHNCIwjzX6sVVIhCShk7tExAzNaAQ==) format('woff2');}
+@font-face{font-family:cmr12;src:url(data:application/x-font-woff2;base64,d09GMgABAAAAAASwAAoAAAAAB9wAAARnAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAAXAqIYIZ7CxYAATYCJAMoBCAFgjgHIBswBgiOxDiG8p+YhsqH/077c2eSbDtTRy7klAyKdbpwmQWkwT7xy8p/f/6Bc+qa//at8YoH3vZorLD2Y6RFmt6qqFrwIA3oN8+sfMJspM6RylLyrT5m9t0CoCk7WQUpQG2hnv+nwEp0kG9OFlKIN6CSAerZwAHo6PGMgAyR9CEa/wFoEAKAwMj+BxYFgIZJ4eVRKkHFMn7wAgUZohCDZOTRB+hDQWMkxxKf8f973uE8aeg/Q0BgzAyACocvnJQTIB9aJWgmnZUCgD6uTmfQaLTRPj7RUlnZkHWqJYJTEFyCSxTVG5XrFRznmMU7tOvdvJ3jFL4uG9Si6JwtOHUb2p9ayjt43k2t37Rki5r2WXdg9kGlL71h69LNCsp34/5Z+1QjtnOJxzj7OSH5jOCaLSacFdMu8rbTfMt+0bUzxOXcYzojhC55ZdnGwbHbyPNjJJsOsyycjJ2wS4/qpJe4cCKKMRvXu+0+xHVXdAmC8x5nUZ83bjrErLtiEkUXzzv4QsUru50tP6jeqDf3+NUx+dcotbNqN2aEiCA4UzYmW48wDHGwLjBLDmnB8w6Oc9KcnW+nRNEpjoGnvE1jD2Idc44z8vZNkZw9sddsIX2JanYYe5F3bHNsj4IyOv/sNX94dfoMGpzQHt5sPIRSXK7ZFFnTf9CrTi/rs5a2uj+xbkfTz9V1P4TA8h/O12x1sW51agKfubh/YP2Oxp9rwkTTyd42W1S77ig2faNn3Xo7o9efStOX7tJTSbO+A9b9VTwp9/Wds3VAY6GNzGqL/2N/oAeVTQFjB348IPXV4AFxfpsDpr5e+LoiJaBxphKjyVjVMv/SxM9Cfvj8mGRCAcYpZwQ0VCUjfKUt5pdCi6mW7K8lJovtyxjlnpJ+FmMtHFGyT0fgzlHdUY/2xde38rtQiIrKdhsJqM778tVrU7+HQbbOMJQM7m2j2uAZTVpQ+k8q2zmst/P6qtfzp9dNw5nq9lNphtJdUMlcPx4PyxdkxnCFZlMtOVBDTCYbF5Pl8V3lIQ2kbsWkST7Z0bzNZKwhB2qJ0VzIR2f1shs8pJk0rJt0l5l1WEUdpg79NnpOu499KBqo/Tg89oVdlb8SdjKstcg6x9ebLdNUSEmppuZldXzxpKCsqUCtxGy7d5cxAeOXY0KxrkThrfWdY70VV4JqLVvS4Ke3NaieR9+3mY21JXTLBeI3sP2umzvIP/dXL1oCAPh6c/hNZP03xdGEX3ghbMXWcLKI6rRSHAiQylDdAJkPt2qm0ywyya+IAgeYknmY4pCBfALOoAx0LjvCNwNkCPSHSUICKfwZJQULBSWDFObxDHQIBQ0i8QaBCfmNkoBBf0oKFYZTMjCYlmSQigXPVeE3uoR7XHdS8vvPkxSfyNM+81fv8Izq8YwYZ0mJT4xPQTEmYBw60YdeDEM3LKhVc4dExsONcRhLQjKcktqDUZiA8bBoZzwSx8By8/iweUgi2BEZismwqNEjkR54MOLyWJCSYIzHxmkY) format('woff2');}
+@font-face{font-family:cmsy10;src:url(data:application/x-font-woff2;base64,d09GMgABAAAAAAJ0AAoAAAAABHAAAAIoAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAATAqCHIFVCwwAATYCJAMUBCAFgj4HIBtsAyAeg+NuGQrRWos27wbj9XyIh/f3Q8/97xcIhWaOB1YVpqkkkE1waOwyYcHIsZybK/ywv3z/oElucjuYabcqfaY5JCKvMl0dXBTdU6fyX4A2yNgW1zXPF1hsaYBDmI3hsdpSK1agotW8xcg+LUeXW48R6dcNKduPW2CSfaTdv7A0gvjoHG3BhShEGtVgCry+dxA0AcvRd0tqfaoBqTU9AgEP8voKMiTUowuDGYaWShXLZI56U0tzY5YEnf76ev3naxEFCCAKfFaKHAvABgA5INoXlpe31alYb/BZMouNUnOEq/Jxb2Y/Iwnbje5EDqmM3ZyN7DBeuY5mSifX01EEzRLtZ2A5OjFevpeLZsmkaBZVheVINqJbL4cJhg5DwkQOW++1N6J20c2fg+xf9tb/6a+bJbTi+4K0O363en3i29nw2947bumTepkbsw+Q9e/gpQUpqWEoPj8dvCiymp5Y+NODMgcCweVGj0+VNPafk3Lwl6i88peeqpM9BYplIKh8kxVdr6/JXqvZ1A6iXST7QigkR+MGusgCbZCagKTUiQBUKZTOFaqiC5RpoAsV6t4u1aoSXeQlQqdeSufK7dIFGlnpQuXO0lJ95s+38nvnjM7hi7Q0X5jDlsbmtcr7Z1kftPiCJkdxm+CNxjYY4OLgFuBn4FVsiovelpx0HHwiWjQTBuxjmXYq1qJRs4MR25lsazYE+jmtiGJ6QZbgBJk4QG2tN2pDBwAAAA==) format('woff2');}
+@font-face{font-family:nf0;src:url(data:application/x-font-woff2;base64,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) format('woff2');}
+text.f0 {font-family:cmsy8;font-size:7.970112px}
+text.f1 {font-family:cmsy10;font-size:11.955168px}
+text.f2 {font-family:cmmi12;font-size:11.955168px}
+text.f3 {font-family:cmr8;font-size:7.970112px}
+text.f4 {font-family:cmr12;font-size:11.955168px}
+text.f5 {font-family:nf0;font-size:11.955168px}
+
+</style>
+<g id="page1">
+<g stroke-miterlimit="10" transform="translate(-46.679444,-15.110724)scale(0.996264,-0.996264)">
+<g fill="#000" stroke="#000">
+<g stroke-width="0.4">
+<g stroke-width="0.8">
+<g transform="translate(-16.392,39.72711)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(30.44302,38.5631)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(143.95157,39.60712)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(-6.93747,14.07181)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(-6.93747,-20.07181)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<path d="M10.67044 17.07181H99.5846" fill="none" />
+<path d="M10.67044-17.07181H99.5846" fill="none" />
+<g fill="#fff">
+<g fill="#fff">
+<path d="M22.76207 5.69067H45.52434V28.45294H22.76207Z" />
+</g>
+<g transform="translate(28.81198,12.97182)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+</g>
+<g fill="#000">
+<g fill="#000">
+<path d="M73.13185 17.07181C73.13185 18.17639 72.23643 19.07181 71.13185 19.07181S69.13185 18.17639 69.13185 17.07181C69.13185 15.96722 70.02727 15.07181 71.13185 15.07181S73.13185 15.96722 73.13185 17.07181ZM71.13185 17.07181" stroke="none" />
+</g>
+<g transform="translate(71.13185,17.07181)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none" />
+</g>
+</g>
+</g>
+</g>
+<path d="M75.13185-17.07181C75.13185-14.86264 73.34102-13.07181 71.13185-13.07181S67.13185-14.86264 67.13185-17.07181S68.92268-21.07181 71.13185-21.07181S75.13185-19.28098 75.13185-17.07181ZM71.13185-17.07181" fill="none" />
+<g transform="translate(71.13185,-17.07181)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none" />
+</g>
+</g>
+</g>
+<path d="M71.13185-12.67181V-21.4718" fill="none" />
+<path d="M75.53185-17.07181H66.73186" fill="none" />
+<path d="M71.13185 14.67181V-12.67181" fill="none" />
+<g transform="translate(123.2344,-2.34576)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(-6.93747,-85.51279)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(-6.93747,-119.6564)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<path d="M10.67044-82.51279H99.5846" fill="none" />
+<path d="M10.67044-116.6564H99.5846" fill="none" />
+<g fill="#fff">
+<g fill="#fff">
+<path d="M22.76207-93.89392H45.52434V-71.13165H22.76207Z" />
+</g>
+<g transform="translate(28.81198,-86.61278)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+</g>
+<g fill="#000">
+<g fill="#000">
+<path d="M73.13185-82.51279C73.13185-81.4082 72.23643-80.51279 71.13185-80.51279S69.13185-81.4082 69.13185-82.51279C69.13185-83.61737 70.02727-84.51279 71.13185-84.51279S73.13185-83.61737 73.13185-82.51279ZM71.13185-82.51279" stroke="none" />
+</g>
+<g transform="translate(71.13185,-82.51279)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none" />
+</g>
+</g>
+</g>
+</g>
+<path d="M75.13185-116.6564C75.13185-114.44724 73.34102-112.6564 71.13185-112.6564S67.13185-114.44724 67.13185-116.6564C67.13185-118.86557 68.92268-120.6564 71.13185-120.6564S75.13185-118.86557 75.13185-116.6564ZM71.13185-116.6564" fill="none" />
+<g transform="translate(71.13185,-116.6564)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none" />
+</g>
+</g>
+</g>
+<path d="M71.13185-112.25641V-121.0564" fill="none" />
+<path d="M75.53185-116.6564H66.73186" fill="none" />
+<path d="M71.13185-84.91278V-112.25641" fill="none" />
+<g transform="translate(123.2344,-101.93036)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(-6.93747,-185.0974)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(-6.93747,-219.24101)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<path d="M10.67044-182.0974H99.5846" fill="none" />
+<path d="M10.67044-216.24101H99.5846" fill="none" />
+<g fill="#fff">
+<g fill="#fff">
+<path d="M22.76207-193.47853H45.52434V-170.71626H22.76207Z" />
+</g>
+<g transform="translate(28.81198,-186.19739)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+</g>
+<g fill="#000">
+<g fill="#000">
+<path d="M73.13185-182.0974C73.13185-180.99281 72.23643-180.0974 71.13185-180.0974S69.13185-180.99281 69.13185-182.0974C69.13185-183.20198 70.02727-184.0974 71.13185-184.0974S73.13185-183.20198 73.13185-182.0974ZM71.13185-182.0974" stroke="none" />
+</g>
+<g transform="translate(71.13185,-182.0974)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none" />
+</g>
+</g>
+</g>
+</g>
+<path d="M75.13185-216.24101C75.13185-214.03185 73.34102-212.24101 71.13185-212.24101S67.13185-214.03185 67.13185-216.24101C67.13185-218.45018 68.92268-220.24101 71.13185-220.24101S75.13185-218.45018 75.13185-216.24101ZM71.13185-216.24101" fill="none" />
+<g transform="translate(71.13185,-216.24101)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none" />
+</g>
+</g>
+</g>
+<path d="M71.13185-211.84102V-220.641" fill="none" />
+<path d="M75.53185-216.24101H66.73186" fill="none" />
+<path d="M71.13185-184.49739V-211.84102" fill="none" />
+<g transform="translate(123.2344,-201.51497)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(-6.93747,-284.68199)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(-6.93747,-318.8256)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<path d="M10.67044-281.68199H99.5846" fill="none" />
+<path d="M10.67044-315.8256H99.5846" fill="none" />
+<g fill="#fff">
+<g fill="#fff">
+<path d="M22.76207-293.06313H45.52434V-270.30086H22.76207Z" />
+</g>
+<g transform="translate(28.81198,-285.78198)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+</g>
+<g fill="#000">
+<g fill="#000">
+<path d="M73.13185-281.68199C73.13185-280.57741 72.23643-279.68199 71.13185-279.68199S69.13185-280.57741 69.13185-281.68199C69.13185-282.78658 70.02727-283.68199 71.13185-283.68199S73.13185-282.78658 73.13185-281.68199ZM71.13185-281.68199" stroke="none" />
+</g>
+<g transform="translate(71.13185,-281.68199)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none" />
+</g>
+</g>
+</g>
+</g>
+<path d="M75.13185-315.8256C75.13185-313.61644 73.34102-311.8256 71.13185-311.8256S67.13185-313.61644 67.13185-315.8256C67.13185-318.03477 68.92268-319.8256 71.13185-319.8256S75.13185-318.03477 75.13185-315.8256ZM71.13185-315.8256" fill="none" />
+<g transform="translate(71.13185,-315.8256)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none" />
+</g>
+</g>
+</g>
+<path d="M71.13185-311.42561V-320.2256" fill="none" />
+<path d="M75.53185-315.8256H66.73186" fill="none" />
+<path d="M71.13185-284.08199V-311.42561" fill="none" />
+<g transform="translate(123.2344,-301.09956)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(-46.679444,-15.110724)scale(-1,-1)">
+<g fill="#000">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<text class="f5" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -16.330760 -39.578690)" fill="#000">Input</text>
+<text class="f5" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 30.329284 -38.419028)" fill="#000">Circuit</text>
+<text class="f5" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 143.413766 -39.459148)" fill="#000">Bell<tspan x="-19.015185">State</tspan><tspan x="16.085188">&amp;</tspan><tspan x="31.029149">Expansion</tspan></text>
+<text class="f1" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 -14.019238)" fill="#000">|</text>
+<text class="f4" x="-43.358554" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 -14.019238)" fill="#000">0</text>
+<text class="f1" x="-37.505564" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 -14.019238)" fill="#000"></text>
+<text class="f1" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 19.996822)" fill="#000">|</text>
+<text class="f4" x="-43.358554" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 19.996822)" fill="#000">0</text>
+<text class="f1" x="-37.505564" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 19.996822)" fill="#000"></text>
+<text class="f2" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 28.704338 -12.923357)" fill="#000">H</text>
+<text class="f1" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000">|</text>
+<text class="f4" x="-43.358554" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000">Φ</text>
+<text class="f3" x="-34.904235" y="-20.04691" font-size="7.970112" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000">+</text>
+<text class="f1" x="-27.819596" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000"></text>
+<text class="f4" x="-19.84953" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000">=<tspan x="-1.2472" y="-23.198482">1</tspan></text>
+<rect x="-6.228535" y="-18.338609" height=".478187" width="15.815661" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000" />
+<text class="f1" x="-6.228535" y="-15.469486" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000">√</text>
+<rect x="3.734135" y="-15.947673" height=".478187" width="5.85299" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000" />
+<text class="f4" x="3.734135" y="-5.579921" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000">2<tspan x="10.782639" y="-15.110724">(</tspan></text>
+<text class="f1" x="15.334965" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000">|</text>
+<text class="f4" x="18.655855" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000">00</text>
+<text class="f1" x="30.361836" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000"></text>
+<text class="f4" x="37.667736" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000">+</text>
+<text class="f1" x="49.429051" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000">|</text>
+<text class="f4" x="52.749942" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000">11</text>
+<text class="f1" x="64.455922" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000"></text>
+<text class="f4" x="69.105159" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 2.336996)" fill="#000">)</text>
+<text class="f1" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 85.193314)" fill="#000">|</text>
+<text class="f4" x="-43.358554" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 85.193314)" fill="#000">1</text>
+<text class="f1" x="-37.505564" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 85.193314)" fill="#000"></text>
+<text class="f1" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 119.209364)" fill="#000">|</text>
+<text class="f4" x="-43.358554" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 119.209364)" fill="#000">0</text>
+<text class="f1" x="-37.505564" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 119.209364)" fill="#000"></text>
+<text class="f2" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 28.704338 86.289195)" fill="#000">H</text>
+<text class="f1" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000">|</text>
+<text class="f4" x="-43.358554" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000">Φ</text>
+<text class="f0" x="-34.904235" y="-20.04691" font-size="7.970112" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000">−</text>
+<text class="f1" x="-27.819596" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000"></text>
+<text class="f4" x="-19.84953" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000">=<tspan x="-1.2472" y="-23.198482">1</tspan></text>
+<rect x="-6.228535" y="-18.338609" height=".478187" width="15.815661" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000" />
+<text class="f1" x="-6.228535" y="-15.469486" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000">√</text>
+<rect x="3.734135" y="-15.947673" height=".478187" width="5.85299" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000" />
+<text class="f4" x="3.734135" y="-5.579921" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000">2<tspan x="10.782639" y="-15.110724">(</tspan></text>
+<text class="f1" x="15.334965" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000">|</text>
+<text class="f4" x="18.655855" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000">00</text>
+<text class="f1" x="30.361836" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000"><tspan x="37.667736">−</tspan><tspan x="49.622897">|</tspan></text>
+<text class="f4" x="52.943787" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000">11</text>
+<text class="f1" x="64.649768" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000"></text>
+<text class="f4" x="69.299005" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 101.549548)" fill="#000">)</text>
+<text class="f1" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 184.405876)" fill="#000">|</text>
+<text class="f4" x="-43.358554" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 184.405876)" fill="#000">0</text>
+<text class="f1" x="-37.505564" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 184.405876)" fill="#000"></text>
+<text class="f1" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 218.421925)" fill="#000">|</text>
+<text class="f4" x="-43.358554" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 218.421925)" fill="#000">1</text>
+<text class="f1" x="-37.505564" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 218.421925)" fill="#000"></text>
+<text class="f2" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 28.704338 185.501756)" fill="#000">H</text>
+<text class="f1" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000">|</text>
+<text class="f4" x="-43.358554" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000">Ψ</text>
+<text class="f3" x="-34.253903" y="-20.04691" font-size="7.970112" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000">+</text>
+<text class="f1" x="-27.169264" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000"></text>
+<text class="f4" x="-19.199197" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000">=<tspan x="-.596868" y="-23.198482">1</tspan></text>
+<rect x="-5.578203" y="-18.338609" height=".478187" width="15.815661" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000" />
+<text class="f1" x="-5.578203" y="-15.469486" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000">√</text>
+<rect x="4.384468" y="-15.947673" height=".478187" width="5.85299" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000" />
+<text class="f4" x="4.384468" y="-5.579921" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000">2<tspan x="11.432972" y="-15.110724">(</tspan></text>
+<text class="f1" x="15.985297" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000">|</text>
+<text class="f4" x="19.306188" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000">01</text>
+<text class="f1" x="31.012168" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000"></text>
+<text class="f4" x="38.318069" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000">+</text>
+<text class="f1" x="50.079384" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000">|</text>
+<text class="f4" x="53.400274" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000">10</text>
+<text class="f1" x="65.106254" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000"></text>
+<text class="f4" x="69.755491" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 200.762110)" fill="#000">)</text>
+<text class="f1" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 283.618418)" fill="#000">|</text>
+<text class="f4" x="-43.358554" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 283.618418)" fill="#000">1</text>
+<text class="f1" x="-37.505564" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 283.618418)" fill="#000"></text>
+<text class="f1" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 317.634467)" fill="#000">|</text>
+<text class="f4" x="-43.358554" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 317.634467)" fill="#000">1</text>
+<text class="f1" x="-37.505564" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -6.911552 317.634467)" fill="#000"></text>
+<text class="f2" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 28.704338 284.714298)" fill="#000">H</text>
+<text class="f1" x="-46.679444" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000">|</text>
+<text class="f4" x="-43.358554" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000">Ψ</text>
+<text class="f0" x="-34.253903" y="-20.04691" font-size="7.970112" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000">−</text>
+<text class="f1" x="-27.169264" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000"></text>
+<text class="f4" x="-19.199197" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000">=<tspan x="-.596868" y="-23.198482">1</tspan></text>
+<rect x="-5.578203" y="-18.338609" height=".478187" width="15.815661" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000" />
+<text class="f1" x="-5.578203" y="-15.469486" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000">√</text>
+<rect x="4.384468" y="-15.947673" height=".478187" width="5.85299" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000" />
+<text class="f4" x="4.384468" y="-5.579921" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000">2<tspan x="11.432972" y="-15.110724">(</tspan></text>
+<text class="f1" x="15.985297" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000">|</text>
+<text class="f4" x="19.306188" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000">01</text>
+<text class="f1" x="31.012168" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000"><tspan x="38.318069">−</tspan><tspan x="50.273229">|</tspan></text>
+<text class="f4" x="53.594119" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000">10</text>
+<text class="f1" x="65.3001" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000"></text>
+<text class="f4" x="69.949337" y="-15.110724" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 122.773996 299.974652)" fill="#000">)</text>
+</svg>

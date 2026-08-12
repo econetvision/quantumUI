@@ -1,0 +1,570 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design tokens
+
+   Tailwind v4 is configured CSS-first: `@theme inline` maps utility names onto
+   the custom properties defined below. Raw palette values live in `:root`
+   (dark) and are overridden wholesale for `[data-theme="light"]`, so every
+   utility that references a semantic token flips with the theme automatically.
+
+   The theme is resolved before first paint by the inline script in layout.tsx,
+   which stamps `data-theme` on <html>. `:root` therefore holds the dark values
+   as the no-JS fallback.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --surface: #07090d;
+  --surface-raised: #0e1116;
+  --surface-overlay: #161a21;
+  --surface-sunken: #04060a;
+
+  /* Lines */
+  --border: rgb(255 255 255 / 0.10);
+  --border-strong: rgb(255 255 255 / 0.20);
+
+  /* Text */
+  --text: #f2f5f9;
+  --text-muted: #a4aebd;
+  --text-subtle: #6d7787;
+
+  /* Brand */
+  --accent: #4d8dff;
+  --accent-hover: #74a5ff;
+  --accent-contrast: #06101f;
+  --accent-soft: rgb(77 141 255 / 0.16);
+  --accent-ring: rgb(77 141 255 / 0.45);
+
+  /* Secondary brand (used for gradients and the second data series) */
+  --accent-alt: #a78bfa;
+  --accent-alt-soft: rgb(167 139 250 / 0.16);
+
+  /* Status */
+  --success: #3fca87;
+  --success-soft: rgb(63 202 135 / 0.16);
+  --warning: #f0b74e;
+  --warning-soft: rgb(240 183 78 / 0.16);
+  --danger: #f87171;
+  --danger-soft: rgb(248 113 113 / 0.16);
+
+  /* Code surfaces */
+  --code-bg: #0b0e13;
+  --code-text: #dfe6f0;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 16px rgb(0 0 0 / 0.45);
+  --shadow-lg: 0 12px 40px rgb(0 0 0 / 0.55);
+
+  /* Quantum visualisation.
+     Validated as a categorical pair against the dark surface: lightness band,
+     chroma floor, CVD separation (ΔE 28.6 protan / 29.0 tritan), normal-vision
+     separation (ΔE 32.0) and ≥3:1 contrast all pass. Re-validate before
+     changing either value. */
+  --q-zero: #4d8dff;
+  --q-one: #d9752e;
+  --q-axis: rgb(255 255 255 / 0.28);
+  --q-sphere: rgb(77 141 255 / 0.10);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --surface: #ffffff;
+  --surface-raised: #f7f9fc;
+  --surface-overlay: #ffffff;
+  --surface-sunken: #eef2f7;
+
+  --border: rgb(10 20 35 / 0.12);
+  --border-strong: rgb(10 20 35 / 0.24);
+
+  --text: #0d1420;
+  --text-muted: #4d586a;
+  --text-subtle: #78828f;
+
+  --accent: #1f6feb;
+  --accent-hover: #1a5cc4;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgb(31 111 235 / 0.10);
+  --accent-ring: rgb(31 111 235 / 0.40);
+
+  --accent-alt: #7c3aed;
+  --accent-alt-soft: rgb(124 58 237 / 0.10);
+
+  --success: #128a52;
+  --success-soft: rgb(18 138 82 / 0.12);
+  --warning: #a86a00;
+  --warning-soft: rgb(168 106 0 / 0.12);
+  --danger: #c2372f;
+  --danger-soft: rgb(194 55 47 / 0.12);
+
+  --code-bg: #f2f5f9;
+  --code-text: #16202f;
+
+  --shadow-sm: 0 1px 2px rgb(10 20 35 / 0.06);
+  --shadow-md: 0 4px 16px rgb(10 20 35 / 0.08);
+  --shadow-lg: 0 12px 40px rgb(10 20 35 / 0.12);
+
+  /* Light-mode pair, validated against #ffffff: CVD ΔE 30.2 protan /
+     28.9 tritan, normal-vision ΔE 34.0, contrast ≥3:1. */
+  --q-zero: #1f6feb;
+  --q-one: #c2571a;
+  --q-axis: rgb(10 20 35 / 0.28);
+  --q-sphere: rgb(31 111 235 / 0.08);
+}
+
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-surface-sunken: var(--surface-sunken);
+
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+
+  --color-content: var(--text);
+  --color-content-muted: var(--text-muted);
+  --color-content-subtle: var(--text-subtle);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-alt: var(--accent-alt);
+  --color-accent-alt-soft: var(--accent-alt-soft);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+
+  --color-code-bg: var(--code-bg);
+  --color-code-text: var(--code-text);
+
+  --color-q-zero: var(--q-zero);
+  --color-q-one: var(--q-one);
+
+  /* Legacy aliases.
+     Older markup still uses `quantum-*` utility names. Pointing them at the
+     semantic tokens means pages that haven't been migrated yet still respond
+     to the theme instead of staying hardcoded black. */
+  --color-quantum-bg: var(--surface);
+  --color-quantum-bg-secondary: var(--surface-raised);
+  --color-quantum-bg-tertiary: var(--surface-overlay);
+  --color-quantum-accent: var(--accent);
+  --color-quantum-accent-dark: var(--accent-hover);
+  --color-quantum-purple: var(--accent-alt);
+  --color-quantum-purple-dark: var(--accent-alt);
+
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, "SF Mono", monospace;
+}
+
+/* ==========================================================================
+   Base
+
+   Everything below lives in a Tailwind layer on purpose. CSS written outside
+   the layers wins against *all* utilities, which meant `.quantum-btn` beat
+   `hidden` and the header CTA stayed visible on mobile. Layering restores the
+   normal precedence: utilities override components, components override base.
+   ========================================================================== */
+
+@layer base {
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Anchor targets clear the sticky header instead of hiding beneath it. */
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-sans);
+  /* Prevent sideways drift on small screens without clipping sticky elements. */
+  overflow-x: clip;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-mono);
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Media should never force a horizontal scrollbar. */
+img, svg, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ==========================================================================
+   Focus & accessibility
+   ========================================================================== */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove focus rings for pointer users only — keyboard focus stays visible. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -120%);
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-radius: 0 0 0.5rem 0.5rem;
+  font-weight: 600;
+  transition: transform 0.15s ease;
+}
+
+.skip-link:focus {
+  transform: translate(-50%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ==========================================================================
+   Scrollbars
+   ========================================================================== */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+} /* end @layer base */
+
+/* ==========================================================================
+   Component primitives
+   ========================================================================== */
+
+@layer components {
+
+/* Decorative circuit grid.
+   The grid and its fade live on a pseudo-element, never on the section itself:
+   `mask-image` masks an element *and all its children*, so applying it
+   directly faded the hero headline, body copy and CTA into the background
+   along with the grid. */
+.circuit-bg {
+  position: relative;
+  isolation: isolate;
+}
+
+.circuit-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(90deg, var(--border) 1px, transparent 1px),
+    linear-gradient(var(--border) 1px, transparent 1px);
+  background-size: 56px 56px;
+  /* Fade the grid out so it reads as texture, not a table. */
+  mask-image: radial-gradient(ellipse 100% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+.quantum-card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* Hover lift only where a pointer can actually hover — avoids sticky
+   hover states on touch devices. */
+@media (hover: hover) {
+  .quantum-card:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+}
+
+.quantum-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  /* 44px min target — WCAG 2.5.8 / comfortable thumb tap. */
+  min-height: 44px;
+  padding: 0.6rem 1.25rem;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+@media (hover: hover) {
+  .quantum-btn:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+}
+
+.quantum-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.gradient-text {
+  background: linear-gradient(100deg, var(--accent), var(--accent-alt));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   Lesson prose
+
+   Lesson bodies are raw HTML injected from the parsed QWorld notebooks. The
+   markup previously carried `prose prose-invert`, but @tailwindcss/typography
+   is not installed, so those classes did nothing and lesson content rendered
+   as unstyled HTML. These rules replace them and stay theme-aware.
+   -------------------------------------------------------------------------- */
+
+.lesson-prose {
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.lesson-prose > * + * {
+  margin-top: 1.15em;
+}
+
+.lesson-prose h1,
+.lesson-prose h2,
+.lesson-prose h3,
+.lesson-prose h4 {
+  color: var(--text);
+  line-height: 1.3;
+  margin-top: 1.9em;
+  margin-bottom: 0.6em;
+}
+
+.lesson-prose h1 { font-size: 1.6rem; }
+.lesson-prose h2 { font-size: 1.35rem; }
+.lesson-prose h3 { font-size: 1.15rem; }
+.lesson-prose h4 { font-size: 1rem; }
+
+.lesson-prose strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.lesson-prose a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lesson-prose ul,
+.lesson-prose ol {
+  padding-left: 1.35em;
+}
+
+.lesson-prose ul { list-style: disc; }
+.lesson-prose ol { list-style: decimal; }
+
+.lesson-prose li + li {
+  margin-top: 0.4em;
+}
+
+.lesson-prose li::marker {
+  color: var(--accent);
+}
+
+.lesson-prose code {
+  background: var(--code-bg);
+  color: var(--code-text);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.12em 0.4em;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+.lesson-prose pre {
+  background: var(--code-bg);
+  color: var(--code-text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  /* Long lines scroll in the block, never the page. */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.lesson-prose pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 0.8125rem;
+}
+
+.lesson-prose blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.lesson-prose img {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.lesson-prose hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 2em 0;
+}
+
+/* Wide tables get their own scroll container. */
+.lesson-prose table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.lesson-prose th,
+.lesson-prose td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.lesson-prose th {
+  background: var(--surface-overlay);
+  color: var(--text);
+  font-family: var(--font-mono);
+}
+
+/* Long code/tables scroll inside their own box rather than the page. */
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+} /* end @layer components */
+
+/* ==========================================================================
+   Animation
+
+   Keyframes stay unlayered (they are not style rules and carry no
+   precedence); the classes that use them go in the utilities layer so they
+   compose with the rest of Tailwind.
+   ========================================================================== */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@layer utilities {
+  .animate-fade-up { animation: fade-up 0.5s ease-out both; }
+  .animate-fade-up-1 { animation: fade-up 0.5s ease-out 0.10s both; }
+  .animate-fade-up-2 { animation: fade-up 0.5s ease-out 0.20s both; }
+}
+
+@keyframes quantum-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+@layer utilities {
+  .loading-quantum {
+    animation: quantum-pulse 1.5s ease-in-out infinite;
+  }
+}

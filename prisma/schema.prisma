@@ -1,0 +1,403 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =====================================================
+// USER & AUTHENTICATION
+// =====================================================
+
+enum UserRole {
+  FREE
+  PRO
+  ENTERPRISE
+  STUDENT
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String    // bcrypt hashed
+  role          UserRole  @default(FREE)
+
+  // Account-wide progress. Previously these lived on a UserProgress row with
+  // trackId 0 — a track that does not exist. MySQL allowed it because
+  // relationMode="prisma" disabled foreign keys; Postgres rejects it, which is
+  // the correct behaviour and the reason this moved here.
+  totalXP        Int       @default(0)
+  currentStreak  Int       @default(0)
+  longestStreak  Int       @default(0)
+  lastActivityAt DateTime?
+
+  // OAuth fields (optional)
+  emailVerified DateTime?
+  image         String?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  sessions      Session[]
+  progress      UserProgress[]
+  labAttempts   LabAttempt[]
+  examAttempts  ExamAttempt[]
+  achievements  UserAchievement[]
+
+  @@index([email])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// =====================================================
+// LEARNING TRACKS & CONTENT
+// =====================================================
+
+enum TrackDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+model Track {
+  id          Int              @id @default(autoincrement())
+  slug        String           @unique // "quantum-fundamentals", "quantum-gates"
+  title       String           // "Quantum Fundamentals"
+  description String           @db.Text
+  difficulty  TrackDifficulty
+  order       Int              // Display order (1-12)
+
+  // Metadata
+  labCount    Int              @default(0)
+  questionCount Int            @default(0)
+  estimatedHours Float?
+
+  // Content source tracking
+  qworldSource String?         // Which QWorld repo this maps to
+
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Relations
+  labs        Lab[]
+  questions   Question[]
+  progress    UserProgress[]
+
+  @@index([slug])
+  @@index([order])
+}
+
+enum LabType {
+  INTERACTIVE  // Code execution required
+  TUTORIAL     // Read-only explanation
+  EXERCISE     // Graded challenge
+  PROJECT      // Capstone project
+}
+
+model Lab {
+  id            Int         @id @default(autoincrement())
+  trackId       Int
+  track         Track       @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  slug          String      @unique
+  title         String
+  description   String      @db.Text
+  order         Int         // Order within track
+
+  // Content
+  type          LabType     @default(INTERACTIVE)
+  notebookPath  String?     // Original QWorld .ipynb path
+  markdown      String      @db.Text // Converted explanation
+  starterCode   String      @db.Text // Initial Python/Qiskit code
+  solutionCode  String?     @db.Text // Hidden solution
+
+  // Auto-grading
+  expectedOutput String?    @db.Text // For automated checking
+  testCases      Json?      // Unit test cases
+
+  // Hints system
+  hints         Json?       // Array of hint strings
+
+  // Difficulty & points
+  xpReward      Int         @default(10)
+  difficulty    Int         @default(1) // 1-5 scale
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  attempts      LabAttempt[]
+
+  @@index([trackId, order])
+  @@index([slug])
+}
+
+enum LabAttemptStatus {
+  IN_PROGRESS
+  PASSED
+  FAILED
+}
+
+model LabAttempt {
+  id          Int              @id @default(autoincrement())
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  labId       Int
+  lab         Lab              @relation(fields: [labId], references: [id], onDelete: Cascade)
+
+  // Submission
+  submittedCode String         @db.Text
+  output        String?        @db.Text
+  circuitSvg    String?        @db.Text // Generated circuit diagram
+
+  // Result
+  status        LabAttemptStatus
+  passed        Boolean        @default(false)
+  score         Int?           // 0-100
+  xpEarned      Int            @default(0)
+
+  // Metadata
+  hintsUsed     Int            @default(0)
+  timeSpentSec  Int?           // Time spent in seconds
+
+  createdAt     DateTime       @default(now())
+
+  @@index([userId, labId])
+  @@index([userId, createdAt])
+}
+
+// =====================================================
+// QUESTIONS & EXAMS
+// =====================================================
+
+enum QuestionDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  TRUE_FALSE
+  CODE_OUTPUT
+}
+
+model Question {
+  id              Int                  @id @default(autoincrement())
+  trackId         Int?
+  track           Track?               @relation(fields: [trackId], references: [id], onDelete: SetNull)
+
+  // Question content
+  type            QuestionType         @default(MULTIPLE_CHOICE)
+  difficulty      QuestionDifficulty   @default(MEDIUM)
+  question        String               @db.Text
+  codeSnippet     String?              @db.Text
+
+  // Options (JSON array)
+  options         Json                 // ["Option A", "Option B", ...]
+  correctAnswer   String               // The correct option text
+  explanation     String?              @db.Text
+
+  // IBM Exam prep specific
+  ibmExamTopic    String?              // "Performing operations", "Measuring outputs", etc.
+  ibmExamWeight   Float?               // Percentage weight in exam blueprint
+
+  createdAt       DateTime             @default(now())
+
+  @@index([trackId])
+  @@index([ibmExamTopic])
+}
+
+model ExamAttempt {
+  id              Int       @id @default(autoincrement())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Exam metadata
+  type            String    // "mock_exam", "track_quiz", etc.
+  questionCount   Int
+
+  // Results
+  answers         Json      // Array of {questionId, selectedAnswer, correct}
+  score           Int       // 0-100
+  percentile      Float?    // User's percentile ranking
+
+  // Timing
+  timeLimit       Int       // Minutes
+  timeSpent       Int       // Actual minutes spent
+
+  // Analytics
+  weakAreas       Json?     // Topics where user struggled
+
+  createdAt       DateTime  @default(now())
+
+  @@index([userId, createdAt])
+  @@index([type, createdAt])
+}
+
+// =====================================================
+// PROGRESS TRACKING
+// =====================================================
+
+model UserProgress {
+  id              Int       @id @default(autoincrement())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trackId         Int
+  track           Track     @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  // Progress metrics
+  labsCompleted   Int       @default(0)
+  totalLabs       Int
+  completionPct   Float     @default(0) // 0-100
+
+  // XP & scoring
+  totalXP         Int       @default(0)
+  currentStreak   Int       @default(0) // Days
+  longestStreak   Int       @default(0)
+
+  // Quantum state progress (fun visualization)
+  quantumState    Float     @default(0) // 0 = |0⟩, 100 = |1⟩
+
+  // Timestamps
+  startedAt       DateTime  @default(now())
+  lastActivityAt  DateTime  @default(now())
+  completedAt     DateTime?
+
+  @@unique([userId, trackId])
+  @@index([userId])
+}
+
+// =====================================================
+// ASSIGNMENTS (admin -> student material assignment)
+// =====================================================
+
+enum AssignmentStatus {
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Assignment {
+  id           Int              @id @default(autoincrement())
+  assignedById String           // admin user id
+  studentId    String           // student user id
+  title        String
+  trackSlug    String?          // assigned learning track
+  labTopic     String?          // lab-questions topic slug
+  difficulty   String?          // easy | medium | complex
+  dueDate      DateTime?
+  status       AssignmentStatus @default(ASSIGNED)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([studentId, status])
+  @@index([assignedById, createdAt])
+}
+
+// =====================================================
+// GAMIFICATION
+// =====================================================
+
+enum AchievementType {
+  MILESTONE       // Complete X labs
+  STREAK          // X day streak
+  PERFECT_SCORE   // 100% on exam
+  SPEED           // Complete lab under time limit
+  MASTERY         // Complete entire track
+  SPECIAL         // Special events
+}
+
+model Achievement {
+  id          Int              @id @default(autoincrement())
+  slug        String           @unique
+  name        String           // "Entangled Learner", "Gate Master"
+  description String           @db.Text
+  icon        String?          // Emoji or icon name
+  type        AchievementType
+
+  // Requirements
+  requirement Json             // Flexible criteria
+
+  createdAt   DateTime         @default(now())
+
+  // Relations
+  users       UserAchievement[]
+}
+
+model UserAchievement {
+  id            Int          @id @default(autoincrement())
+  userId        String
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId Int
+  achievement   Achievement  @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  earnedAt      DateTime     @default(now())
+
+  @@unique([userId, achievementId])
+  @@index([userId, earnedAt])
+}
+
+// =====================================================
+// EXTERNAL CONTENT CACHE
+// =====================================================
+
+model ContentCache {
+  id          Int       @id @default(autoincrement())
+  source      String    // "ibm_docs", "qiskit_api", "arxiv"
+  key         String    // URL or identifier
+  content     String    @db.Text
+  metadata    Json?     // Additional data
+
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime  // TTL for cache invalidation
+
+  @@unique([source, key])
+  @@index([source, expiresAt])
+}
+
+// =====================================================
+// SECURITY & AUDIT
+// =====================================================
+
+model AuditLog {
+  id          Int       @id @default(autoincrement())
+  userId      String?   // Null for anonymous
+  action      String    // "lab_submit", "exam_attempt", "login"
+  resource    String?   // Resource ID
+  ipAddress   String?
+  userAgent   String?   @db.Text
+  metadata    Json?     // Additional context
+
+  createdAt   DateTime  @default(now())
+
+  @@index([userId, createdAt])
+  @@index([action, createdAt])
+}
+
+model RateLimit {
+  id          String    @id // userId or IP address
+  endpoint    String    // API endpoint
+  count       Int       @default(0)
+  windowStart DateTime  @default(now())
+
+  @@unique([id, endpoint])
+  @@index([windowStart])
+}

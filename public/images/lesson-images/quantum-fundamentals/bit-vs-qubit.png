@@ -1,0 +1,388 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="349.024857pt" height="179.72544pt" viewBox="-63.496082 -63.496078 349.024857 179.72544">
+<style type="text/css">
+@font-face{font-family:nf3;src:url(data:application/x-font-woff2;base64,d09GMgABAAAAAASIAAoAAAAAB7wAAAQ8AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAAgRQKh3SGAwseAAE2AiQDOAQgBYIyByAb+gUAHodxrLCCSKT07/Lh8fT/3Ju0by/ZnMEd2T6yc8aknPAgMPgCeP7927lvX+xvAQac5a1FEmjLAgk1wQR/FfzP/zX5yq/1KJ+f4nnF1laB/41aC2046qAowPkMZOqJgg2z6pZr29+p+84Ak/NkBQxAX/r0PwHLeZx8MyUwpz3AGoEjC7C08RzXAqP8Qdht/12D2Ur6AiAG+f//kFAAwxcQIpxgzbg/gi+Gp3z1mrQZYpjhRhhltDHGDpKjX4+J/1+447abb7xhRderwhMEQt6AIpQCkAkgD8RCyBAUEDG5jeuZ5usT1I5lWcGT8/PxNAcJLBvMcwZ+uKJU3tMSoVdSXVbVSk3rv+eMcGBDIFTrXb3BU1WrFuvdqhRjXNK9zlqsZhxVCzTNskjJ5jmGlznC5xrpxTGbo4KOSXeUGJji0DVvalAizdxalFfJk4v1u5J7tJ4VXNc7tNEDzzxIxpqNF88G39dbfMw0331ctzbMOJH8RLqnJcoH1QFrOwWfj972SNNS1x2L0rsdTrqfsF/Nr7ykcessZyK2Puxw9mHKwZ0NexRNi2M4whMePM6WkwlnRS+OXFE63nlFGJ5uOcqf1QXnB3NxF8crlRzlYn5Z1617ExJwKX7fBRP4r/V+K/ifNI+YU0VmWpOis+33peySzvUoLvcCuZY65JLSHVP3rdzLP0rru2tGjYhb75cyVsnVj8TKwdcMeWKWC801ez5pJI2T5tfQpFLTvSt+rj99+pdk5yQXdkzHEem+5DG2pbVFPoN37MnJLy1+Vrorx8n+aX9WXjhAPMt2rYnC/++Thvmzm0kjYXfSBtoyb1ETbabzF0ouUmkvHW8XSRWRJXmKLD/2/2XknAqyoyRo9e/2ZVLOi4aw7CLqWCjXYMDmftl7W+BDr0fHU268cLpRfw3AkIOWvyU9E6u/dFt+xPw54Y6zawfSD1wR27yKfpMi8LLz7K5dA74s8eojbDxwkWEKv7r1WbLfiWLe4mXtm++f9lNol864oA3cdeGbT9HWB5eFDEX8bmCcfapnibPW91n/gzD6h5t98Y6U9fPwQNTe/WV7mf8HnT4QsyJS7PhxsMvlovel+9LR3tPmSfPEPqKDiBXVJ1YEVBb3v9l7mmn8LAAACIDAR49//bHGp/uvHgwLAPhsY+zHMvv/LtSTvgTggYo0C34I0BUCvyq2+70TDZAZDZULOR8jPgxKwkCqXFSVCdE2f8xeuxPRWQgBwIoopDAHN2MAKOIcZ5otT/j5NYDF8ANvwBMgIxa9mxMmFoO09iBidb/mWUbVvEGQRt8IbBLgWMw4nba/jI0VdcNGD2s2/8qlcjKzpeNYvr1xXNvocS1DTWa9ONOMInXGaDOMSbHhGjUZBb9iEMOMBs3MpA5GazPco5ojU3aHrKFhYuQjmjSm6k1k8kbjtBld22IoE3NkKPNt9r8AAAA=) format('woff2');}
+@font-face{font-family:cmmi7;src:url(data:application/x-font-woff2;base64,d09GMgABAAAAAAIoAAoAAAAAA7gAAAHfAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAANAqBFIEeCwYAATYCJAMIBCAFgjgHIBsLA6AuC3hDyvRblAlo/HqqYY8BfaZrnHUE9fvp3nv/p0BgM1UwHlADywoX1bKxqVIRKq4OhKxwrQoMHbO7VdOokiLLqkM3nNj4XzSFft3t+O0HvNrnF/9+wZIWaFaQcIHEdfQ1u7x2gQGYmQ9T0JUMbrnjFymu7bY09+wlD7hAf7EW2IOmgSdBwJJtjhDrE1/OYNlYmEJOD/CpJH2kz86kh+VIApuBmAr2ndh9bd4AmNzYr4ssIADodkFCxiSkwCSUVUChEORGtyuidQICyFEgqQL2gdII8vgg176V/c8FL4//Pjbwt15Zhd618zvW//ritB/N+pKNP8LxqtpICiZPKBFDeqFnl4fnbRfnDM5IMooMIp23xF8ST71jhD8uh/VP/zFZR5LnTi+0vUxUBgACwfSAvQvMf725AL/19cd9tPufmgn0SiDIukhNO7iJBAAgpSZpgwNEUoUEAQCAfq8gCCMIUCiNCFAaMAmCitIKCPrNE0CKok9YZg1R6HeH0rQ6Kvo9t35b7gdw+l+rVnq9lu5CWxRKu+fJNdV5azJv9Dgq+VwGeoZmpmrGOCIGqjTvq+jpadGJ6+tEy0Afh4KUvE0+7oO4NIiq6rIVjqq5lom5hh4OFeAdUipIgLUC) format('woff2');}
+@font-face{font-family:cmmi10;src:url(data:application/x-font-woff2;base64,d09GMgABAAAAAAJYAAoAAAAABCwAAAIPAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAANAqCAIFiCwYAATYCJAMIBCAFgj4HIBtVA2COwradM05YK4wm+UoR1O91e/dKEkppHhWU+EKhQCg8E+NoFidQCoXQvOnlfu/DzuQme6sd0tzY1vV/N/kA71pAN7T3xULO9vMFli0NOKIw4DlBE/I+HQQFkzDqv4cvULIhOjTyM0//6drdjz8VLAMDqB1tBeg9vZSkAmQ5+N5AERAAjAEgUXAAJnAA7gZQVUH5GUPjP3Pjf06CisAEeAZABcSUGTV7H7p8LxtbY/ZVLqv6FwUjN+yJoJsbZVAPnd3D7GPKZOMs0d1dSN996LZoaI4+dxHU04Nl9vXpDmuuu+7ug3f2zQ2jIjiW14/rP/xZXpiYiuc72J2ap1Phg2+Psje9jzNMZSTWXVi6u/uUia8UAzwvPyO7CkbX5oxuvScs0RHihiE6SaMd6ChM3EQqw1UzGBWnTxItsv4L485lwmpVKsWdl1xEWPy2l6ImLwGAQHC33MPEkqx+0QUO4HdQ+g348rjPpjzEXIKgGMgvVyhtIAAImSUAQAjSBFIRIl7ziuE2Ca26bdqsO6Rdd9O/5owSTFQMCFfsgFYbHmlzJIN2G1bJmgctx7j5S1cqMTs7XV/vXhzo6+hVSs+cxaSS9MKS1GyxIb3QMQSOcmXLU6xIsgJi3nIlUVuORNmypdOnJ8RwofTmHGL6dOgJcrVyRq34dShpbYJyYklKpCtUIlU2MUOr0WEIJowC) format('woff2');}
+@font-face{font-family:cmmi9;src:url(data:application/x-font-woff2;base64,d09GMgABAAAAAAToAAoAAAAAB9gAAASdAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAARAqJDIZ+Cw4AATYCJAMYBCAFgjgHIBsLBlGUKk4M8CMx3YCVD2TyRBpOtn3pqM6q7slSDBYiD8QPVHjI3b/d5dKylkbNg4QCTeCb/J9fV7tNDdJRTVF/cI6MrLv1tmpwsJL8Zt78n4v/+yBbcxSAV2s+b7AE3khmE2mb4OwED1BPQE/bmuwzEB/nlJ1UYFSPbgARiagdGAB++Mp/fmjTIXrbctBDLBAoRkBXAOQQfXLjDPL8PE8AHVACUgWEmE4HOBgZAL+N4QcS7YQZcy0LcpM474/zc2O0QG/46/nXYjXjUAB7mxmgDYB+eiRdIAjG6/pApzKdXeVvG1oPnD5aCJm1zF1pL7BcXDOkSrjILVmVy7ifipkvl/igzWzNbQbWKi/QzvjRPn+tWQeSXTWly8X4A5P5dIr/1e2DuEvNuS19MM4CkKcv18KN9syZ263gr7TIHKA7+1KxWme6pueRWVAWhNAplHCrQrEYf2g9u3NyFgAnd1T5XGw+MLsZ+05wjVdEQbQXCmtGYwoSEDEYOKdxLpi5mUe0xtwPeqw4/3JtApFlGhkxjAxKZB5d83LLKSQOQbH0q0WcXoSaK0mRgoZb0Mg0m50xDSIyN5WSRNYD64G18Aaz/FUB7ZsW8LCcMSU1I/OAyvRxrGJVA8oF6qLyBsf61rDrH5ULTXmbuBMuXHlzDoAGIAYIES67bjIxsuwXMOVeOLu/XkarTtyghg0J9Aj8GGlZj3g9wusoURKJSJxC5U5kIeoUK9/xU6iVQnhQxW12vTbkTvCxIkGuCKYVshhPp6ZNoGjUfS4bFoJL6LqHqYijSIU4/+MJGCMTimeeVcTeVNjkY+MSjOLitAV0IxuFg5oy3RE8UGE3fhtelsSMmXEhKta03hG1r31g5n5jYreecAaRELmgU8KsOQBGtsyy5UJW/YqcVeF0Ess1aS+REOCxvEm+4bPB2G/+LYktHB5p4PvHOk0btYQkNV9uPgFGIadUVZerxRzISJQWxclYI8GR7sHM/bXSXaJXN9vKCztByAS3iCa7frVypoRhMiQtyi8FyGlhavY8JxwNrW9JFMozCqu7Eem24FfVHUKzjBS9tPWVA3X6krTMY0AxjCbEJ8w6XsXv7F1NlsuRcUfObkee1YxH+PuGjw+cxU3ujoQL/3NV2m+KkDaXiSWt3Q+b2ypJxxlKqlcc0BOjISl+D7xuXqMTDX8PLiyfCBW7IK8ZKyuacE8ef7CuMOFjD2CnyAerOQeQ+T1tebZUl6UDZPgENI5EMvl4MAGfi3zIA6y9fpE2Wa/KBfE4sBPPc+fGlR6V8+0ttf/KoyybVxiX+TdmggQAAM952Se6RdfAI/gOwL5WstR7wyr+QJL+C49QDfcYoxIAD5DCjCCJJ0Ede4B0huLmGHkiJhDUrEohB+CCqCZhwDUWGLDhFxgxkNpmJQryQECFBRBJsCwCCatggYEgxAqMWBU3rPSh9ilU/clcHZWSkmDyVpfoaGrPjb7RP4/OTcjKjUuR1tPU1tQDsjQp0uXIFiOTNLjQiUaeKkpKLBOYgC+iLAmO9VTSoAOaoE1g56RmOhGrgeg8UgFpRrkSsplccVKgnqWp5xMCAAA=) format('woff2');}
+@font-face{font-family:cmsy10;src:url(data:application/x-font-woff2;base64,d09GMgABAAAAAAH4AAoAAAAAA7gAAAGtAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAAPAqBAHYLCAABNgIkAwwEIAWCPgcgG/UCCB4H1c0O8xiCu14MsRSPPxF8v99vz7vvi6KeJFokREIVC80lEvESrWUSiaHRbGFuO6bxFY8XreCJekS9kT3hTVujarKCZPf5bvLx0Ql80GMf2YE2FmdLIwx8W74G9bznWaTp3DYIFM4o1xkezVps7pDiM5CSPWa3v07LErPvRIcSigBEKwCwvtEvgMzheyn1/0yC1J8eQADw/w8yJHQSC3SSmACKciEThf//WOH/amQHKr2miAwjwDgAOSBEvWNJdnM/2aPy9dN0lwluLdf+dU8kvEYP45u+0Gp8fL9pc0M5bfYD+vX6ngpjmyT2+iSPLmRtY5/d5/tiDgSC+VlbJqGf+y6nHHzsTH9+6V8aTAjKMhDsgx/Ea8QwhPKTlAZBDBrFNR6CpAMCQnOqjpfCFjDkilpQUNOFoqLR6ap+NmKRV4RhdoZc3SIKupVRVHcaVc2aHVvjm1YsU+uMSOJ+NUmMGOSekdlsv9TpF2oG2m9gNLg01DT1dOW0Gfg1ZG2oLqOmY4REEMA6St11BiQMEcSn6wKdkpLs0bQRg6y+ko6+ghoDGqVjaGINAAAA) format('woff2');}
+@font-face{font-family:cmsy9;src:url(data:application/x-font-woff2;base64,d09GMgABAAAAAAH0AAoAAAAAA6gAAAGqAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAAPAp4cAsIAAE2AiQDDAQgBYI4ByAb6QIoHoNt2ykeEURF1fHwbUP2WQTfr7F9Xw5RzTe0KBqaWQr0RCJBNLkYcz+zKCrJtQqQJuIZ9w6hQFuoJDx73XWO+J//c/HnUeuogOY0a63SDXyEA0/PujugfH6Gp3MbECjH0R4YI5qdweYFOb7iADCkB+TD36j9pcYzWMxBgGggYxAMHp8MS4B1+1jJnB81wFPyMxAA/AMkZIxCCYXRNkGjhzQT/gNJ/a/yLwOSf6NBwiywCkABhOgd3MOeXmxd0XFn19uXufTF+A1rZfl645y5dDm6fft+RykKSmQMA+/l/nFrYRib/85/qIbFFvtOZxAJIBBcnEf+9gbsr3hUAU+Xog+wh/5ym5HolECwB27LqhtyCIg/ybkFsWoWl2CFQDYIAUI63e4r4QAIVVQDVNVjlGpUC+vdpkmgROkS5jkJVXTbpqpxRarR7TbutmXtyPJftKJcozexXK2GUWegiRfkc/LDSm9YagjMOoPODD4tDW0DfQVdAgktealvymnombBIhtZTqVQ3CRjpGByEhGZXyMyB/OWsCYG8oYqeoZIGAbN+5jpmKAkAAAA=) format('woff2');}
+@font-face{font-family:nf0;src:url(data:application/x-font-woff2;base64,d09GMgABAAAAAAIcAAoAAAAAA7QAAAHQAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAAPAqBCIEVCwgAATYCJAMMBCAFgjIHIBsIA0AehU1ZPlYuz3QVIduqPoUjHp72+3buzPy3oprWm0LCk3rXhieqakw0Qia0rfvm28/dRCRpMmuijvhNtUJjISOZRycuFOLXhqTxIfvUTW5RtAb/AOAGbY06/3vMxiIKfIv+PViUULrNsUOfCp9YenREyCDH63irQfqe/h7KvVlVPDCbwcGucAI+9x5vIWC6b1neDk+UP3H0lIKtrkFCRr8skK9YRqUIyX3Lugab+n39tooqK9UHczgKgAJIor2t/T6C1DGsheMtFK3jGNe/OoIecSj8qM7t8eonPKX5Ud+/PV3HBWXwKHtQ9d+fr9Mt9fZ4f03USlS85WFF3ha1wp0dbIGP0vZXZWUbWb3+zsvOXgYbcwAgEHxk/Lrs8h+wcwH/vxn+Abnqg7QRBJolEFzUQ+q0XX+mDe+AHFN6EBA0mmwofyVoqxcoFHqkoEXWswMNbfpBJZviaDVqVhalRZi1A6Co3AANg+6BSuUJabXlVacueSXatevpavrg/NbWLrvTZy3KN+62g9UWTnQeu9PuAaddWxuY0jlj5s69JaqzNG1qRR44XTCyMjDT6boVayYcS6czrKbdu2O+40Dnnq2BlS1oQmdT3u4rNmUBAAAA) format('woff2');}
+@font-face{font-family:nf2;src:url(data:application/x-font-woff2;base64,d09GMgABAAAAAAS4AAoAAAAAB7gAAARuAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAAgQQKiAyGMAsaAAE2AiQDMAQgBYIyByAbDwYgjsM4FtyZmbkQMopN//eAZlpIqq4EIlVNn4gLkG8i/Q/wO3D+L8f/vp3d5rFAYr+xqUEfe+EYA7hMwtK1gRMOKN5EFniml1q0MbNIThzPLbMDaPIrWQELgNpEPf3PEcufKPnm1iCBWAGsCuAIcB/oHD2uByrkYyKz7b9rALON5NMS//+vPAWAFh1BgxAMRjwuV9iChiXy0YA2dKAXfTBhFMZgPCb+ryanuON22WlrvOmN1llrtVURJFyNwFUjbQASAJBrkOkHaBBQIAAjF9hYWcV52Lg7M4yj2tnbY1iSeHWLRpb5HUWXGYbdisDynNmsE6AzORcpSrr4Uk4xmwN2h296VHxOCT+meJjN4mI5ja8+W6/rueGo08aHSXflsLWyhvV5ICUrio9ZNIs+u2+xd6RQ8bKZk2WeD1hUeCbwjueGq1zK/sfHOy5IhYoiUr978cM0/tAjVpJ8JVlrFjWscbO38ybhjuTLsy2c7rBZlGVfjjVyIityhKSR482W6pEkfuxfZxd37JEUJcCYdP9TwHM8y2/ZGXS2ZrKOFYRtHltidayB89JqZc/toihyeqed2OxhHN0rScGLgoPFvWddFh+OEA2cdqefdqvrdrN444ZD9dHhMSRw/T3VKDK9R116fxTfYN+gaW/N1MzqzRcxP+G3BTpqTomPx6H+2jayOs1hj4A5ZSi946jbPnWQ1lJjIp0DjH7jAm9UkNbKk2OPfJpw7WGR27bbXLHJtnLjpLFUqt7lYKDxRa1/ejlpLdxSyWx84X9xcqnnsvd8y3FNmOfV6+CbR4VqN9oXtnq3eI6lJmzYE3hC8L1lWf6b1jG2ErVN1jUT1u7y+T3xj2tnqn6K8B+1NRCPAxua3Vp7qY4Fdq0Oxuqy6tLRdNongmfZH3J8PdXU+0xTlNZSTJqgjcc7+uyQcXWlx4uoUwXGPYl/6NffEwqz/fmEfGKgQlq+wxGh5Z7gP7bHsac3t7Y9rbcpF2pOM/pTnZ1ThOmCY33Um0Lb0xqHpom9ibkEIzw2i66DcODPplBGTW6Tx8xq95nr1bkb4r8fc/qHm6eQMPL+L/da3H5jKgtz5ItbQ4XEe3yG2mRlsqj1+jecz55YsbjaJ8imwK9+7cU2FN3rCoouyY946Vb/iWXJN5/GOv0xnKYfdU/nt+TrI1YlcUHfjb3dvAoAAAKAAJ+UPCpqscn81ZJmAACfbfT/GGr+j1oK9U4WlqCw0HoZTAL1Oaj/jy3FLUFq4kPYV0Y31Yh0ikUp+RgFVDy0hIYA542BSBaih/ocI8hvoDYR1YgDPYKgZ1lMA4nADpIsAxp2Q9kCHBxlFWj4LGfhDn/QIIwVCPyRGWQGKjTLFnBGp6yCCpPSLBIx48Ta+VpWN7SZRpu643/vUFx0rA8d1Td2jusbPa5nyDdhdu/oBFSiDWPQBxN8UYVhdKILoyRouAgTRqe7EQ/BdPX7aBYhG4doxBooCU3N2o7oQidqx0SgNzQOfQv5cejBEEwIouH4NDo=) format('woff2');}
+@font-face{font-family:nf4;src:url(data:application/x-font-woff2;base64,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) format('woff2');}
+@font-face{font-family:cmr9;src:url(data:application/x-font-woff2;base64,d09GMgABAAAAAALUAAoAAAAABPQAAAKLAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAARAqDNIJYCwwAATYCJAMUBCAFgjIHIBvbA0AuBnIy7FViidNXhlCQyw2oV/aPeIDfH++59+Gbg5LQludkNCvBSGwrSUhwaFvcnX7c+0G8SW+C4ge8RCWjGaGBebeQdn16stT/TbapkiYpbEqoNongEFzH0vN/Lv7D2fp5g8BorZtHg1SjTqAuUk9wYkf3/HSbSIFIFR6atadHOjpDFq8jTyMK4lXUi/+tZqYRvguMDUTIEirwVVZt9hsQOEMVZoiETNi1mBKIyNBaz26FMQpCpUoRQ6UqTIkNpcylj2kiULjwbjVK7INwF5ADgigH6+0UCimU9bWoCwvjS3w05fxe3z6Xir64PLHIQVEv7fbuGO586Pv3E8++4uSLdz/Zp0/jn3+Y48/dzb+deyuiu2tL9vVx8MP3vQI6Ojelnx9WYxauyTXmVHcE8rFbEfbqQ8Lud+3PeurxJTrutMNbfrvBg8n6/lpq5JCnufLARhRDg4+L+J1EpW1cCSq0WaBUE6f4bz+6un7blogabfrP61Vp4VWL1F2fd6hH/M1tdj7CTN/eQ6+Ymvx3JjJLx3FhDV2XndnekoLIOjEhAVvZH7SjDtoiGFCJzW/aml6B6HdnfStkjHk/I7TR1X/4mevZMOiiPRvyxuLvgIDA90PeqKAX/JXl4M8V/Lab0r34Lz5CUCmCwJ17Y8SKjddGChTxDJn5kcoW1VKvBInCaJwWjavtg4yDBrGwuVwDW6jRwpZyfZerdQuHFvIqQV8FHpurtIAttFOzpUo7kmrj9GYW4sdhtsbmzk3UrVSYIrVX189o/SaP32AD6TAFpiPKOdg4+XjpuAGNHLRk2mmitFuuLsTDVLYDUkEpDKpl+xlZhQO0f7haCKDlZ+LhZ2ADpINSQOnQFA==) format('woff2');}
+@font-face{font-family:nf1;src:url(data:application/x-font-woff2;base64,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) format('woff2');}
+text.f0 {font-family:cmsy10;font-size:9.96264px}
+text.f1 {font-family:cmmi7;font-size:6.973848px}
+text.f2 {font-family:cmmi10;font-size:9.96264px}
+text.f3 {font-family:cmsy9;font-size:8.966376px}
+text.f4 {font-family:cmmi9;font-size:8.966376px}
+text.f5 {font-family:cmr9;font-size:8.966376px}
+text.f6 {font-family:nf0;font-size:8.966376px}
+text.f7 {font-family:nf1;font-size:8.966376px}
+text.f8 {font-family:nf2;font-size:6.973848px}
+text.f9 {font-family:nf3;font-size:6.973848px}
+text.f10 {font-family:nf4;font-size:8.966376px}
+text.f11 {font-family:nf1;font-size:11.955168px}
+
+</style>
+<g id="page1">
+<g stroke-miterlimit="10" transform="translate(15.888873,36.510562)scale(0.996264,-0.996264)">
+<g fill="#000" stroke="#000">
+<g stroke-width="0.4">
+<g stroke-width="0.7">
+<g transform="translate(-33.68402,86.8787)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#005f87">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(-29.14203,76.54475)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#657b83">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g stroke-dasharray="3.0,3.0" stroke-dashoffset="0.0">
+<g fill="#93a1a1" stroke="#93a1a1">
+<path d="M-71.13185-73.66776V65.13185C-71.13185 68.4456-68.4456 71.13185-65.13185 71.13185H65.13185C68.4456 71.13185 71.13185 68.4456 71.13185 65.13185V-73.66776C71.13185-76.9815 68.4456-79.66776 65.13185-79.66776H-65.13185C-68.4456-79.66776-71.13185-76.9815-71.13185-73.66776ZM71.13185 71.13185" fill="none"/>
+</g>
+</g>
+<g fill="#93a1a1" stroke="#93a1a1">
+<g stroke-dasharray="3.0,3.0" stroke-dashoffset="0.0">
+<g stroke-width="0.5">
+<path d="M0 34.1432V-34.1432" fill="none"/>
+</g>
+</g>
+</g>
+<g fill="#005f87" stroke="#005f87">
+<g fill="#e6f2f7">
+<g stroke-width="1.5">
+<path d="M12.80363 34.1432C12.80363 41.21454 7.07133 46.94684 0 46.94684S-12.80363 41.21454-12.80363 34.1432C-12.80363 27.07187-7.07133 21.33957 0 21.33957S12.80363 27.07187 12.80363 34.1432ZM0 34.1432"/>
+</g>
+</g>
+</g>
+<g transform="translate(-3.3,29.97922)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#005f87">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(20.75479,31.0202)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#002b36">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g fill="#005f87" stroke="#005f87">
+<g fill="#fff">
+<g stroke-width="1.5">
+<path d="M12.80363-34.1432C12.80363-27.07187 7.07133-21.33957 0-21.33957S-12.80363-27.07187-12.80363-34.1432C-12.80363-41.21454-7.07133-46.94684 0-46.94684S12.80363-41.21454 12.80363-34.1432ZM0-34.1432"/>
+</g>
+</g>
+</g>
+<g transform="translate(-3.3,-38.4392)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#005f87">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(20.75479,-37.2662)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#002b36">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g fill="#657b83" stroke="#657b83">
+<g stroke-width="0.8">
+<path d="M-24.82506 19.18935C-31.63885 7.38753-31.63885-7.38753-24.82506-19.18935" fill="none"/>
+<g transform="matrix(0.49998,0.86601,-0.86601,0.49998,-26.06216,17.04659)">
+<g stroke-dasharray="none" stroke-dashoffset="0.0">
+ <g stroke-linejoin="miter">
+ <path d="M5.4608 0L1.29181 1.57648L2.67429 0L1.29181-1.57648Z"/>
+ </g>
+ </g>
+</g>
+<g transform="matrix(0.49998,-0.86601,0.86601,0.49998,-26.06216,-17.04659)">
+<g stroke-dasharray="none" stroke-dashoffset="0.0">
+ <g stroke-linejoin="miter">
+ <path d="M5.4608 0L1.29181 1.57648L2.67429 0L1.29181-1.57648Z"/>
+ </g>
+ </g>
+</g>
+<g transform="translate(-76.34967,-1.78851)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#657b83">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(-22.84201,-64.89545)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#002b36">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(125.9508,88.04869)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#005f87">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(129.20126,77.31876)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#657b83">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g stroke-dasharray="3.0,3.0" stroke-dashoffset="0.0">
+<g fill="#93a1a1" stroke="#93a1a1">
+<path d="M99.5846-73.66776V65.13185C99.5846 68.4456 102.27084 71.13185 105.5846 71.13185H264.30106C267.6148 71.13185 270.30106 68.4456 270.30106 65.13185V-73.66776C270.30106-76.9815 267.6148-79.66776 264.30106-79.66776H105.5846C102.27084-79.66776 99.5846-76.9815 99.5846-73.66776ZM270.30106 71.13185" fill="none"/>
+</g>
+</g>
+<g fill="#e6f2f7" stroke="#e6f2f7">
+<g stroke-opacity="0.3">
+<g fill-opacity="0.3">
+<path d="M247.53877 0C247.53877 34.57123 219.51405 62.59595 184.94283 62.59595C150.3716 62.59595 122.34688 34.57123 122.34688 0S150.3716-62.59595 184.94283-62.59595C219.51405-62.59595 247.53877-34.57123 247.53877 0ZM184.94283 0" stroke="none"/>
+</g>
+</g>
+</g>
+<g fill="#657b83" stroke="#657b83">
+<g stroke-dasharray="3.0,3.0" stroke-dashoffset="0.0">
+<g stroke-width="0.5">
+<path d="M247.53877 0C247.53877 12.1 219.51405 21.90872 184.94283 21.90872C150.3716 21.90872 122.34688 12.1 122.34688 0" fill="none"/>
+</g>
+</g>
+</g>
+<g fill="#002b36" stroke="#002b36">
+<g stroke-width="0.8">
+<path d="M184.94283-71.13185V69.85115" fill="none"/>
+<g transform="matrix(0.0,1.0,-1.0,0.0,184.94283,67.37686)">
+<g stroke-dasharray="none" stroke-dashoffset="0.0">
+ <g stroke-linejoin="miter">
+ <path d="M5.4608 0L1.29181 1.57648L2.67429 0L1.29181-1.57648Z"/>
+ </g>
+ </g>
+</g>
+<g transform="translate(179.54703,79.95984)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#002b36">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<g fill="#002b36" stroke="#002b36">
+<g stroke-width="0.8">
+<path d="M184.94283 0L150.81766-22.74933" fill="none"/>
+<g transform="matrix(-0.83202,-0.55466,0.55466,-0.83202,152.87631,-21.37694)">
+<g stroke-dasharray="none" stroke-dashoffset="0.0">
+ <g stroke-linejoin="miter">
+ <path d="M5.4608 0L1.29181 1.57648L2.67429 0L1.29181-1.57648Z"/>
+ </g>
+ </g>
+</g>
+<g transform="translate(138.409,-32.64561)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#002b36">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<g fill="#002b36" stroke="#002b36">
+<g stroke-width="0.8">
+<path d="M184.94283 0H251.94896" fill="none"/>
+<g transform="translate(249.47467,0.0)">
+<g stroke-dasharray="none" stroke-dashoffset="0.0">
+ <g stroke-linejoin="miter">
+ <path d="M5.4608 0L1.29181 1.57648L2.67429 0L1.29181-1.57648Z"/>
+ </g>
+ </g>
+</g>
+<g transform="translate(259.80765,-1.06248)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#002b36">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<g fill="#657b83" stroke="#657b83">
+<g stroke-width="0.6">
+<path d="M122.34688 0C122.34688-12.1 150.3716-21.90872 184.94283-21.90872C219.51405-21.90872 247.53877-12.1 247.53877 0" fill="none"/>
+</g>
+</g>
+<g fill="#005f87" stroke="#005f87">
+<g stroke-width="1.0">
+<path d="M247.53877 0C247.53877 34.57123 219.51405 62.59595 184.94283 62.59595C150.3716 62.59595 122.34688 34.57123 122.34688 0S150.3716-62.59595 184.94283-62.59595C219.51405-62.59595 247.53877-34.57123 247.53877 0ZM184.94283 0" fill="none"/>
+</g>
+</g>
+<g transform="translate(179.54703,-73.02892)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#002b36">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+<g stroke-dasharray="3.0,3.0" stroke-dashoffset="0.0">
+<g fill="#657b83" stroke="#657b83">
+<g stroke-width="0.5">
+<path d="M216.24101 39.83366V0" fill="none"/>
+</g>
+</g>
+</g>
+<g stroke-dasharray="3.0,3.0" stroke-dashoffset="0.0">
+<g fill="#657b83" stroke="#657b83">
+<g stroke-width="0.5">
+<path d="M184.94283 0H216.24101" fill="none"/>
+</g>
+</g>
+</g>
+<g stroke-dasharray="3.0,3.0" stroke-dashoffset="0.0">
+<g fill="#657b83" stroke="#657b83">
+<g stroke-width="0.5">
+<path d="M216.24101 0L196.32375-7.11317" fill="none"/>
+</g>
+</g>
+</g>
+<g fill="#0087bd" stroke="#0087bd">
+<g stroke-width="1.8">
+<path d="M184.94283 0L211.14413 33.34676" fill="none"/>
+<g transform="matrix(0.6178,0.78629,-0.78629,0.6178,208.01198,29.36038)">
+<g stroke-dasharray="none" stroke-dashoffset="0.0">
+ <g stroke-linejoin="miter">
+ <path d="M10.75679 0L2.90657 2.97331L5.51988 0L2.90657-2.97331Z"/>
+ </g>
+ </g>
+</g>
+<g fill="#fff">
+<g fill="#fff">
+<path d="M230.68037 52.73366H219.141C218.03642 52.73366 217.141 51.83824 217.141 50.73366V42.73366C217.141 41.62907 218.03642 40.73366 219.141 40.73366H230.68037C231.78496 40.73366 232.68037 41.62907 232.68037 42.73366V50.73366C232.68037 51.83824 231.78496 52.73366 230.68037 52.73366ZM217.141 40.73366" stroke="none"/>
+</g>
+<g transform="translate(218.141,44.23366)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#0087bd">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<g fill="#0087bd" stroke="#0087bd">
+<g stroke-width="0.8">
+<path d="M184.94283 22.76227C190.02106 22.76227 194.95514 21.06314 198.95667 17.93687" fill="none"/>
+</g>
+</g>
+<g fill="#0087bd" stroke="#0087bd">
+<g fill="#0087bd" stroke="#0087bd">
+</g>
+<g transform="translate(190.04387,23.17674)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#0087bd">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+</g>
+<g transform="translate(137.71382,-70.79195)">
+<g stroke="none" transform="scale(-1.00375,1.00375)translate(15.888873,36.510562)scale(-1,-1)">
+<g fill="#002b36">
+<g stroke="none">
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<text class="f11" x="15.888873" y="36.510562" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -33.558176 -86.554121)" fill="#005f87"><tspan fill="#005f87">Classical</tspan><tspan fill="#005f87" x="66.351644">Bit</tspan></text>
+<text class="f10" x="15.888873" y="36.510562" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 -29.033155 -76.258778)" fill="#657b83"><tspan fill="#657b83">Discrete</tspan><tspan fill="#657b83" x="50.122502">States</tspan></text>
+<text class="f11" x="15.888873" y="36.510562" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -3.287671 -29.867217)" fill="#005f87"><tspan fill="#005f87">0</tspan></text>
+<text class="f10" x="15.888873" y="36.510562" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 20.677250 -30.904308)" fill="#002b36"><tspan fill="#002b36">State</tspan><tspan fill="#002b36" x="39.264221">“0”</tspan></text>
+<text class="f11" x="15.888873" y="36.510562" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 -3.287671 38.295592)" fill="#005f87"><tspan fill="#005f87">1</tspan></text>
+<text class="f10" x="15.888873" y="36.510562" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 20.677250 37.126974)" fill="#002b36"><tspan fill="#002b36">State</tspan><tspan fill="#002b36" x="39.264221">“1”</tspan></text>
+<text class="f10" x="15.888873" y="36.510562" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 -22.756672 64.653001)" fill="#002b36"><tspan fill="#002b36">Only</tspan></text>
+<text class="f7" x="36.977795" y="36.510562" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 -22.756672 64.653001)" fill="#002b36"><tspan fill="#002b36">0</tspan></text>
+<text class="f6" x="44.984774" y="36.510562" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 -22.756672 64.653001)" fill="#002b36"><tspan fill="#002b36">o</tspan><tspan fill="#002b36" x="49.333465">r</tspan></text>
+<text class="f7" x="56.470705" y="36.510562" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 -22.756672 64.653001)" fill="#002b36"><tspan fill="#002b36">1</tspan></text>
+<text class="f11" x="15.888873" y="36.510562" font-size="11.955168" transform="matrix(1.000000 0.000000 0.000000 1.000000 125.480248 -87.719740)" fill="#005f87"><tspan fill="#005f87">Quantum</tspan><tspan fill="#005f87" x="71.36086">Bit</tspan><tspan fill="#005f87" x="92.401962">(Qubit)</tspan></text>
+<text class="f10" x="15.888873" y="36.510562" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 128.718564 -77.029897)" fill="#657b83"><tspan fill="#657b83">Blo</tspan><tspan fill="#657b83" x="29.105312">ch</tspan><tspan fill="#657b83" x="41.039565">Sphere</tspan><tspan fill="#657b83" x="70.099595">Rep</tspan><tspan fill="#657b83" x="84.669955">resentation</tspan></text>
+<text class="f4" x="15.888873" y="36.510562" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.891904 32.523646)" fill="#002b36"><tspan fill="#002b36">x</tspan></text>
+<text class="f4" x="15.888873" y="36.510562" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 258.837009 1.058511)" fill="#002b36"><tspan fill="#002b36">y</tspan></text>
+<text class="f3" x="15.888873" y="36.510562" font-size="8.966376" transform="translate(0.0000, -23.1802) matrix(1.000000 0.000000 0.000000 1.000000 178.876242 72.756084)" fill="#002b36"><tspan fill="#002b36">|</tspan></text>
+<text class="f5" x="18.448701" y="36.510562" font-size="8.966376" transform="translate(0.0000, -23.1802) matrix(1.000000 0.000000 0.000000 1.000000 178.876242 72.756084)" fill="#002b36"><tspan fill="#002b36">1</tspan></text>
+<text class="f3" x="23.056391" y="36.510562" font-size="8.966376" transform="translate(0.0000, -23.1802) matrix(1.000000 0.000000 0.000000 1.000000 178.876242 72.756084)" fill="#002b36"><tspan fill="#002b36"></tspan></text>
+<text class="f0" x="15.888873" y="36.510562" font-size="9.96264" transform="matrix(1.000000 0.000000 0.000000 1.000000 217.326025 -44.068403)" fill="#0087bd"><tspan fill="#0087bd">|</tspan></text>
+<text class="f2" x="18.656281" y="36.510562" font-size="9.96264" transform="matrix(1.000000 0.000000 0.000000 1.000000 217.326025 -44.068403)" fill="#0087bd"><tspan fill="#0087bd">ψ</tspan></text>
+<text class="f0" x="25.503304" y="36.510562" font-size="9.96264" transform="matrix(1.000000 0.000000 0.000000 1.000000 217.326025 -44.068403)" fill="#0087bd"><tspan fill="#0087bd"></tspan></text>
+<text class="f1" x="15.888873" y="36.510562" font-size="6.973848" transform="matrix(1.000000 0.000000 0.000000 1.000000 189.333866 -23.090151)" fill="#0087bd"><tspan fill="#0087bd">θ</tspan></text>
+<text class="f8" x="15.888873" y="36.510562" font-size="6.973848" transform="matrix(1.000000 0.000000 0.000000 1.000000 -76.064427 1.781828)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#657b83">Bina</tspan><tspan fill="#657b83" x="29.766824">ry</tspan><tspan fill="#657b83" x="38.184255">Switch</tspan></text>
+<text class="f3" x="15.888873" y="36.510562" font-size="8.966376" transform="translate(0.0000, 12.1160) matrix(1.000000 0.000000 0.000000 1.000000 178.876242 -79.661110)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36">|</tspan></text>
+<text class="f5" x="18.448701" y="36.510562" font-size="8.966376" transform="translate(0.0000, 12.1160) matrix(1.000000 0.000000 0.000000 1.000000 178.876242 -79.661110)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36">0</tspan></text>
+<text class="f3" x="23.056391" y="36.510562" font-size="8.966376" transform="translate(0.0000, 12.1160) matrix(1.000000 0.000000 0.000000 1.000000 178.876242 -79.661110)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36"></tspan></text>
+<text class="f3" x="28.389298" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36">|</tspan></text>
+<text class="f4" x="30.949126" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36">ψ</tspan></text>
+<text class="f3" x="37.282968" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36"></tspan></text>
+<text class="f5" x="43.426555" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36">=</tspan></text>
+<text class="f4" x="53.153902" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36">α</tspan></text>
+<text class="f3" x="59.066757" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36">|</tspan></text>
+<text class="f5" x="61.626585" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36">0</tspan></text>
+<text class="f3" x="66.234276" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36"></tspan></text>
+<text class="f5" x="71.865898" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36">+</tspan></text>
+<text class="f4" x="81.081279" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36">β</tspan></text>
+<text class="f3" x="86.742304" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36">|</tspan></text>
+<text class="f5" x="89.302132" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36">1</tspan></text>
+<text class="f3" x="93.909823" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36"></tspan></text>
+<text class="f9" x="15.888873" y="36.510562" font-size="6.973848" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="none" stroke="rgb(255,255,255)" stroke-width="3.0000" stroke-linejoin="round"><tspan fill="#002b36">Inﬁnite</tspan><tspan fill="#002b36" x="39.774299">p</tspan><tspan fill="#002b36" x="43.812164">ossible</tspan><tspan fill="#002b36" x="66.309794">sup</tspan><tspan fill="#002b36" x="77.014658">erp</tspan><tspan fill="#002b36" x="86.875686">ositions</tspan></text>
+<text class="f8" x="15.888873" y="36.510562" font-size="6.973848" transform="matrix(1.000000 0.000000 0.000000 1.000000 -76.064427 1.781828)" fill="#657b83"><tspan fill="#657b83">Bina</tspan><tspan fill="#657b83" x="29.766824">ry</tspan><tspan fill="#657b83" x="38.184255">Switch</tspan></text>
+<text class="f3" x="15.888873" y="36.510562" font-size="8.966376" transform="translate(0.0000, 12.1160) matrix(1.000000 0.000000 0.000000 1.000000 178.876242 -79.661110)" fill="#002b36"><tspan fill="#002b36">|</tspan></text>
+<text class="f5" x="18.448701" y="36.510562" font-size="8.966376" transform="translate(0.0000, 12.1160) matrix(1.000000 0.000000 0.000000 1.000000 178.876242 -79.661110)" fill="#002b36"><tspan fill="#002b36">0</tspan></text>
+<text class="f3" x="23.056391" y="36.510562" font-size="8.966376" transform="translate(0.0000, 12.1160) matrix(1.000000 0.000000 0.000000 1.000000 178.876242 -79.661110)" fill="#002b36"><tspan fill="#002b36"></tspan></text>
+<text class="f3" x="28.389298" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="#002b36"><tspan fill="#002b36">|</tspan></text>
+<text class="f4" x="30.949126" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="#002b36"><tspan fill="#002b36">ψ</tspan></text>
+<text class="f3" x="37.282968" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="#002b36"><tspan fill="#002b36"></tspan></text>
+<text class="f5" x="43.426555" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="#002b36"><tspan fill="#002b36">=</tspan></text>
+<text class="f4" x="53.153902" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="#002b36"><tspan fill="#002b36">α</tspan></text>
+<text class="f3" x="59.066757" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="#002b36"><tspan fill="#002b36">|</tspan></text>
+<text class="f5" x="61.626585" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="#002b36"><tspan fill="#002b36">0</tspan></text>
+<text class="f3" x="66.234276" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="#002b36"><tspan fill="#002b36"></tspan></text>
+<text class="f5" x="71.865898" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="#002b36"><tspan fill="#002b36">+</tspan></text>
+<text class="f4" x="81.081279" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="#002b36"><tspan fill="#002b36">β</tspan></text>
+<text class="f3" x="86.742304" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="#002b36"><tspan fill="#002b36">|</tspan></text>
+<text class="f5" x="89.302132" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="#002b36"><tspan fill="#002b36">1</tspan></text>
+<text class="f3" x="93.909823" y="25.551657" font-size="8.966376" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="#002b36"><tspan fill="#002b36"></tspan></text>
+<text class="f9" x="15.888873" y="36.510562" font-size="6.973848" transform="matrix(1.000000 0.000000 0.000000 1.000000 137.199321 70.527472)" fill="#002b36"><tspan fill="#002b36">Inﬁnite</tspan><tspan fill="#002b36" x="39.774299">p</tspan><tspan fill="#002b36" x="43.812164">ossible</tspan><tspan fill="#002b36" x="66.309794">sup</tspan><tspan fill="#002b36" x="77.014658">erp</tspan><tspan fill="#002b36" x="86.875686">ositions</tspan></text>
+</svg>

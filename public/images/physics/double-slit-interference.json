@@ -1,0 +1,246 @@
+{
+  "name": "double-slit-interference",
+  "fps": 20,
+  "steps": [
+    {
+      "frame": 0,
+      "detections": 60
+    },
+    {
+      "frame": 1,
+      "detections": 120
+    },
+    {
+      "frame": 2,
+      "detections": 180
+    },
+    {
+      "frame": 3,
+      "detections": 240
+    },
+    {
+      "frame": 4,
+      "detections": 300
+    },
+    {
+      "frame": 5,
+      "detections": 360
+    },
+    {
+      "frame": 6,
+      "detections": 420
+    },
+    {
+      "frame": 7,
+      "detections": 480
+    },
+    {
+      "frame": 8,
+      "detections": 540
+    },
+    {
+      "frame": 9,
+      "detections": 600
+    },
+    {
+      "frame": 10,
+      "detections": 660
+    },
+    {
+      "frame": 11,
+      "detections": 720
+    },
+    {
+      "frame": 12,
+      "detections": 780
+    },
+    {
+      "frame": 13,
+      "detections": 840
+    },
+    {
+      "frame": 14,
+      "detections": 900
+    },
+    {
+      "frame": 15,
+      "detections": 960
+    },
+    {
+      "frame": 16,
+      "detections": 1020
+    },
+    {
+      "frame": 17,
+      "detections": 1080
+    },
+    {
+      "frame": 18,
+      "detections": 1140
+    },
+    {
+      "frame": 19,
+      "detections": 1200
+    },
+    {
+      "frame": 20,
+      "detections": 1260
+    },
+    {
+      "frame": 21,
+      "detections": 1320
+    },
+    {
+      "frame": 22,
+      "detections": 1380
+    },
+    {
+      "frame": 23,
+      "detections": 1440
+    },
+    {
+      "frame": 24,
+      "detections": 1500
+    },
+    {
+      "frame": 25,
+      "detections": 1560
+    },
+    {
+      "frame": 26,
+      "detections": 1620
+    },
+    {
+      "frame": 27,
+      "detections": 1680
+    },
+    {
+      "frame": 28,
+      "detections": 1740
+    },
+    {
+      "frame": 29,
+      "detections": 1800
+    },
+    {
+      "frame": 30,
+      "detections": 1860
+    },
+    {
+      "frame": 31,
+      "detections": 1920
+    },
+    {
+      "frame": 32,
+      "detections": 1980
+    },
+    {
+      "frame": 33,
+      "detections": 2040
+    },
+    {
+      "frame": 34,
+      "detections": 2100
+    },
+    {
+      "frame": 35,
+      "detections": 2160
+    },
+    {
+      "frame": 36,
+      "detections": 2220
+    },
+    {
+      "frame": 37,
+      "detections": 2280
+    },
+    {
+      "frame": 38,
+      "detections": 2340
+    },
+    {
+      "frame": 39,
+      "detections": 2400
+    },
+    {
+      "frame": 40,
+      "detections": 2460
+    },
+    {
+      "frame": 41,
+      "detections": 2520
+    },
+    {
+      "frame": 42,
+      "detections": 2580
+    },
+    {
+      "frame": 43,
+      "detections": 2640
+    },
+    {
+      "frame": 44,
+      "detections": 2700
+    },
+    {
+      "frame": 45,
+      "detections": 2760
+    },
+    {
+      "frame": 46,
+      "detections": 2820
+    },
+    {
+      "frame": 47,
+      "detections": 2880
+    },
+    {
+      "frame": 48,
+      "detections": 2940
+    },
+    {
+      "frame": 49,
+      "detections": 3000
+    },
+    {
+      "frame": 50,
+      "detections": 3060
+    },
+    {
+      "frame": 51,
+      "detections": 3120
+    },
+    {
+      "frame": 52,
+      "detections": 3180
+    },
+    {
+      "frame": 53,
+      "detections": 3240
+    },
+    {
+      "frame": 54,
+      "detections": 3300
+    },
+    {
+      "frame": 55,
+      "detections": 3360
+    },
+    {
+      "frame": 56,
+      "detections": 3420
+    },
+    {
+      "frame": 57,
+      "detections": 3480
+    },
+    {
+      "frame": 58,
+      "detections": 3540
+    },
+    {
+      "frame": 59,
+      "detections": 3600
+    }
+  ]
+}

@@ -1,0 +1,252 @@
+{
+  "trackSlug": "quantum-gates",
+  "trackName": "Quantum Gates & Circuits",
+  "lessons": [
+    {
+      "id": 1,
+      "title": "Pauli X Gate (Quantum NOT)",
+      "duration": "15 min",
+      "type": "lesson",
+      "content": "<h1 class=\"text-3xl font-mono font-bold text-quantum-accent mb-6\">Pauli X Gate (Quantum NOT)</h1><div class=\"border-l-4 border-quantum-accent bg-quantum-accent/5 p-4 my-6\"><p class=\"text-white font-bold mb-2\">💡 The Intuition</p><p class=\"text-gray-300\">The Pauli-X gate is the quantum equivalent of the classical NOT gate. Think of it as flipping a qubit from <code class=\"text-quantum-accent bg-quantum-accent/10 px-1.5 py-0.5 rounded text-sm font-mono\">|0⟩</code> to <code class=\"text-quantum-accent bg-quantum-accent/10 px-1.5 py-0.5 rounded text-sm font-mono\">|1⟩</code> and vice versa. In the quantum world, this is a smooth rotation in the state space.</p></div><div class=\"quantum-card p-6 my-4\"><h3 class=\"text-xl font-mono font-bold text-quantum-accent mb-3\">🎛️ Pauli-X Gate</h3><div class=\"grid md:grid-cols-2 gap-4\"><div><p class=\"text-gray-400 text-sm mb-2\">Matrix Form</p><div class=\"bg-quantum-bg-secondary p-3 rounded border border-quantum-accent/20\"><code class=\"font-mono text-quantum-purple\">X = [[0, 1], [1, 0]]</code></div></div><div><p class=\"text-gray-400 text-sm mb-2\">Action</p><p class=\"text-gray-300\">X|0⟩ = |1⟩, X|1⟩ = |0⟩</p></div></div><p class=\"text-gray-300 mt-3\">The quantum NOT gate - flips qubit states and maps amplitudes.</p></div><h2 class=\"text-2xl font-mono font-bold text-white mt-8 mb-4\">Geometric Interpretation</h2><p class=\"text-gray-300 leading-relaxed mb-4\">On the <strong class=\"text-white font-bold\">Bloch Sphere</strong>, the Pauli-X gate represents a <em class=\"text-quantum-accent\">180° (π radians) rotation</em> around the X-axis. This rotation swaps the North pole (|0⟩) with the South pole (|1⟩).</p><div class=\"grid md:grid-cols-2 gap-6 my-6\"><div class=\"quantum-card p-6\"><h3 class=\"text-xl font-mono font-bold text-gray-300 mb-4\">Classical NOT</h3><ul class=\"space-y-2 text-gray-300\"><li class=\"ml-4\">• Discrete bit flip</li><li class=\"ml-4\">• 0 → 1, 1 → 0</li><li class=\"ml-4\">• Deterministic</li></ul></div><div class=\"quantum-card p-6 border-2 border-quantum-accent/40\"><h3 class=\"text-xl font-mono font-bold text-quantum-accent mb-4\">Quantum X</h3><ul class=\"space-y-2 text-gray-300\"><li class=\"ml-4\">• Unitary rotation</li><li class=\"ml-4\">• Swaps amplitudes of |0⟩ and |1⟩</li><li class=\"ml-4\">• Reversible (X² = I)</li></ul></div></div>",
+      "images": [
+        {
+          "src": "/images/lesson-images/quantum-gates/pauli-x-bloch.png",
+          "alt": "Pauli-X as 180° rotation on Bloch sphere",
+          "caption": "X gate rotates qubit 180° around X-axis"
+        }
+      ],
+      "codeExamples": [
+        {
+          "language": "python",
+          "code": "from qiskit import QuantumCircuit\nqc = QuantumCircuit(1)\nqc.x(0) # Apply X gate to qubit 0\nqc.draw()",
+          "explanation": "Using Qiskit to apply a Pauli-X gate to a single qubit circuit."
+        }
+      ],
+      "keyTakeaways": [
+        "Pauli-X is the quantum equivalent of the NOT gate.",
+        "It maps |0⟩ to |1⟩ and |1⟩ to |0⟩.",
+        "Geometrically, it is a 180° rotation around the X-axis of the Bloch sphere.",
+        "It is its own inverse: applying it twice returns the qubit to its original state."
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Pauli Y & Z Gates",
+      "duration": "20 min",
+      "type": "lesson",
+      "content": "<h1 class=\"text-3xl font-mono font-bold text-quantum-accent mb-6\">Pauli Y & Z Gates</h1><div class=\"border-l-4 border-quantum-accent bg-quantum-accent/5 p-4 my-6\"><p class=\"text-white font-bold mb-2\">💡 The Intuition</p><p class=\"text-gray-300\">While X flips bits, the Z gate flips the <em class=\"text-quantum-accent\">phase</em>. The Y gate is a unique combination of both a bit flip and a phase flip, involving complex numbers.</p></div><div class=\"quantum-card p-6 my-4\"><h3 class=\"text-xl font-mono font-bold text-quantum-accent mb-3\">🎛️ Pauli-Y Gate</h3><div class=\"grid md:grid-cols-2 gap-4\"><div><p class=\"text-gray-400 text-sm mb-2\">Matrix Form</p><div class=\"bg-quantum-bg-secondary p-3 rounded border border-quantum-accent/20\"><code class=\"font-mono text-quantum-purple\">Y = [[0, -i], [i, 0]]</code></div></div><div><p class=\"text-gray-400 text-sm mb-2\">Action</p><p class=\"text-gray-300\">Y|0⟩ = i|1⟩, Y|1⟩ = -i|0⟩</p></div></div></div><div class=\"quantum-card p-6 my-4\"><h3 class=\"text-xl font-mono font-bold text-quantum-accent mb-3\">🎛️ Pauli-Z Gate</h3><div class=\"grid md:grid-cols-2 gap-4\"><div><p class=\"text-gray-400 text-sm mb-2\">Matrix Form</p><div class=\"bg-quantum-bg-secondary p-3 rounded border border-quantum-accent/20\"><code class=\"font-mono text-quantum-purple\">Z = [[1, 0], [0, -1]]</code></div></div><div><p class=\"text-gray-400 text-sm mb-2\">Action</p><p class=\"text-gray-300\">Z|0⟩ = |0⟩, Z|1⟩ = -|1⟩</p></div></div></div><div class=\"border-l-4 border-quantum-purple bg-quantum-purple/5 p-4 my-6\"><p class=\"text-white font-bold mb-2\">⚠️ Important</p><p class=\"text-gray-300\">The Z gate does not change the probability of measuring 0 or 1, because |-1|² = 1. It only changes the relative phase, which is crucial for quantum interference.</p></div>",
+      "images": [
+        {
+          "src": "/images/lesson-images/quantum-gates/pauli-yz-bloch.png",
+          "alt": "Y and Z rotations on Bloch sphere",
+          "caption": "Y and Z gates represent 180° rotations around their respective axes."
+        }
+      ],
+      "codeExamples": [
+        {
+          "language": "python",
+          "code": "qc.y(0) # Apply Y gate\nqc.z(0) # Apply Z gate",
+          "explanation": "Applying Y and Z gates in Qiskit."
+        }
+      ],
+      "keyTakeaways": [
+        "Y gate is a 180° rotation around the Y-axis.",
+        "Z gate is a 180° rotation around the Z-axis (Phase Flip).",
+        "Z|1⟩ results in -|1⟩, introducing a phase of π.",
+        "Pauli gates {X, Y, Z} along with Identity {I} form a basis for single-qubit operators."
+      ]
+    },
+    {
+      "id": 3,
+      "title": "The Hadamard Gate",
+      "duration": "25 min",
+      "type": "lesson",
+      "content": "<h1 class=\"text-3xl font-mono font-bold text-quantum-accent mb-6\">The Hadamard Gate</h1><div class=\"border-l-4 border-quantum-accent bg-quantum-accent/5 p-4 my-6\"><p class=\"text-white font-bold mb-2\">💡 The Intuition</p><p class=\"text-gray-300\">The Hadamard gate is the \"superposition creator.\" It takes a definite state like |0⟩ and puts it into a 50/50 blend of |0⟩ and |1⟩. It is the bridge between the computational basis and the diagonal basis.</p></div><div class=\"text-center my-6 p-6 bg-quantum-bg-tertiary rounded-lg border border-quantum-purple/30\"><code class=\"text-2xl font-mono text-quantum-purple\">H = 1/√2 [[1, 1], [1, -1]]</code></div><div class=\"quantum-card p-6 my-4\"><h3 class=\"text-xl font-mono font-bold text-quantum-accent mb-3\">🎛️ Hadamard Action</h3><ul class=\"text-gray-300 space-y-2\"><li class=\"ml-4\">H|0⟩ = |+⟩ = (|0⟩ + |1⟩)/√2</li><li class=\"ml-4\">H|1⟩ = |−⟩ = (|0⟩ - |1⟩)/√2</li></ul></div><p class=\"text-gray-300 leading-relaxed mb-4\">The Hadamard gate is its own inverse (<code class=\"text-quantum-accent\">H² = I</code>). If you apply Hadamard to a superposition state |+⟩, you get back |0⟩. This property is used in almost every quantum algorithm to move between bases.</p>",
+      "images": [
+        {
+          "src": "/images/lesson-images/quantum-gates/hadamard-bloch.png",
+          "alt": "Hadamard rotation",
+          "caption": "Hadamard gate as a rotation around the X+Z axis."
+        }
+      ],
+      "codeExamples": [
+        {
+          "language": "python",
+          "code": "qc.h(0) # Create superposition",
+          "explanation": "Applying the Hadamard gate to qubit 0."
+        }
+      ],
+      "keyTakeaways": [
+        "Hadamard creates equal superpositions from basis states.",
+        "It maps |0⟩ → |+⟩ and |1⟩ → |−⟩.",
+        "It is a fundamental building block for quantum parallelism.",
+        "Applying H twice returns the state to the original computational basis."
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Phase Gates: S, T, and Their Daggers",
+      "duration": "20 min",
+      "type": "lesson",
+      "content": "<h1 class=\"text-3xl font-mono font-bold text-quantum-accent mb-6\">Phase Gates: S, T, and Daggers</h1><div class=\"border-l-4 border-quantum-accent bg-quantum-accent/5 p-4 my-6\"><p class=\"text-white font-bold mb-2\">💡 The Intuition</p><p class=\"text-gray-300\">Phase gates don't change measurement probabilities—they only modify the relative phase. Think of them as \"tuning\" the quantum state's rotation around the Z-axis without changing the latitude on the Bloch sphere.</p></div><div class=\"grid md:grid-cols-2 gap-4\"><div class=\"quantum-card p-6\"><h3 class=\"text-lg font-mono font-bold text-quantum-accent\">S Gate (π/2)</h3><code class=\"text-quantum-purple\">[[1, 0], [0, i]]</code><p class=\"text-sm text-gray-400 mt-2\">90° Z-rotation</p></div><div class=\"quantum-card p-6\"><h3 class=\"text-lg font-mono font-bold text-quantum-accent\">T Gate (π/4)</h3><code class=\"text-quantum-purple\">[[1, 0], [0, e^(iπ/4)]]</code><p class=\"text-sm text-gray-400 mt-2\">45° Z-rotation</p></div></div><p class=\"text-gray-300 mt-6\">The <em class=\"text-quantum-accent\">Dagger</em> gates (S†, T†) perform the same rotation but in the opposite direction (clockwise vs counter-clockwise).</p>",
+      "images": [
+        {
+          "src": "/images/lesson-images/quantum-gates/phase-gates-st.png",
+          "alt": "S and T phase gates on Bloch sphere",
+          "caption": "Phase gates S (90°) and T (45°) rotate around the Z-axis"
+        }
+      ],
+      "codeExamples": [
+        {
+          "language": "python",
+          "code": "qc.s(0)  # S gate\nqc.sdg(0) # S-dagger gate\nqc.t(0)  # T gate",
+          "explanation": "Qiskit methods for phase gates."
+        }
+      ],
+      "keyTakeaways": [
+        "S gate is the square root of Z (S² = Z).",
+        "T gate is the square root of S (T² = S).",
+        "Phase gates only affect the relative phase of the |1⟩ component.",
+        "T gates are essential for universal fault-tolerant quantum computing."
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Rotation Gates: Rx, Ry, Rz",
+      "duration": "25 min",
+      "type": "lesson",
+      "content": "<h1 class=\"text-3xl font-mono font-bold text-quantum-accent mb-6\">Rotation Gates: Rx, Ry, Rz</h1><div class=\"border-l-4 border-quantum-accent bg-quantum-accent/5 p-4 my-6\"><p class=\"text-white font-bold mb-2\">💡 The Intuition</p><p class=\"text-gray-300\">Rotation gates let you move to ANY point on the Bloch sphere. They are parameterized, meaning you provide an angle θ to define how far to rotate.</p></div><h3 class=\"text-xl font-mono font-bold text-gray-200 mt-6 mb-3\">Parameterized Matrices</h3><div class=\"bg-quantum-bg-tertiary p-4 rounded-lg mb-6\"><p class=\"text-quantum-purple font-mono\">Ry(θ) = [[cos(θ/2), -sin(θ/2)], [sin(θ/2), cos(θ/2)]]</p></div><p class=\"text-gray-300\">By combining rotations around different axes (Euler angles), we can reach any arbitrary single-qubit state from |0⟩.</p>",
+      "images": [
+        {
+          "src": "/images/lesson-images/quantum-gates/rotations.png",
+          "alt": "Rotations on Bloch Sphere",
+          "caption": "Visualizing arbitrary rotations using angles."
+        }
+      ],
+      "codeExamples": [
+        {
+          "language": "python",
+          "code": "import numpy as np\nqc.rx(np.pi/2, 0) # Rotate 90 degrees around X\nqc.ry(np.pi/4, 0) # Rotate 45 degrees around Y",
+          "explanation": "Applying parameterized rotations in Qiskit."
+        }
+      ],
+      "keyTakeaways": [
+        "Rx, Ry, Rz allow for continuous rotations.",
+        "The angle θ in the matrix is divided by 2 due to the Bloch sphere geometry.",
+        "Any single qubit gate can be decomposed into Rz and Ry rotations.",
+        "Essential for Variational Quantum Algorithms (VQA)."
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Multi-Qubit Systems & Tensor Products",
+      "duration": "30 min",
+      "type": "lesson",
+      "content": "<h1 class=\"text-3xl font-mono font-bold text-quantum-accent mb-6\">Multi-Qubit Systems</h1><div class=\"border-l-4 border-quantum-accent bg-quantum-accent/5 p-4 my-6\"><p class=\"text-white font-bold mb-2\">💡 The Intuition</p><p class=\"text-gray-300\">When we have 2 qubits, the state space grows exponentially. While 1 qubit has 2 basis states, 2 qubits have 4: |00⟩, |01⟩, |10⟩, and |11⟩.</p></div><p class=\"text-gray-300 mb-4\">To describe the state of multiple qubits, we use the <strong class=\"text-white font-bold\">Tensor Product (⊗)</strong>. If qubit A is in state |ψ⟩ and qubit B is in state |φ⟩, the combined system is |ψ⟩ ⊗ |φ⟩.</p><div class=\"text-center my-6 p-6 bg-quantum-bg-tertiary rounded-lg border border-quantum-purple/30\"><code class=\"text-xl font-mono text-quantum-purple\">|0⟩ ⊗ |1⟩ = [1, 0]ᵀ ⊗ [0, 1]ᵀ = [0, 1, 0, 0]ᵀ = |01⟩</code></div>",
+      "images": [],
+      "codeExamples": [
+        {
+          "language": "python",
+          "code": "qc = QuantumCircuit(2)\nqc.h(0)\nqc.x(1)\n# This creates the state |+1>",
+          "explanation": "A 2-qubit circuit where gates act independently."
+        }
+      ],
+      "keyTakeaways": [
+        "N qubits require a vector of size 2^N to describe.",
+        "The tensor product combines individual qubit states into a global state.",
+        "Standard ordering in Qiskit is qn...q1q0 (Little Endian).",
+        "Independent gates on different qubits are also combined via tensor products."
+      ]
+    },
+    {
+      "id": 7,
+      "title": "CNOT Gate & Entanglement",
+      "duration": "35 min",
+      "type": "lesson",
+      "content": "<h1 class=\"text-3xl font-mono font-bold text-quantum-accent mb-6\">CNOT Gate & Entanglement</h1><div class=\"border-l-4 border-quantum-accent bg-quantum-accent/5 p-4 my-6\"><p class=\"text-white font-bold mb-2\">💡 The Intuition</p><p class=\"text-gray-300\">CNOT is the \"if-then\" of quantum computing. IF the control qubit is |1⟩, THEN flip the target qubit. This interaction is the key to creating <em class=\"text-quantum-accent\">Entanglement</em>.</p></div><div class=\"quantum-card p-6 my-4\"><h3 class=\"text-xl font-mono font-bold text-quantum-accent mb-3\">🎛️ CNOT (Controlled-NOT)</h3><p class=\"text-gray-300 mb-2\">Maps |c, t⟩ to |c, c ⊕ t⟩</p><ul class=\"text-gray-300 space-y-1\"><li class=\"ml-4\">|00⟩ → |00⟩</li><li class=\"ml-4\">|01⟩ → |01⟩</li><li class=\"ml-4\">|10⟩ → |11⟩ (Flip!)</li><li class=\"ml-4\">|11⟩ → |10⟩ (Flip!)</li></ul></div><h2 class=\"text-2xl font-mono font-bold text-white mt-8 mb-4\">Creating a Bell State</h2><p class=\"text-gray-300\">By applying a Hadamard to the first qubit and then a CNOT, we create the state <code class=\"text-quantum-accent\">(|00⟩ + |11⟩)/√2</code>. This state cannot be written as a product of two individual qubits—they are entangled.</p>",
+      "images": [
+        {
+          "src": "/images/lesson-images/quantum-gates/cnot-circuit.png",
+          "alt": "CNOT Circuit Diagram",
+          "caption": "The control qubit (dot) and target qubit (plus sign)."
+        }
+      ],
+      "codeExamples": [
+        {
+          "language": "python",
+          "code": "qc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1) # Control=0, Target=1\nqc.draw()",
+          "explanation": "Creating the maximally entangled Bell state."
+        }
+      ],
+      "keyTakeaways": [
+        "CNOT is a 2-qubit gate that creates conditional logic.",
+        "Entanglement means the state of one qubit is tied to another.",
+        "CNOT is its own inverse.",
+        "It is the primary gate used to generate quantum correlations."
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Toffoli & CCX Gates",
+      "duration": "20 min",
+      "type": "lesson",
+      "content": "<h1 class=\"text-3xl font-mono font-bold text-quantum-accent mb-6\">Toffoli & CCX Gates</h1><div class=\"border-l-4 border-quantum-accent bg-quantum-accent/5 p-4 my-6\"><p class=\"text-white font-bold mb-2\">💡 The Intuition</p><p class=\"text-gray-300\">The Toffoli gate (CCX) is a CNOT with TWO controls. It only flips the target if BOTH control qubits are in state |1⟩. It is the quantum version of the classical AND/NAND gate.</p></div><div class=\"quantum-card p-6 my-4\"><h3 class=\"text-xl font-mono font-bold text-quantum-accent mb-3\">🎛️ CCX Gate</h3><p class=\"text-gray-300\">Action: |c1, c2, t⟩ → |c1, c2, t ⊕ (c1 AND c2)⟩</p></div><p class=\"text-gray-300\">The Toffoli gate is <strong class=\"text-white\">universal</strong> for classical computation, meaning any classical circuit can be built using only Toffoli gates. In quantum computing, it's used for arithmetic and oracles.</p>",
+      "images": [
+        {
+          "src": "/images/lesson-images/quantum-gates/toffoli-circuit.png",
+          "alt": "Toffoli (CCX) gate circuit diagram",
+          "caption": "Toffoli gate with two control qubits and one target qubit"
+        }
+      ],
+      "codeExamples": [
+        {
+          "language": "python",
+          "code": "qc = QuantumCircuit(3)\nqc.ccx(0, 1, 2) # Controls: 0, 1; Target: 2",
+          "explanation": "Applying a Toffoli gate in Qiskit."
+        }
+      ],
+      "keyTakeaways": [
+        "Toffoli is a 3-qubit gate.",
+        "It performs a controlled-controlled-NOT operation.",
+        "It is reversible, unlike the classical AND gate.",
+        "Used to implement classical logic inside quantum algorithms."
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Circuit Composition & Design",
+      "duration": "25 min",
+      "type": "lesson",
+      "content": "<h1 class=\"text-3xl font-mono font-bold text-quantum-accent mb-6\">Circuit Composition & Design</h1><p class=\"text-gray-300 mb-4\">Quantum algorithms are built by composing gates in sequence (time) and in parallel (space). Understanding how gates interact is vital for optimization.</p><h2 class=\"text-2xl font-mono font-bold text-white mt-8 mb-4\">Circuit Depth</h2><p class=\"text-gray-300\">The <em class=\"text-quantum-accent\">depth</em> of a circuit is the number of time steps required to execute it. Parallel gates on different qubits do not increase depth.</p><div class=\"border-l-4 border-quantum-purple bg-quantum-purple/5 p-4 my-6\"><p class=\"text-white font-bold mb-2\">⚠️ Important</p><p class=\"text-gray-300\">Real quantum hardware has limited connectivity. Often, a CNOT can only be applied between specific physical qubits, requiring 'SWAP' gates to move information.</p></div>",
+      "images": [],
+      "codeExamples": [
+        {
+          "language": "python",
+          "code": "qc = QuantumCircuit(2)\nqc.h(0)\nqc.x(1)\nqc.cx(0, 1)\nprint(f\"Circuit Depth: {qc.depth()}\")",
+          "explanation": "Measuring the depth of a simple circuit."
+        }
+      ],
+      "keyTakeaways": [
+        "Gates are applied from left to right in a circuit diagram.",
+        "Circuit depth affects the impact of decoherence and noise.",
+        "Complex gates are often decomposed into a native gate set (e.g., Rz, Sx, CNOT).",
+        "Optimization involves reducing the number of CNOT gates."
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Gates Quiz",
+      "duration": "15 min",
+      "type": "quiz",
+      "content": "<h1 class=\"text-3xl font-mono font-bold text-quantum-accent mb-6\">Quantum Gates Mastery Quiz</h1><p class=\"text-gray-300 mb-6\">Test your knowledge of single and multi-qubit gates.</p><div class=\"quantum-card p-6 mb-4\"><p class=\"text-white font-bold mb-3\">1. Which gate creates an equal superposition from |0⟩?</p><ul class=\"space-y-2 text-gray-300\"><li class=\"p-2 border border-gray-700 rounded hover:border-quantum-accent cursor-pointer\">A) Pauli-X</li><li class=\"p-2 border border-gray-700 rounded hover:border-quantum-accent cursor-pointer\">B) Pauli-Z</li><li class=\"p-2 border border-gray-700 rounded hover:border-quantum-accent cursor-pointer\">C) Hadamard</li><li class=\"p-2 border border-gray-700 rounded hover:border-quantum-accent cursor-pointer\">D) S Gate</li></ul></div><div class=\"quantum-card p-6 mb-4\"><p class=\"text-white font-bold mb-3\">2. What is the result of applying H then Z then H to the state |0⟩?</p><ul class=\"space-y-2 text-gray-300\"><li class=\"p-2 border border-gray-700 rounded hover:border-quantum-accent cursor-pointer\">A) |0⟩</li><li class=\"p-2 border border-gray-700 rounded hover:border-quantum-accent cursor-pointer\">B) |1⟩</li><li class=\"p-2 border border-gray-700 rounded hover:border-quantum-accent cursor-pointer\">C) |+⟩</li><li class=\"p-2 border border-gray-700 rounded hover:border-quantum-accent cursor-pointer\">D) |−⟩</li></ul></div>",
+      "images": [],
+      "codeExamples": [],
+      "keyTakeaways": [
+        "Review the matrix forms of X, Y, Z, and H.",
+        "Understand the geometric effect of rotations.",
+        "Recall the action of CNOT on basis states.",
+        "Identify the relationship between S, T, and Z gates."
+      ]
+    }
+  ]
+}

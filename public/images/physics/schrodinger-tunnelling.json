@@ -1,0 +1,356 @@
+{
+  "name": "schrodinger-tunnelling",
+  "fps": 20,
+  "steps": [
+    {
+      "frame": 0,
+      "transmitted": 0.0,
+      "reflected": 1.0
+    },
+    {
+      "frame": 1,
+      "transmitted": 0.0,
+      "reflected": 1.0
+    },
+    {
+      "frame": 2,
+      "transmitted": 0.0,
+      "reflected": 1.0
+    },
+    {
+      "frame": 3,
+      "transmitted": 0.0,
+      "reflected": 1.0
+    },
+    {
+      "frame": 4,
+      "transmitted": 0.0,
+      "reflected": 1.0
+    },
+    {
+      "frame": 5,
+      "transmitted": 0.0,
+      "reflected": 1.0
+    },
+    {
+      "frame": 6,
+      "transmitted": 0.0,
+      "reflected": 1.0
+    },
+    {
+      "frame": 7,
+      "transmitted": 0.0,
+      "reflected": 1.0
+    },
+    {
+      "frame": 8,
+      "transmitted": 0.0,
+      "reflected": 1.0
+    },
+    {
+      "frame": 9,
+      "transmitted": 0.0,
+      "reflected": 1.0
+    },
+    {
+      "frame": 10,
+      "transmitted": 0.0,
+      "reflected": 1.0
+    },
+    {
+      "frame": 11,
+      "transmitted": 0.0,
+      "reflected": 0.9999
+    },
+    {
+      "frame": 12,
+      "transmitted": 0.0,
+      "reflected": 0.9998
+    },
+    {
+      "frame": 13,
+      "transmitted": 0.0,
+      "reflected": 0.9995
+    },
+    {
+      "frame": 14,
+      "transmitted": 0.0001,
+      "reflected": 0.9988
+    },
+    {
+      "frame": 15,
+      "transmitted": 0.0001,
+      "reflected": 0.9972
+    },
+    {
+      "frame": 16,
+      "transmitted": 0.0003,
+      "reflected": 0.9943
+    },
+    {
+      "frame": 17,
+      "transmitted": 0.0007,
+      "reflected": 0.9892
+    },
+    {
+      "frame": 18,
+      "transmitted": 0.0013,
+      "reflected": 0.9817
+    },
+    {
+      "frame": 19,
+      "transmitted": 0.0024,
+      "reflected": 0.9717
+    },
+    {
+      "frame": 20,
+      "transmitted": 0.004,
+      "reflected": 0.9603
+    },
+    {
+      "frame": 21,
+      "transmitted": 0.0061,
+      "reflected": 0.9491
+    },
+    {
+      "frame": 22,
+      "transmitted": 0.0087,
+      "reflected": 0.9401
+    },
+    {
+      "frame": 23,
+      "transmitted": 0.0116,
+      "reflected": 0.935
+    },
+    {
+      "frame": 24,
+      "transmitted": 0.0145,
+      "reflected": 0.9343
+    },
+    {
+      "frame": 25,
+      "transmitted": 0.0172,
+      "reflected": 0.9377
+    },
+    {
+      "frame": 26,
+      "transmitted": 0.0196,
+      "reflected": 0.9438
+    },
+    {
+      "frame": 27,
+      "transmitted": 0.0213,
+      "reflected": 0.9512
+    },
+    {
+      "frame": 28,
+      "transmitted": 0.0224,
+      "reflected": 0.9583
+    },
+    {
+      "frame": 29,
+      "transmitted": 0.0229,
+      "reflected": 0.9645
+    },
+    {
+      "frame": 30,
+      "transmitted": 0.0229,
+      "reflected": 0.9693
+    },
+    {
+      "frame": 31,
+      "transmitted": 0.0225,
+      "reflected": 0.9728
+    },
+    {
+      "frame": 32,
+      "transmitted": 0.0221,
+      "reflected": 0.9752
+    },
+    {
+      "frame": 33,
+      "transmitted": 0.0216,
+      "reflected": 0.9768
+    },
+    {
+      "frame": 34,
+      "transmitted": 0.0212,
+      "reflected": 0.9777
+    },
+    {
+      "frame": 35,
+      "transmitted": 0.021,
+      "reflected": 0.9782
+    },
+    {
+      "frame": 36,
+      "transmitted": 0.0209,
+      "reflected": 0.9784
+    },
+    {
+      "frame": 37,
+      "transmitted": 0.0209,
+      "reflected": 0.9783
+    },
+    {
+      "frame": 38,
+      "transmitted": 0.0211,
+      "reflected": 0.9781
+    },
+    {
+      "frame": 39,
+      "transmitted": 0.0213,
+      "reflected": 0.9778
+    },
+    {
+      "frame": 40,
+      "transmitted": 0.0215,
+      "reflected": 0.9774
+    },
+    {
+      "frame": 41,
+      "transmitted": 0.0218,
+      "reflected": 0.9771
+    },
+    {
+      "frame": 42,
+      "transmitted": 0.0222,
+      "reflected": 0.9767
+    },
+    {
+      "frame": 43,
+      "transmitted": 0.0225,
+      "reflected": 0.9764
+    },
+    {
+      "frame": 44,
+      "transmitted": 0.0228,
+      "reflected": 0.9762
+    },
+    {
+      "frame": 45,
+      "transmitted": 0.0229,
+      "reflected": 0.9761
+    },
+    {
+      "frame": 46,
+      "transmitted": 0.023,
+      "reflected": 0.9761
+    },
+    {
+      "frame": 47,
+      "transmitted": 0.023,
+      "reflected": 0.9761
+    },
+    {
+      "frame": 48,
+      "transmitted": 0.0229,
+      "reflected": 0.9763
+    },
+    {
+      "frame": 49,
+      "transmitted": 0.0227,
+      "reflected": 0.9766
+    },
+    {
+      "frame": 50,
+      "transmitted": 0.0225,
+      "reflected": 0.9768
+    },
+    {
+      "frame": 51,
+      "transmitted": 0.0223,
+      "reflected": 0.9771
+    },
+    {
+      "frame": 52,
+      "transmitted": 0.0221,
+      "reflected": 0.9774
+    },
+    {
+      "frame": 53,
+      "transmitted": 0.022,
+      "reflected": 0.9775
+    },
+    {
+      "frame": 54,
+      "transmitted": 0.022,
+      "reflected": 0.9776
+    },
+    {
+      "frame": 55,
+      "transmitted": 0.0221,
+      "reflected": 0.9775
+    },
+    {
+      "frame": 56,
+      "transmitted": 0.0222,
+      "reflected": 0.9774
+    },
+    {
+      "frame": 57,
+      "transmitted": 0.0224,
+      "reflected": 0.9771
+    },
+    {
+      "frame": 58,
+      "transmitted": 0.0226,
+      "reflected": 0.9768
+    },
+    {
+      "frame": 59,
+      "transmitted": 0.0228,
+      "reflected": 0.9764
+    },
+    {
+      "frame": 60,
+      "transmitted": 0.023,
+      "reflected": 0.976
+    },
+    {
+      "frame": 61,
+      "transmitted": 0.0232,
+      "reflected": 0.9756
+    },
+    {
+      "frame": 62,
+      "transmitted": 0.0235,
+      "reflected": 0.9752
+    },
+    {
+      "frame": 63,
+      "transmitted": 0.0239,
+      "reflected": 0.9747
+    },
+    {
+      "frame": 64,
+      "transmitted": 0.0246,
+      "reflected": 0.9742
+    },
+    {
+      "frame": 65,
+      "transmitted": 0.0257,
+      "reflected": 0.9732
+    },
+    {
+      "frame": 66,
+      "transmitted": 0.0277,
+      "reflected": 0.9713
+    },
+    {
+      "frame": 67,
+      "transmitted": 0.0311,
+      "reflected": 0.9681
+    },
+    {
+      "frame": 68,
+      "transmitted": 0.037,
+      "reflected": 0.9624
+    },
+    {
+      "frame": 69,
+      "transmitted": 0.0464,
+      "reflected": 0.9531
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "grover-amplitude-amplification",
+  "fps": 20,
+  "steps": [
+    {
+      "stage": "init",
+      "p_target": 0.0625
+    },
+    {
+      "stage": "oracle-1",
+      "p_target": 0.0625
+    },
+    {
+      "stage": "diffusion-1",
+      "p_target": 0.4727
+    },
+    {
+      "stage": "oracle-2",
+      "p_target": 0.4727
+    },
+    {
+      "stage": "diffusion-2",
+      "p_target": 0.9084
+    },
+    {
+      "stage": "oracle-3",
+      "p_target": 0.9084
+    },
+    {
+      "stage": "diffusion-3",
+      "p_target": 0.9613
+    }
+  ]
+}

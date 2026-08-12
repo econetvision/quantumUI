@@ -1,0 +1,73 @@
+{
+  "generatedBy": "GPAI",
+  "tracks": {
+    "quantum-fundamentals": [
+      {
+        "src": "/images/lesson-images/quantum-fundamentals/bit-vs-qubit.png",
+        "alt": "A classical bit showing only 0 or 1 beside a qubit on a Bloch sphere holding both at once",
+        "caption": "A bit is one of two values. A qubit is a combination of both until measured."
+      },
+      {
+        "src": "/images/lesson-images/quantum-fundamentals/spinning-coin-superposition.png",
+        "alt": "A spinning coin shown mid-spin as both heads and tails, then collapsed to one face after landing",
+        "caption": "The spinning coin: genuinely both, not secretly one. Landing is the measurement."
+      },
+      {
+        "src": "/images/lesson-images/quantum-fundamentals/wave-interference.png",
+        "alt": "Two waves approaching, adding constructively, then cancelling destructively",
+        "caption": "Amplitudes add and cancel. Interference is what separates quantum from merely random."
+      },
+      {
+        "src": "/images/lesson-images/quantum-fundamentals/amplitude-to-probability.png",
+        "alt": "A probability amplitude being squared to give a measurement probability, with bar charts",
+        "caption": "Born's rule: probability is the square of the amplitude — which is why amplitudes may be negative."
+      },
+      {
+        "src": "/images/lesson-images/quantum-fundamentals/destructive-interference.png",
+        "alt": "Two quantum amplitudes cancelling exactly to zero and the resulting flat distribution",
+        "caption": "Perfect cancellation. No classical probability can do this."
+      }
+    ],
+    "quantum-gates": [
+      {
+        "src": "/images/lesson-images/quantum-gates/pauli-yz-bloch.png",
+        "alt": "Pauli Y and Z gates shown as 180 degree rotations about the Y and Z axes",
+        "caption": "Y and Z rotate about their own axes; Z changes phase without changing probabilities."
+      },
+      {
+        "src": "/images/lesson-images/quantum-gates/hadamard-bloch.png",
+        "alt": "The Hadamard gate mapping ket zero to the plus state on the Bloch sphere",
+        "caption": "Hadamard moves |0⟩ to the equator, creating an even superposition."
+      },
+      {
+        "src": "/images/lesson-images/quantum-gates/bloch-axes-states.png",
+        "alt": "A Bloch sphere with X, Y and Z axes labelled and the six cardinal states marked",
+        "caption": "The six cardinal states. Every pure single-qubit state lives on this surface."
+      }
+    ],
+    "quantum-entanglement": [
+      {
+        "src": "/images/lesson-images/quantum-entanglement/cnot-entanglement.png",
+        "alt": "A CNOT circuit with control and target, producing a Bell state from a superposed control",
+        "caption": "CNOT applied to a superposed control does not pick a branch — it correlates both."
+      },
+      {
+        "src": "/images/lesson-images/quantum-entanglement/bell-states-circuits.png",
+        "alt": "The four Bell states in Dirac notation with the circuit preparing each",
+        "caption": "All four Bell states are one Hadamard and one CNOT, differing only in the input."
+      },
+      {
+        "src": "/images/lesson-images/quantum-entanglement/ghz-vs-w-robustness.png",
+        "alt": "GHZ and W states compared, showing GHZ entanglement destroyed by qubit loss while W survives",
+        "caption": "Lose one qubit: GHZ shatters, W keeps its entanglement. That tradeoff decides the protocol."
+      }
+    ],
+    "quantum-cryptography-qkd": [
+      {
+        "src": "/images/lesson-images/quantum-cryptography-qkd/chsh-bell-test.png",
+        "alt": "A CHSH chart showing the classical limit of 2 and the quantum value 2√2 ≈ 2.83",
+        "caption": "Quantum correlations exceed any local hidden-variable theory. Nobel Prize, 2022."
+      }
+    ]
+  }
+}

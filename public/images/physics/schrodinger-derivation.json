@@ -1,0 +1,66 @@
+{
+  "name": "schrodinger-derivation",
+  "fps": 2,
+  "steps": [
+    {
+      "step": 1,
+      "heading": "Start from the classical energy of a particle",
+      "equation": "$E = \\frac{p^2}{2m} + V$",
+      "note": "Kinetic plus potential. Nothing quantum yet \u2014 this is Newtonian bookkeeping."
+    },
+    {
+      "step": 2,
+      "heading": "de Broglie: matter carries a wave",
+      "equation": "$\\lambda = \\frac{h}{p}, \\qquad p = \\hbar k$",
+      "note": "1924. If light can behave as particles, particles can behave as waves."
+    },
+    {
+      "step": 3,
+      "heading": "Planck & Einstein: energy is quantised",
+      "equation": "$E = h\\nu = \\hbar\\omega$",
+      "note": "Energy relates to frequency, momentum to wavenumber."
+    },
+    {
+      "step": 4,
+      "heading": "Write a plane wave for a free particle",
+      "equation": "$\\Psi(x,t) = A\\,e^{\\,i(kx - \\omega t)}$",
+      "note": "The simplest wave carrying momentum \u210fk and energy \u210f\u03c9."
+    },
+    {
+      "step": 5,
+      "heading": "Differentiate in time \u2014 it pulls out the energy",
+      "equation": "$i\\hbar\\frac{\\partial \\Psi}{\\partial t} = \\hbar\\omega\\,\\Psi = E\\,\\Psi$",
+      "note": "One time derivative returns E times the wave."
+    },
+    {
+      "step": 6,
+      "heading": "Differentiate twice in space \u2014 it pulls out p\u00b2",
+      "equation": "$-\\hbar^2\\frac{\\partial^2 \\Psi}{\\partial x^2} = \\hbar^2k^2\\Psi = p^2\\Psi$",
+      "note": "Two spatial derivatives return p\u00b2 times the wave."
+    },
+    {
+      "step": 7,
+      "heading": "Substitute both into the energy relation",
+      "equation": "$i\\hbar\\frac{\\partial\\Psi}{\\partial t} = -\\frac{\\hbar^2}{2m}\\frac{\\partial^2\\Psi}{\\partial x^2} + V\\Psi$",
+      "note": "Replace E and p\u00b2/2m with the operators just derived."
+    },
+    {
+      "step": 8,
+      "heading": "The time-dependent Schr\u00f6dinger equation",
+      "equation": "$i\\hbar\\frac{\\partial}{\\partial t}|\\Psi\\rangle = \\hat{H}|\\Psi\\rangle$",
+      "note": "Schr\u00f6dinger, 1926. The Hamiltonian \u0124 generates time evolution."
+    },
+    {
+      "step": 9,
+      "heading": "Born rule: what the wavefunction means",
+      "equation": "$P(x)\\,dx = |\\Psi(x,t)|^2 dx$",
+      "note": "Born, 1926. \u03a8 is not observable \u2014 its squared magnitude is a probability density."
+    },
+    {
+      "step": 10,
+      "heading": "This is exactly what a quantum computer evolves",
+      "equation": "$|\\psi'\\rangle = U|\\psi\\rangle, \\qquad U = e^{-i\\hat{H}t/\\hbar}$",
+      "note": "A quantum gate is a unitary U \u2014 the solution of this equation for a chosen \u0124."
+    }
+  ]
+}
