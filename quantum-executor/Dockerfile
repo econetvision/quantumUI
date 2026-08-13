@@ -6,14 +6,23 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
 
+# Paths are relative to the REPOSITORY ROOT, which is the build context Railway
+# uses (railway.json points at this file via dockerfilePath). Building locally
+# therefore also needs the root as context:
+#   docker build -f quantum-executor/Dockerfile .
+#
 # Requirements first so the dependency layer caches across code changes.
-COPY requirements.txt .
+COPY quantum-executor/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy every module, not just main.py. The service was split into
 # qpiai_bridge / catalog / mock_circuit, and an image containing only main.py
 # builds cleanly then dies on its first import at runtime.
-COPY main.py qpiai_bridge.py catalog.py mock_circuit.py mcp_server.py ./
+COPY quantum-executor/main.py \
+     quantum-executor/qpiai_bridge.py \
+     quantum-executor/catalog.py \
+     quantum-executor/mock_circuit.py \
+     quantum-executor/mcp_server.py ./
 
 # Run as a non-root user. The service executes learner-submitted Python, so a
 # container breakout should land somewhere unprivileged.
