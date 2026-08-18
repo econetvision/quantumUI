@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useId, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { Callout, Card, Container } from '@/components/ui/primitives';
+import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton';
 
 type TierType = 'FREE' | 'PRO' | 'ENTERPRISE';
 
@@ -131,7 +132,19 @@ export default function SignupPage() {
           </div>
         </fieldset>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+        <div className="mt-6">
+          <GoogleSignInButton label="Sign up with Google" />
+        </div>
+
+        <div className="my-6 flex items-center gap-3">
+          <span className="h-px flex-1 bg-line" />
+          <span className="font-mono text-xs uppercase tracking-wider text-content-subtle">
+            or
+          </span>
+          <span className="h-px flex-1 bg-line" />
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor={nameId} className={labelClass}>
               Name

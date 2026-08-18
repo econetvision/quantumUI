@@ -1,0 +1,55 @@
+name: Deploy Frontend to Vercel
+
+# Mirrors erp_project_amm's deploy-frontend-vercel.yml, adapted for Next.js:
+# prisma generate has to run before the build or every model reference fails
+# to type-check.
+
+on:
+  push:
+    branches: [clean-main, main]
+    paths:
+      - 'src/**'
+      - 'prisma/**'
+      - 'public/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'next.config.ts'
+      - 'vercel.json'
+      - '.github/workflows/deploy-frontend-vercel.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Vercel
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npx prisma generate
+
+      - name: Pull Vercel environment
+        run: npx vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build
+        run: npx vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy
+        run: npx vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Summary
+        run: |
+          echo "### Frontend deployed" >> $GITHUB_STEP_SUMMARY
+          echo "commit \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY

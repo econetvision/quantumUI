@@ -1,9 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { z } from 'zod';
-import auth from '@/lib/auth';
 import { withDatabase } from '@/lib/db';
 import { quantumExecutor, toErrorResponse } from '@/lib/quantum-client';
 import { getQuestionById, gradingMode } from '@/lib/lab-questions';
+import { requireSession } from '@/lib/api-auth';
 
 /**
  * Grade a lab answer.
@@ -61,6 +61,13 @@ export async function POST(request: NextRequest) {
   } catch {
     return NextResponse.json({ error: 'Malformed request body.' }, { status: 400 });
   }
+
+  // Grading runs the submission through the executor, so this needs a session
+  // even though the grade itself is not personalised. Previously the session
+  // was only read further down, to decide whether to record an attempt, which
+  // left the execution path open to anyone.
+  const gate = await requireSession();
+  if (gate.response) return gate.response;
 
   const parsed = CheckSchema.safeParse(body);
   if (!parsed.success) {
@@ -151,8 +158,7 @@ export async function POST(request: NextRequest) {
 
     // Record the attempt for signed-in learners. Anonymous ones still get
     // graded — they simply have no history.
-    const session = await auth.auth().catch(() => null);
-    const userId = (session?.user as { id?: string } | undefined)?.id;
+    const userId = gate.user.id;
 
     let recorded = false;
     if (userId) {

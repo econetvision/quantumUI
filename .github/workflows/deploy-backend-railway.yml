@@ -1,0 +1,52 @@
+name: Deploy Backend to Railway
+
+# Mirrors erp_project_amm's deploy-backend-railway.yml. Deploys the FastAPI
+# quantum executor as a container; railway.json pins the Dockerfile and the
+# repo-root build context.
+
+on:
+  push:
+    branches: [clean-main, main]
+    paths:
+      - 'quantum-executor/**'
+      - 'railway.json'
+      - '.github/workflows/deploy-backend-railway.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-backend-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Railway
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: |
+          curl -fsSL https://railway.app/install.sh | bash
+          echo "$HOME/.railway/bin" >> $GITHUB_PATH
+
+      - name: Verify Railway CLI
+        run: railway --version
+
+      - name: Deploy
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          APP_VERSION: ${{ github.ref_name }}-${{ github.run_number }}
+          BUILD_SHA: ${{ github.sha }}
+          BUILD_TIME: ${{ github.event.head_commit.timestamp }}
+        run: railway up --service ${{ secrets.RAILWAY_SERVICE || 'quantum-executor' }} --ci
+
+      - name: Health check
+        # CORS_ORIGINS not matching the Vercel domain is the usual failure, and
+        # it does not show up here — /health answers regardless. See DEPLOY_STEPS.md.
+        if: ${{ secrets.RAILWAY_PUBLIC_URL != '' }}
+        run: |
+          for i in 1 2 3 4 5 6; do
+            if curl -fsS "${{ secrets.RAILWAY_PUBLIC_URL }}/health"; then exit 0; fi
+            echo "attempt $i failed, retrying in 10s"; sleep 10
+          done
+          echo "executor did not become healthy"; exit 1

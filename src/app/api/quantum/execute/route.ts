@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { quantumExecutor, toErrorResponse } from '@/lib/quantum-client';
+import { requireSession } from '@/lib/api-auth';
 
 export type {
   ExecutionResult,
@@ -23,6 +24,10 @@ interface ExecuteBody {
  * platform where the output is the lesson.
  */
 export async function POST(request: NextRequest) {
+  // The executor runs submitted Python. Anonymous callers do not get to.
+  const gate = await requireSession();
+  if (gate.response) return gate.response;
+
   let body: ExecuteBody;
   try {
     body = await request.json();

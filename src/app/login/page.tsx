@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useId, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { Callout, Card, Container } from '@/components/ui/primitives';
+import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton';
 
 function LoginForm() {
   // Labels were previously not associated with their inputs, so screen readers
@@ -57,7 +58,19 @@ function LoginForm() {
           Sign in to keep your progress and streaks
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-7 space-y-4">
+        <div className="mt-7">
+          <GoogleSignInButton callbackUrl={callbackUrl} label="Sign in with Google" />
+        </div>
+
+        <div className="my-6 flex items-center gap-3">
+          <span className="h-px flex-1 bg-line" />
+          <span className="font-mono text-xs uppercase tracking-wider text-content-subtle">
+            or
+          </span>
+          <span className="h-px flex-1 bg-line" />
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
               htmlFor={emailId}

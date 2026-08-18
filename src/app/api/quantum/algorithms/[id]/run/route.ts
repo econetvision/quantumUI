@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { quantumExecutor, toErrorResponse } from '@/lib/quantum-client';
+import { requireSession } from '@/lib/api-auth';
 
 interface RunBody {
   params?: Record<string, unknown>;
@@ -18,6 +19,9 @@ export async function POST(
   request: NextRequest,
   ctx: RouteContext<'/api/quantum/algorithms/[id]/run'>,
 ) {
+  const gate = await requireSession();
+  if (gate.response) return gate.response;
+
   const { id } = await ctx.params;
 
   let body: RunBody;

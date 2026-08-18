@@ -22,7 +22,18 @@ COPY quantum-executor/main.py \
      quantum-executor/qpiai_bridge.py \
      quantum-executor/catalog.py \
      quantum-executor/mock_circuit.py \
-     quantum-executor/mcp_server.py ./
+     quantum-executor/mcp_server.py \
+     quantum-executor/sandbox.py \
+     quantum-executor/guards.py ./
+
+# Build metadata injected at build time, mirroring the frontend image so both
+# services report the same version/SHA from /health.
+ARG APP_VERSION=1.0.0
+ARG BUILD_SHA=dev
+ARG BUILD_TIME=unknown
+ENV APP_VERSION=$APP_VERSION
+ENV BUILD_SHA=$BUILD_SHA
+ENV BUILD_TIME=$BUILD_TIME
 
 # Run as a non-root user. The service executes learner-submitted Python, so a
 # container breakout should land somewhere unprivileged.

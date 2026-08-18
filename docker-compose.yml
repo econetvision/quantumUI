@@ -1,11 +1,10 @@
-version: '3.8'
-
 services:
   # PostgreSQL — the schema's declared provider. Postgres enforces real foreign
   # keys, which is why account-wide progress lives on User rather than on a
   # UserProgress row pointing at a track that does not exist.
   db:
     image: postgres:16-alpine
+    container_name: quantumui_db
     restart: unless-stopped
     environment:
       POSTGRES_DB: quantumui
@@ -23,20 +22,34 @@ services:
       timeout: 5s
       retries: 10
 
-  # Next.js Frontend Application
+  # Next.js app — both frontend and backend-for-frontend (src/app/api/**).
   app:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-1.0.0-dev}
+        BUILD_SHA: ${BUILD_SHA:-dev}
+        BUILD_TIME: ${BUILD_TIME:-unknown}
+    container_name: quantumui_app
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
-      - QUANTUM_EXECUTOR_URL=http://quantum-executor:8080
-      - DATABASE_URL=postgresql://quantumui:quantumui@db:5432/quantumui?schema=public
+      NODE_ENV: production
+      QUANTUM_EXECUTOR_URL: http://quantum-executor:8080
+      EXECUTOR_API_KEY: ${EXECUTOR_API_KEY:?set EXECUTOR_API_KEY in .env}
+      # Both point at the same server locally; only Neon needs them to differ.
+      DATABASE_URL: postgresql://quantumui:quantumui@db:5432/quantumui?schema=public
+      DIRECT_URL: postgresql://quantumui:quantumui@db:5432/quantumui?schema=public
+      # Compose reads `.env` and the shell for ${...}, never `.env.local`, so
+      # the real AUTH_SECRET is NOT picked up by a plain `docker compose up` —
+      # this dev fallback is. That is fine locally; pass
+      # `--env-file .env.local --env-file .env` if you need the real one.
+      AUTH_SECRET: ${AUTH_SECRET:-local-dev-secret-do-not-use-in-production}
     depends_on:
       quantum-executor:
-        condition: service_started
+        condition: service_healthy
       db:
         condition: service_healthy
     networks:
@@ -45,18 +58,34 @@ services:
   # QpiAI Quantum Executor Service
   quantum-executor:
     build:
-      context: ./quantum-executor
-      dockerfile: Dockerfile
+      # The repository ROOT, not ./quantum-executor. The Dockerfile's COPY paths
+      # are repo-root-relative because that is the context Railway uses
+      # (railway.json -> dockerfilePath); a ./quantum-executor context fails on
+      # the first COPY.
+      context: .
+      dockerfile: quantum-executor/Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-1.0.0-dev}
+        BUILD_SHA: ${BUILD_SHA:-dev}
+        BUILD_TIME: ${BUILD_TIME:-unknown}
+    container_name: quantumui_executor
+    restart: unless-stopped
     ports:
       - "8080:8080"
     environment:
-      - PYTHONUNBUFFERED=1
+      PYTHONUNBUFFERED: 1
+      EXECUTOR_API_KEY: ${EXECUTOR_API_KEY:?set EXECUTOR_API_KEY in .env}
+      EXECUTION_TIMEOUT_SECONDS: ${EXECUTION_TIMEOUT_SECONDS:-15}
+      EXECUTE_RATE_LIMIT: ${EXECUTE_RATE_LIMIT:-30}
+      CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+      QPIAI_API_KEY: ${QPIAI_API_KEY:-}
     networks:
       - quantumui-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
+      start_period: 20s
       retries: 3
 
 networks:

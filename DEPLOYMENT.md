@@ -7,7 +7,7 @@ them is a security incident, not a rough edge.
 
 ### 1. Replace the auth secret
 
-`.env` currently holds `AUTH_SECRET="dev-only-secret-change-before-deploying-…"`.
+`.env.local` holds a development `AUTH_SECRET`.
 Anyone who knows it can mint valid session tokens for any account.
 
 ```bash
@@ -20,9 +20,11 @@ The local database uses `quantumui:quantumui`. Create a production user with a
 generated password and grant it only what the app needs:
 
 ```sql
-CREATE USER 'quantumui'@'%' IDENTIFIED BY '<generated>';
-GRANT SELECT, INSERT, UPDATE, DELETE ON quantumui.* TO 'quantumui'@'%';
--- deliberately no DROP/ALTER: migrations run separately
+CREATE USER quantumui WITH PASSWORD '<generated>';
+GRANT CONNECT ON DATABASE quantumui TO quantumui;
+GRANT USAGE ON SCHEMA public TO quantumui;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO quantumui;
+-- deliberately no DROP/ALTER: migrations run separately, via DIRECT_URL
 ```
 
 ### 3. Rotate the seeded accounts
@@ -32,7 +34,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON quantumui.* TO 'quantumui'@'%';
 site is reachable:
 
 ```sql
-DELETE FROM User WHERE email LIKE '%@quantumui.local';
+DELETE FROM "User" WHERE email LIKE '%@quantumui.local';  -- quoted: Postgres folds unquoted identifiers to lowercase
 ```
 
 ### 4. Point the executor's CORS at the real origin
@@ -46,11 +48,14 @@ DELETE FROM User WHERE email LIKE '%@quantumui.local';
 
 | Variable | Purpose | Required |
 | --- | --- | --- |
-| `DATABASE_URL` | MySQL connection (`mysql://…`, **not** postgres) | yes |
+| `DATABASE_URL` | PostgreSQL, **pooled** (`postgresql://…`) | yes |
+| `DIRECT_URL` | PostgreSQL, unpooled — migrations only | yes |
 | `AUTH_SECRET` | NextAuth session signing | yes |
 | `QUANTUM_EXECUTOR_URL` | Executor base URL | yes |
 | `CORS_ORIGINS` | Allowed origins, executor side | yes |
 | `QWORLD_CONTENT_ROOT` | Override vendored content location | no |
+| `AUTH_GOOGLE_ID` | Google OAuth client ID — enables Google sign-in | no |
+| `AUTH_GOOGLE_SECRET` | Google OAuth client secret | no |
 | `QPIAI_API_KEY` | Unlocks cloud simulators and the Indus-1 QPU | no |
 
 Without `QPIAI_API_KEY` the platform runs entirely on the local statevector
@@ -76,7 +81,7 @@ npm run build
 npm start
 ```
 
-Or `docker compose up -d` — the compose file now includes MySQL with a
+Or `docker compose up -d` — the compose file now includes PostgreSQL with a
 healthcheck, and the app waits for it.
 
 ## Health checks
@@ -109,9 +114,9 @@ Be aware of these before promising them to users:
 
 ## Rollback
 
-The app is stateless apart from MySQL. Redeploy the previous build and, if a
+The app is stateless apart from PostgreSQL. Redeploy the previous build and, if a
 migration ran, restore from a dump taken immediately before:
 
 ```bash
-mysqldump -u quantumui -p quantumui > backup-$(date +%F).sql
+pg_dump -U quantumui quantumui > backup-$(date +%F).sql
 ```

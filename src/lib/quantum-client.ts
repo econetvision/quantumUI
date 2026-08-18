@@ -9,6 +9,14 @@
 export const EXECUTOR_URL =
   process.env.QUANTUM_EXECUTOR_URL || 'http://localhost:8080';
 
+/**
+ * Shared secret proving a request came from this app rather than from anyone
+ * who found the executor's public hostname. The executor refuses /execute,
+ * /repl and /algorithms/*\/run without it. Server-side only — it must never be
+ * prefixed NEXT_PUBLIC_, or it ships to the browser and stops being a secret.
+ */
+const EXECUTOR_KEY = process.env.EXECUTOR_API_KEY ?? '';
+
 /** How long to wait on the executor before giving up, per endpoint class. */
 const TIMEOUTS = {
   fast: 8_000, // health, backends, catalogue listing
@@ -140,7 +148,11 @@ async function request<T>(
   try {
     response = await fetch(`${EXECUTOR_URL}${path}`, {
       ...rest,
-      headers: { 'Content-Type': 'application/json', ...rest.headers },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(EXECUTOR_KEY ? { 'X-Executor-Key': EXECUTOR_KEY } : {}),
+        ...rest.headers,
+      },
       signal: AbortSignal.timeout(timeout),
     });
   } catch (error) {
@@ -153,6 +165,17 @@ async function request<T>(
 
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
+    if (response.status === 401 || response.status === 503) {
+      // A misconfigured EXECUTOR_API_KEY is an operator problem, not a learner
+      // one — do not echo the executor's wording to the browser.
+      console.error(
+        `[quantum-client] executor rejected the request (${response.status}): ${body.detail ?? ''}`,
+      );
+      throw new ExecutorError(
+        'The quantum executor is not accepting requests. Check EXECUTOR_API_KEY.',
+        502,
+      );
+    }
     throw new ExecutorError(
       body.detail || `Executor returned ${response.status}`,
       response.status,
