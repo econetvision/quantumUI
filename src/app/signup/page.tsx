@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useId, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { Callout, Card, Container } from '@/components/ui/primitives';
@@ -28,7 +27,6 @@ const TIERS: { name: TierType; price: string; features: string[] }[] = [
 ];
 
 export default function SignupPage() {
-  const router = useRouter();
   const nameId = useId();
   const emailId = useId();
   const passwordId = useId();
@@ -71,8 +69,11 @@ export default function SignupPage() {
         return;
       }
 
-      router.push('/tracks');
-      router.refresh();
+      // Full document navigation rather than router.push — see the note in
+      // src/app/login/page.tsx. The client cache holds the proxy's signed-out
+      // redirect for /tracks and would replay it without consulting the
+      // server, dropping a brand-new account back onto the login form.
+      window.location.assign('/tracks');
     } catch {
       setLoading(false);
       setError('Could not reach the server. Please try again.');
