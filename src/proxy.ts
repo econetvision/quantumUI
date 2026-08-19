@@ -23,6 +23,15 @@ export async function proxy(req: NextRequest) {
     // NextAuth v5 signs with AUTH_SECRET; NEXTAUTH_SECRET is the v4 name kept
     // as a fallback, matching src/lib/auth.ts.
     secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+    // Over HTTPS the session cookie is written as `__Secure-authjs.session-token`,
+    // and getToken only looks for that prefixed name when told to. Its own default
+    // is derived from AUTH_URL, which this app deliberately does not set — auth.ts
+    // uses `trustHost: true` instead. Left to the default it searched for the
+    // unprefixed name, found nothing, and bounced every signed-in user back to
+    // /login. Deriving it from the request keeps http://localhost and the
+    // https:// deployment both working, with no URL baked into the environment.
+    secureCookie:
+      (req.headers.get("x-forwarded-proto") ?? req.nextUrl.protocol).startsWith("https"),
   });
 
   const path = req.nextUrl.pathname;
