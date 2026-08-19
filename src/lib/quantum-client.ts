@@ -157,9 +157,17 @@ async function request<T>(
     });
   } catch (error) {
     // Connection refused / DNS failure / timeout — the service isn't there.
+    // These strings reach the browser, so they describe what the reader can
+    // observe. How to restart the executor is an operator's concern and goes
+    // to the server log, never to a learner who cannot act on it.
+    console.error(
+      `[quantum-client] executor unreachable: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    );
     const reason = error instanceof Error && error.name === 'TimeoutError'
-      ? `The quantum executor did not respond within ${timeout / 1000}s.`
-      : 'The quantum executor is not running.';
+      ? `Circuit execution timed out after ${timeout / 1000}s.`
+      : 'Circuit execution is temporarily unavailable.';
     throw new ExecutorError(reason, 503, true);
   }
 
@@ -172,7 +180,7 @@ async function request<T>(
         `[quantum-client] executor rejected the request (${response.status}): ${body.detail ?? ''}`,
       );
       throw new ExecutorError(
-        'The quantum executor is not accepting requests. Check EXECUTOR_API_KEY.',
+        'Circuit execution is temporarily unavailable.',
         502,
       );
     }
@@ -241,8 +249,14 @@ export const quantumExecutor = {
 
 /**
  * Turn an unknown error into a JSON body + status for a route handler.
- * Keeps the "executor is offline" case a clear 503 with actionable copy rather
- * than an opaque 500.
+ * Keeps the "executor is offline" case a clear 503 rather than an opaque 500.
+ *
+ * The message is passed through untouched. It previously had a shell command
+ * ("cd quantum-executor && ./run.sh") appended to the offline case, which was
+ * written for someone running the stack locally and read as nonsense to a
+ * visitor on the deployed site — who has no shell to run it in. The `offline`
+ * flag is what callers should branch on; restart instructions belong in the
+ * runbook, not in a learner's browser.
  */
 export function toErrorResponse(error: unknown): {
   body: { success: false; error: string; offline: boolean };
@@ -252,9 +266,7 @@ export function toErrorResponse(error: unknown): {
     return {
       body: {
         success: false,
-        error: error.offline
-          ? `${error.message} Start it with: cd quantum-executor && ./run.sh`
-          : error.message,
+        error: error.message,
         offline: error.offline,
       },
       status: error.status,
