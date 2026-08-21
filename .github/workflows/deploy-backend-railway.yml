@@ -1,52 +1,103 @@
 name: Deploy Backend to Railway
 
-# Mirrors erp_project_amm's deploy-backend-railway.yml. Deploys the FastAPI
-# quantum executor as a container; railway.json pins the Dockerfile and the
-# repo-root build context.
+# Production deploy for the FastAPI quantum executor. Vercel cannot run it —
+# it is a container — so it lives on Railway and the Next.js app calls it over
+# HTTPS via QUANTUM_EXECUTOR_URL.
+#
+# Same three guards as the frontend deploy: CI gates it, a codebase check stops
+# the unrelated stale history from shipping, and the executor has to actually
+# answer afterwards.
 
 on:
   push:
-    branches: [clean-main, main]
+    branches: [main, clean-main]
     paths:
       - 'quantum-executor/**'
       - 'railway.json'
       - '.github/workflows/deploy-backend-railway.yml'
+      - '.github/workflows/ci.yml'
   workflow_dispatch:
 
 concurrency:
-  group: deploy-backend-${{ github.ref }}
+  group: deploy-backend
   cancel-in-progress: false
 
 jobs:
+  ci:
+    name: Gate
+    uses: ./.github/workflows/ci.yml
+
   deploy:
     name: Railway
+    needs: ci
     runs-on: ubuntu-latest
+    environment: production
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      # Public hostname of the executor. Falls back to the service's generated
+      # Railway domain so the health check still runs when the secret is unset —
+      # previously it was wrapped in `if: secrets.RAILWAY_PUBLIC_URL != ''`, so a
+      # missing secret silently skipped verification and a dead executor
+      # reported success.
+      EXECUTOR_URL: ${{ vars.RAILWAY_PUBLIC_URL || 'https://quantum-executor-production-113a.up.railway.app' }}
+      PROD_URL: ${{ vars.PRODUCTION_URL || 'https://www.sroobservotary.com' }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Guard — verify this is the production codebase
+        run: |
+          fail() { echo "::error::$1"; exit 1; }
+          [ -f quantum-executor/main.py ] || fail "quantum-executor/main.py missing — not a deployable tree."
+          [ -f railway.json ] || fail "railway.json missing — Railway would guess the build."
+          grep -q 'quantum-executor/Dockerfile' railway.json \
+            || fail "railway.json no longer points at quantum-executor/Dockerfile."
+          echo "Guard passed."
 
       - name: Install Railway CLI
         run: |
           curl -fsSL https://railway.app/install.sh | bash
           echo "$HOME/.railway/bin" >> $GITHUB_PATH
 
-      - name: Verify Railway CLI
-        run: railway --version
+      - run: railway --version
 
       - name: Deploy
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           APP_VERSION: ${{ github.ref_name }}-${{ github.run_number }}
           BUILD_SHA: ${{ github.sha }}
-          BUILD_TIME: ${{ github.event.head_commit.timestamp }}
-        run: railway up --service ${{ secrets.RAILWAY_SERVICE || 'quantum-executor' }} --ci
+        run: railway up --service ${{ vars.RAILWAY_SERVICE || 'quantum-executor' }} --ci
 
+      # Unconditional. /health answering is the minimum bar for calling this
+      # deploy successful.
       - name: Health check
-        # CORS_ORIGINS not matching the Vercel domain is the usual failure, and
-        # it does not show up here — /health answers regardless. See DEPLOY_STEPS.md.
-        if: ${{ secrets.RAILWAY_PUBLIC_URL != '' }}
         run: |
-          for i in 1 2 3 4 5 6; do
-            if curl -fsS "${{ secrets.RAILWAY_PUBLIC_URL }}/health"; then exit 0; fi
-            echo "attempt $i failed, retrying in 10s"; sleep 10
+          for attempt in 1 2 3 4 5 6 7 8; do
+            if body=$(curl -fsS --max-time 30 "$EXECUTOR_URL/health"); then
+              echo "$body"
+              echo "$body" | grep -q '"status":"healthy"' \
+                && { echo "Executor healthy."; exit 0; }
+              echo "::warning::/health answered but not healthy: $body"
+            fi
+            echo "attempt $attempt failed, retrying in 10s"; sleep 10
           done
-          echo "executor did not become healthy"; exit 1
+          echo "::error::Executor did not become healthy at $EXECUTOR_URL"; exit 1
+
+      # /health answers even when the app cannot use the executor — a mismatched
+      # EXECUTOR_API_KEY between Railway and Vercel returns 401 on every real
+      # call while /health stays green. This checks the path that actually
+      # matters: the deployed app reaching the deployed executor.
+      - name: Verify the app can reach the executor
+        run: |
+          body=$(curl -s --max-time 45 "$PROD_URL/api/quantum/execute")
+          echo "$body"
+          echo "$body" | grep -q '"status":"connected"' && { echo "App ↔ executor OK."; exit 0; }
+          echo "::error::App reports the executor as unreachable. Usual cause: EXECUTOR_API_KEY differs between Railway and Vercel, or QUANTUM_EXECUTOR_URL is unset/stale."
+          exit 1
+
+      - name: Summary
+        if: success()
+        run: |
+          {
+            echo "### Executor deployed"
+            echo "commit \`${{ github.sha }}\`"
+            echo "healthy at $EXECUTOR_URL and reachable from $PROD_URL"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,12 +1,17 @@
 name: CI
 
+# `workflow_call` lets the deploy workflows run these same checks as a gate
+# before they touch production, instead of deploying in parallel with them and
+# finding out afterwards. Nothing here needs a secret, so callers do not pass any.
 on:
   push:
-    branches: [main]
+    branches: [main, clean-main, 'feat/**']
   pull_request:
+  workflow_call:
 
 concurrency:
-  # A new push supersedes an in-flight run on the same branch.
+  # A new push supersedes an in-flight run on the same branch. Safe here — these
+  # jobs only read. The deploy workflows deliberately do NOT cancel in progress.
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
