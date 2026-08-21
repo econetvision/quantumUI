@@ -129,11 +129,15 @@ export async function hydrateFromServer(): Promise<StreakData | null> {
   try {
     const res = await fetch('/api/progress');
     if (!res.ok) return null; // signed out, or the database is unavailable
-    const remote = (await res.json()) as {
-      xp?: number;
-      currentStreak?: number;
-      longestStreak?: number;
+    // The route nests the numbers under `progress`; reading them off the top
+    // level yields undefined, and every Math.max below silently collapses to
+    // the local value, which is exactly the no-op this function exists to fix.
+    const payload = (await res.json()) as {
+      signedIn?: boolean;
+      progress?: { xp?: number; currentStreak?: number; longestStreak?: number };
     };
+    if (!payload.signedIn || !payload.progress) return null;
+    const remote = payload.progress;
 
     const local = getStreakData();
     const merged: StreakData = {
