@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { completeQuestion, isQuestionCompleted, recordActivity, XP_REWARDS } from '@/lib/streak';
+import { BackendPicker } from '@/components/quantum/BackendPicker';
 
 interface TerminalLine {
   kind: 'input' | 'output' | 'error' | 'info';
@@ -47,6 +48,9 @@ export default function LabShell() {
   const [sessionId] = useState(() =>
     typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `s-${Date.now()}`
   );
+  // Where the code runs: the in-process simulator, a QCloud simulator, or the
+  // Indus-1 QPU. BackendPicker sets this to the executor's default on mount.
+  const [backend, setBackend] = useState<string | null>(null);
 
   // Q&A state
   const [topics, setTopics] = useState<TopicBank[]>([]);
@@ -93,7 +97,7 @@ export default function LabShell() {
         const res = await fetch('/api/quantum/repl', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sessionId, code }),
+          body: JSON.stringify({ sessionId, code, backend }),
         });
         const result = await res.json();
         setLines((prev) => {
@@ -116,7 +120,7 @@ export default function LabShell() {
         inputRef.current?.focus();
       }
     },
-    [busy, sessionId]
+    [busy, sessionId, backend]
   );
 
   const resetSession = useCallback(async () => {
@@ -127,6 +131,35 @@ export default function LabShell() {
     }).catch(() => {});
     setLines([...WELCOME, { kind: 'info', text: 'Session reset — all variables cleared.' }]);
   }, [sessionId]);
+
+  /**
+   * Switch execution target.
+   *
+   * The executor pins a REPL session's backend when it first builds the
+   * namespace, so a running session keeps whatever it started on. Changing the
+   * dropdown without clearing the session would leave the picker showing one
+   * platform while the code kept running on another — so the switch resets,
+   * and says that it did rather than dropping the learner's variables silently.
+   */
+  const changeBackend = useCallback(
+    async (next: string) => {
+      if (next === backend) return;
+      const first = backend === null;
+      setBackend(next);
+      if (first) return; // BackendPicker choosing the default on mount
+
+      await fetch('/api/quantum/repl', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, code: '', reset: true }),
+      }).catch(() => {});
+      setLines((prev) => [
+        ...prev,
+        { kind: 'info', text: `Now running on ${next} — session reset, variables cleared.` },
+      ]);
+    },
+    [backend, sessionId]
+  );
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -172,9 +205,14 @@ export default function LabShell() {
     <div className="grid lg:grid-cols-2 gap-6">
       {/* Terminal */}
       <div className="quantum-card overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between px-4 py-3 bg-quantum-bg-secondary border-b border-quantum-accent/10">
+        <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-quantum-bg-secondary border-b border-quantum-accent/10">
           <span className="font-mono text-sm text-quantum-accent">⌨️ Lab Shell (qpiai-sdk REPL)</span>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <BackendPicker
+              value={backend}
+              onChange={changeBackend}
+              className="min-w-[11rem]"
+            />
             <button
               onClick={() => setLines(WELCOME)}
               className="text-xs px-3 py-1.5 rounded-lg border border-gray-600/40 text-content-muted hover:text-content transition-colors"
