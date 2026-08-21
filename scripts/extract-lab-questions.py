@@ -96,6 +96,10 @@ TASK_HEADER_RE = re.compile(
     r"(?:<h[1-4][^>]*>\s*|#{1,4}\s*|\*\*\s*)Task\s*(\d+)?\s*[:.]?\s*(.*?)(?:</h[1-4]>|\*\*|$)",
     re.IGNORECASE,
 )
+
+# `<a name="task3"></a>` — how QWorld solution notebooks label which task a
+# section answers. See find_solutions() for why matching this matters.
+TASK_ANCHOR_RE = re.compile(r"<a\s+name=[\"']task(\d+)[\"']", re.IGNORECASE)
 TAG_RE = re.compile(r"<[^>]+>")
 MAX_PROMPT_CHARS = 1200
 MAX_QUESTIONS_PER_TOPIC = 24
@@ -166,14 +170,40 @@ def find_solutions(nb_path):
         for i, cell in enumerate(cells):
             if cell.get("cell_type") != "markdown":
                 continue
-            m = TASK_HEADER_RE.search(cell_source(cell))
-            if not m or not m.group(1):
-                continue
-            num = int(m.group(1))
-            for nxt in cells[i + 1: i + 4]:
+
+            # Which task does this cell introduce?
+            #
+            # Most QWorld solution notebooks do NOT repeat the task heading —
+            # they mark the task with an HTML anchor and then head the section
+            # plainly, e.g.
+            #
+            #     <a name="task2"></a>
+            #     <h3>Solution</h3>
+            #     [code]
+            #
+            # Matching only "Task <n>" therefore found nothing in 51 of the 170
+            # solution notebooks, and every question sourced from them shipped
+            # with an empty solution. The anchor is the reliable marker; the
+            # heading is kept as a fallback for the notebooks that do repeat it.
+            source = cell_source(cell)
+            m = TASK_HEADER_RE.search(source)
+            if m and m.group(1):
+                num = int(m.group(1))
+            else:
+                anchor = TASK_ANCHOR_RE.search(source)
+                if not anchor:
+                    continue
+                num = int(anchor.group(1))
+
+            # Widened from 3 to 6: with the anchor form the code cell sits
+            # behind an intervening "<h3>Solution</h3>" cell, and some
+            # notebooks add a prose line before it.
+            for nxt in cells[i + 1: i + 6]:
                 if nxt.get("cell_type") == "code":
                     code = cell_source(nxt).strip()
-                    if code:
+                    # First writer wins. A task's own solution precedes any
+                    # later cell that merely references it.
+                    if code and num not in solutions:
                         solutions[num] = code
                     break
         break

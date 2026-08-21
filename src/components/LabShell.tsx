@@ -102,7 +102,13 @@ export default function LabShell() {
           if (result.error) next.push({ kind: 'error', text: result.error });
           return next;
         });
-        if (result.success) recordActivity(XP_REWARDS.run);
+        // Keep the streak alive for the attempt, award XP only for a clean run.
+        // This used to be `if (result.success)`, so a lab whose published
+        // solution imports a module this environment does not carry — most of
+        // the Cirq-era QWorld material — gave the learner no day credit at all.
+        // Turning up and running code is the behaviour a streak exists to
+        // reward; getting it right is what XP is for.
+        recordActivity(result.success ? XP_REWARDS.run : 0);
       } catch {
         setLines((prev) => [...prev, { kind: 'error', text: 'Connection to executor failed.' }]);
       } finally {

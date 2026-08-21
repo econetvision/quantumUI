@@ -240,11 +240,13 @@
           "title": "We are given the following probabilistic operator: .",
           "prompt": "Task 2 \n\nWe are given the following probabilistic operator: $ B =  \\mymatrix{ccc}{ 0.4 & 0.6 & 0 \\\\ 0.2 & 0.1 & 0.7 \\\\ 0.4 & 0.3 & 0.3 } $.\n\nWhat is the transition probability from the second state to the third state?\n\nWhat is the transition probability from the third state to the first state?\n\nWhat is the transition probability from the first state to the second state?",
           "starterCode": "SolutionToTask2()  # show solution for task 2",
-          "solution": "",
+          "solution": "# let's start with a zero matrix\nA = [\n    [0,0,0],\n    [0,0,0],\n    [0,0,0]\n]\n\n# we will randomly pick the entries and then make normalization for each column\n# it will be easier to iteratively construct the columns\n# you may notice that each column is a probabilistic state\nfrom random import randrange\n\nnormalization_factor = [0,0,0] # the normalization factor of each column may be different\n\nfor j in range(3): # each column is iteratively constructed\n    normalization_factor[j] = 0\n    while normalization_factor[j]==0: # the normalization factor cannot be zero\n        for i in range(3):\n            A[i][j] = randrange(101) # pick a random value between 0 and 100\n            normalization_factor[j] += A[i][j]\n\n# let's print matrix A before the normalization\n# the entries are between 0 and 100\nprint(\"matrix A before normalization:\")\nfor i in range(3):\n    print(A[i])\n\n\n# let's normalize each column\nfor j in range(3):\n    for i in range(3):\n        A[i][j] /= normalization_factor[j]  # shorter form of A[i][j] = A[i][j] / normalization_factor[j]\n        \n# let's print matrix A after the normalization\nprint() # print an empty line\nprint(\"matrix A after normalization:\")\nfor i in range(3):\n    print(A[i]) \n\nprint()\nprint(\"the column summations must be 1\")\n\nsum = [0,0,0]\nfor j in range(3):\n    for i in range(3):\n        sum[j] += A[i][j]\n\nprint(sum)",
           "source": "qbook101/qbook101/QB21_CS20_Probabilistic_Operators.ipynb",
           "difficulty": "complex",
           "titleDerived": true,
-          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are."
+          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are.",
+          "solutionHarvested": true,
+          "solutionSource": "QB21_CS20_Probabilistic_Operators.ipynb"
         },
         {
           "id": "quantum-fundamentals-20",
@@ -349,11 +351,13 @@
           "title": "Recreate famous Euler formula.",
           "prompt": "Task 3 \n\nRecreate famous Euler formula. Please use:\n\n- =, + or -;\n- one instance of each of the following constants: 0, 1, $i$, $\\pi$, $e$.",
           "starterCode": "SolutionToTask3()  # show solution for task 3",
-          "solution": "",
+          "solution": "result1 = ((3+4j)/(2-1j))*(7+2j)+3j\nprint('((3+4j)/(2-j))*(7+2j)+3j=', result1)\nresult2 = (1-2j)**5\nprint('(1-2j)**5=', result2)\nresult3 = (8-4j)/(abs(4+3j))\nprint('(8-4j)/(abs(4+3j))=', result3)",
           "source": "qbook101/qbook101/QB31_C01_Complex_Number_Basics.ipynb",
           "difficulty": "easy",
           "titleDerived": true,
-          "explanation": "Quantum amplitudes are complex numbers, and the complex phase is not decorative — it decides whether paths interfere constructively or destructively. Probability discards the phase, so it only becomes visible through interference."
+          "explanation": "Quantum amplitudes are complex numbers, and the complex phase is not decorative — it decides whether paths interfere constructively or destructively. Probability discards the phase, so it only becomes visible through interference.",
+          "solutionHarvested": true,
+          "solutionSource": "QB31_C01_Complex_Number_Basics.ipynb"
         },
         {
           "id": "quantum-gates-4",
@@ -461,11 +465,13 @@
           "title": "Calculate on the paper the probabilities to observe state and for each…",
           "prompt": "Task 1 \n\nCalculate on the paper the probabilities to observe state $\\ket{0}$ and $\\ket{1}$ for each quantum system:\n\n$$\n    \\myvector{ \\dfrac{1-i\\sqrt{2}}{2} \\\\ \\\\ \\dfrac{i}{2} } \n    \\mbox{ , }\n    \\myvector{ \\dfrac{2i}{\\sqrt{6}} \\\\ \\\\ \\dfrac{1-i}{\\sqrt{6}} } \n    \\mbox{ and }\n    \\myvector{ \\dfrac{1+i\\sqrt{3}}{\\sqrt{5}} \\\\ \\\\ \\dfrac{-i}{\\sqrt{5}} }.\n$$.",
           "starterCode": "SolutionToTask1()  # show solution for task 1",
-          "solution": "",
+          "solution": "a_square = 1 - (0.1)**2 - (-0.7)**2 - (0.4)**2 - (0.3)**2\na = a_square**0.5\nprint('a=',a,\",\",-a)\n\nstate_1_amplitude_square = 1 - (1/6**0.5)**2 - (-1/6**0.5)**2 - (-1/4**0.5)**2\nb = (1**2 + 2**2)/state_1_amplitude_square\nprint('b=',b,\",\",-b)",
           "source": "qbook101/qbook101/QB31_C02_Quantum_States_With_Complex_Numbers.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are."
+          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are.",
+          "solutionHarvested": true,
+          "solutionSource": "QB31_C02_Quantum_States_With_Complex_Numbers.ipynb"
         },
         {
           "id": "quantum-gates-13",
@@ -500,11 +506,13 @@
           "title": "Verify that and that",
           "prompt": "Task 1 \n\nVerify that $Y^{\\dagger} = Y$ and that $YY = I$.",
           "starterCode": "SolutionToTask1()  # show solution for task 1",
-          "solution": "",
+          "solution": "# random_complex_quantum_state_file = path_files+\"random_complex_quantum_state.py\"\n# %run $random_complex_quantum_state_file      # same code as the next one\nfrom random import randrange\ndef random_complex_quantum_state():\n    # quantum state \n    quantum_state=[0,0]\n    length_square = 0\n    while length_square == 0:\n        first_entry_real = randrange(-100,101)\n        first_entry_imag = randrange(-100,101)\n        second_entry_real = randrange(-100,101)\n        second_entry_imag = randrange(-100,101)\n        length_square = first_entry_real**2+first_entry_imag**2+second_entry_real**2+second_entry_imag**2\n    first_entry_real = first_entry_real / length_square**0.5\n    first_entry_imag = first_entry_imag / length_square**0.5\n    second_entry_real = second_entry_real / length_square**0.5\n    second_entry_imag = second_entry_imag / length_square**0.5\n    quantum_state[0] = complex(first_entry_real, first_entry_imag)\n    quantum_state[1] = complex(second_entry_real, second_entry_imag)\n    return quantum_state",
           "source": "qbook101/qbook101/QB31_C03_Briefly_Unitary_Operators.ipynb",
           "difficulty": "complex",
           "titleDerived": true,
-          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic."
+          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic.",
+          "solutionHarvested": true,
+          "solutionSource": "QB31_C03_Briefly_Unitary_Operators.ipynb"
         },
         {
           "id": "quantum-gates-16",
@@ -1384,11 +1392,13 @@
           "title": "Encrypt and decrypt the message \"15\" using RSA encryption scheme.",
           "prompt": "Task 1 \n\nEncrypt and decrypt the message \"15\" using RSA encryption scheme. Let $A=3$ & $B=7$.",
           "starterCode": "import math\n\nA = 3\nB = 11\nn = A*B\nphi = (A-1)*(B-1)\n\nk = 1\ne = 7\nd = (k*phi + 1)//e\n \nM = 5\n\n# Encryption E = (M ^ e) % n\nE = (M**e) % n\nprint(\"Encrypted Data = \", int(E))\n \n# Decryption\n\nM = ### YOUR CODE HERE ###\n\nprint(\"Decrypted Data = \", int(M))",
-          "solution": "",
+          "solution": "import math\n\nA = 3\nB = 11\nn = A*B\nphi = (A-1)*(B-1)\n\nk = 1\ne = 7\nd = (k*phi + 1)//e  #// for integer division\n \nM = 5\n\n# Encryption E = (M ^ e) % n\nE = (M**e) % n\nprint(\"Encrypted Data = \", int(E))\n \n# Decryption M = (E ^ d) % n\nM = (E**d) % n\nprint(\"Decrypted Data = \", int(M))",
           "source": "qkd/notebooks/QC03_RSA.ipynb",
           "difficulty": "easy",
           "titleDerived": true,
-          "explanation": "Quantum cryptography's security rests on physics rather than computational hardness — measurement disturbs a state, and that disturbance is detectable."
+          "explanation": "Quantum cryptography's security rests on physics rather than computational hardness — measurement disturbs a state, and that disturbance is detectable.",
+          "solutionHarvested": true,
+          "solutionSource": "QC03_RSA.ipynb"
         },
         {
           "id": "quantum-cryptography-6",

@@ -90,7 +90,8 @@ export default function ProjectsWorkspace() {
       });
       const data: ExecutionResult = await res.json();
       setResult(data);
-      if (data.success) recordActivity(XP_REWARDS.run);
+      // Streak on every attempt, XP only when it ran clean — same rule as LabShell.
+      recordActivity(data.success ? XP_REWARDS.run : 0);
     } catch {
       setResult({ success: false, output: '', error: 'Executor not reachable.' });
     } finally {

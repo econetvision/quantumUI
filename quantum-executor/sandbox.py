@@ -81,6 +81,45 @@ DENIED_ATTRIBUTES = frozenset({
 })
 
 
+# Modules a learner plausibly reaches for that this environment does not carry.
+# Refusing them with the same wording used for `os` and `subprocess` reads as an
+# accusation and tells the reader nothing: much of the QWorld lab material was
+# written against Cirq, so people paste a published solution, get "not permitted
+# here", and reasonably conclude the lab is broken. Name the substitute instead.
+_SDK_HINT = (
+    "this environment runs the QpiAI Quantum SDK. `Circuit` is already defined "
+    "— delete the import and use it directly, e.g. `c = Circuit(2, 2)`"
+)
+_IMPORT_GUIDANCE = {
+    # main.strip_sdk_imports() removes these before validation, so they should
+    # never reach here. Kept so that if a future call site forgets to strip,
+    # the learner still gets the substitute rather than a bare refusal.
+    "qpiai_quantum": _SDK_HINT,
+    "qiskit": _SDK_HINT,
+    "cirq": _SDK_HINT,
+    "cirq_web": "3-D Bloch rendering is not available here; `run()` returns bloch_vectors and the app draws them for you",
+    "pennylane": _SDK_HINT,
+    "braket": _SDK_HINT,
+    "pyquil": _SDK_HINT,
+    "projectq": _SDK_HINT,
+    "matplotlib": "plotting is not available here; the circuit diagram, measurement counts and Bloch vectors come back with the result automatically",
+    "seaborn": "plotting is not available here; results are rendered by the app",
+    "pandas": "not available here — use plain lists and dicts, or numpy",
+    "scipy": "not available here — numpy is, and covers the linear algebra these labs need",
+}
+
+
+def _import_message(name: str, root: str) -> str:
+    """Explain a rejected import, with a way forward when there is one."""
+    hint = _IMPORT_GUIDANCE.get(root)
+    if hint:
+        return f"'{name}' is not available — {hint}"
+    return (
+        f"import of '{name}' is not permitted here — only "
+        f"{', '.join(sorted(ALLOWED_MODULES))} are available"
+    )
+
+
 class _Validator(ast.NodeVisitor):
     def __init__(self) -> None:
         self.problems: list[str] = []
@@ -92,17 +131,16 @@ class _Validator(ast.NodeVisitor):
     # -- imports ------------------------------------------------------------
     def visit_Import(self, node: ast.Import) -> None:
         for alias in node.names:
-            if alias.name.split(".")[0] not in ALLOWED_MODULES:
-                self._reject(node, f"import of '{alias.name}' is not permitted here")
+            root = alias.name.split(".")[0]
+            if root not in ALLOWED_MODULES:
+                self._reject(node, _import_message(alias.name, root))
         self.generic_visit(node)
 
     def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
         # `from os import system` — the exact case the old denylist missed.
         root = (node.module or "").split(".")[0]
         if root not in ALLOWED_MODULES:
-            self._reject(
-                node, f"import from '{node.module or '.'}' is not permitted here"
-            )
+            self._reject(node, _import_message(node.module or ".", root))
         self.generic_visit(node)
 
     # -- the dunder rule ----------------------------------------------------
