@@ -233,12 +233,45 @@ _SAFE_BUILTIN_NAMES: Iterable[str] = (
 )
 
 
+def _guarded_import(
+    name: str,
+    globals: Any = None,
+    locals: Any = None,
+    fromlist: Any = (),
+    level: int = 0,
+) -> Any:
+    """
+    `__import__` restricted to ALLOWED_MODULES.
+
+    Without this the allowlist was decorative. `import math` passed the AST
+    check, then died at run time with "ImportError: __import__ not found",
+    because the restricted builtins table had no __import__ at all — so every
+    module the sandbox advertises as available was in fact unusable, and 22 of
+    the shipped lab solutions failed on their first line.
+
+    This is the second gate, not the only one: the AST validator has already
+    rejected disallowed imports before any of this executes. It repeats the
+    check because a bare `exec` of an allowed module's own internals could
+    otherwise reach further than intended.
+    """
+    root = name.split(".")[0]
+    if level != 0:
+        # Relative import — there is no package here to be relative to.
+        raise ImportError("relative imports are not permitted here")
+    if root not in ALLOWED_MODULES:
+        raise ImportError(_import_message(name, root))
+    return builtins.__import__(name, globals, locals, fromlist, level)
+
+
 def safe_builtins() -> Dict[str, Any]:
     """A fresh restricted builtins mapping. Fresh so callers cannot poison it."""
     table: Dict[str, Any] = {}
     for name in _SAFE_BUILTIN_NAMES:
         if hasattr(builtins, name):
             table[name] = getattr(builtins, name)
+    # Not from _SAFE_BUILTIN_NAMES: the real __import__ would hand back `os`.
+    # This one only resolves what ALLOWED_MODULES already permits.
+    table["__import__"] = _guarded_import
     # Some libraries probe __name__ on the namespace; give them a harmless one.
     table["__name__"] = "__sandbox__"
     return table

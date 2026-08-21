@@ -11,6 +11,7 @@ Run: python -m pytest test_sandbox.py -q   (or: python test_sandbox.py)
 
 from __future__ import annotations
 
+import builtins
 import sandbox
 
 # Each entry is code that MUST be refused before execution.
@@ -86,11 +87,47 @@ def test_legitimate_code_is_allowed() -> None:
 
 def test_restricted_builtins_lack_escape_hatches() -> None:
     table = sandbox.safe_builtins()
-    for name in ("open", "eval", "exec", "compile", "__import__", "getattr", "input"):
+    for name in ("open", "eval", "exec", "compile", "getattr", "input"):
         assert name not in table, f"{name} is reachable from the sandbox namespace"
     # ...while the things lab code actually needs are present.
     for name in ("print", "len", "range", "sum", "sorted", "abs"):
         assert name in table, f"{name} missing — legitimate code would break"
+
+
+def test_import_is_present_but_guarded() -> None:
+    """
+    __import__ is deliberately in the table, unlike the other escape hatches.
+
+    It used to be absent, which meant ALLOWED_MODULES was decorative: `import
+    math` passed the AST check and then died at run time with "__import__ not
+    found". Every module the sandbox advertises was unusable, and 22 shipped
+    lab solutions failed on their first line.
+
+    Being present is only safe because it is the guarded one. These assertions
+    are what keeps the real builtins.__import__ from being restored by
+    accident.
+    """
+    imp = sandbox.safe_builtins()["__import__"]
+    assert imp is not builtins.__import__, "the real __import__ is reachable"
+
+    for allowed in ("math", "random", "json"):
+        assert imp(allowed) is not None, f"{allowed} should be importable"
+
+    for denied in ("os", "sys", "subprocess", "socket", "shutil", "importlib"):
+        try:
+            imp(denied)
+        except ImportError:
+            continue
+        raise AssertionError(f"{denied} was importable through the sandbox")
+
+    # Relative imports have no package to resolve against and must not be a
+    # way to reach one.
+    try:
+        imp("math", None, None, (), 1)
+    except ImportError:
+        pass
+    else:
+        raise AssertionError("a relative import was permitted")
 
 
 def test_runaway_loop_is_interrupted() -> None:
@@ -108,6 +145,7 @@ if __name__ == "__main__":
         test_escapes_are_blocked,
         test_legitimate_code_is_allowed,
         test_restricted_builtins_lack_escape_hatches,
+        test_import_is_present_but_guarded,
         test_runaway_loop_is_interrupted,
     ):
         fn()
