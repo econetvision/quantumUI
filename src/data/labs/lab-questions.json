@@ -129,11 +129,14 @@
           "title": "Observe that if and , then it is Identity operator, i.e., the initial…",
           "prompt": "Task 5 \n\nObserve that if $ a=1 $ and $ b = 0 $, then it is Identity operator, i.e., the initial condition will stay as it is.\n\nIf $ a=0 $ and $ b=1 $, then it is NOT operator. NOT operator swaps the probabilities of heads and tails in each step. If the initial probabilities are not $ 0.5 $ and $ 0.5 $, then the system never converges to a fixed probabilities.",
           "starterCode": "#\n# your solution is here\n#",
-          "solution": "",
+          "solution": "# Task 5 — a=1,b=0 gives Identity; a=0,b=1 gives NOT\nimport numpy as np\n\ndef game_coins(a, b):\n    # column j is where state j goes\n    return np.array([[a, b],\n                     [1-a, 1-b]])\n\nstate = np.array([0.3, 0.7])\nprint(\"start          :\", state)\nprint(\"a=1, b=0 (I)   :\", game_coins(1, 0) @ state)\nprint(\"a=0, b=1 (NOT) :\", game_coins(0, 1) @ state)\n",
           "source": "qbook101/qbook101/QB21_CS12_Coin_Flip_Game.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are."
+          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-fundamentals-11",
@@ -141,11 +144,14 @@
           "title": "Randomly pick the values of and , and then implement Tasks 3 and 4 for",
           "prompt": "Task 6\n\nRandomly pick the values of $ a $ and $ b $, and then implement Tasks 3 and 4 for $ GameCoins(a,b) $.",
           "starterCode": "#\n# your solution is here\n#",
-          "solution": "",
+          "solution": "# Task 6 — random a, b then iterate GameCoins(a,b)\nimport numpy as np, random\n\nrandom.seed(0)\na = random.randrange(0, 101) / 100\nb = random.randrange(0, 101) / 100\nG = np.array([[a, b], [1-a, 1-b]])\nprint(f\"a = {a}, b = {b}\")\n\nstate = np.array([1.0, 0.0])\nfor step in range(1, 11):\n    state = G @ state\n    print(f\"  step {step:2d}: heads={state[0]:.6f} tails={state[1]:.6f}\")\n",
           "source": "qbook101/qbook101/QB21_CS12_Coin_Flip_Game.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "A biased coin is the classical stand-in for a qubit: both give probabilistic outcomes with weights summing to 1. The difference is that coin probabilities only ever add, while quantum amplitudes can be negative and cancel. Interference is what a coin can never do."
+          "explanation": "A biased coin is the classical stand-in for a qubit: both give probabilistic outcomes with weights summing to 1. The difference is that coin probabilities only ever add, while quantum amplitudes can be negative and cancel. Interference is what a coin can never do.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-fundamentals-12",
@@ -153,11 +159,14 @@
           "title": "10 times repeat Task 6 and observe whether the probabilities converge in each…",
           "prompt": "Task 7\n\n10 times repeat Task 6 and observe whether the probabilities converge in each time.",
           "starterCode": "#\n# your solution is here\n#",
-          "solution": "",
+          "solution": "# Task 7 — repeat 10 times and watch the state converge\nimport numpy as np, random\n\nrandom.seed(1)\nfor trial in range(1, 11):\n    a = random.randrange(0, 101) / 100\n    b = random.randrange(0, 101) / 100\n    G = np.array([[a, b], [1-a, 1-b]])\n    state = np.array([1.0, 0.0])\n    for _ in range(60):\n        state = G @ state\n    print(f\"trial {trial:2d}: a={a:.2f} b={b:.2f} -> converged to [{state[0]:.6f}, {state[1]:.6f}]\")\nprint(\"\\nEach run settles on the stationary distribution of its own matrix,\")\nprint(\"so the limit depends on a and b, not on the starting state.\")\n",
           "source": "qbook101/qbook101/QB21_CS12_Coin_Flip_Game.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are."
+          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-fundamentals-13",
@@ -165,11 +174,14 @@
           "title": "We can rewrite arbitrary GameCoins as We assume that it is neither Identity…",
           "prompt": "Task 8\n\nWe can rewrite arbitrary GameCoins as \n\n$  \\begin{array}{c|cc} \\hookleftarrow & \\mathbf{Head} & \\mathbf{Tail} \\\\ \\hline \\mathbf{Head} & 1-y & x\\\\  \\mathbf{Tail} & y & 1-x  \\end{array} = \\begin{array}{c|cc} \\hookleftarrow & \\mathbf{0} & \\mathbf{1} \\\\ \\hline \\mathbf{0} & 1-y & x \\\\  \\mathbf{1} & y & 1-x  \\end{array}.\n$ \n\nWe assume that it is neither Identity nor NOT operator. Then, independent of the initial state, the system always converges to \n\n$ Pr[\\mbox{\"heads\"}] = \\dfrac{x}{x+y} $ and $ Pr[\\mbox{\"tails\"}]=\\dfrac{y}{x+y} $, \n\nwhich are the probabilities of getting heads and tails, respectively.\n\nObserve this fact by checking the results of Task 7.",
           "starterCode": "#\n# your solution is here\n#",
-          "solution": "",
+          "solution": "# Task 8 — GameCoins rewritten with x and y\nimport numpy as np\n\ndef game_coins_xy(x, y):\n    # [[1-y, x], [y, 1-x]] : columns still sum to 1\n    return np.array([[1-y, x],\n                     [y,   1-x]])\n\nfor x, y in ((0.3, 0.4), (0.0, 0.0), (1.0, 1.0)):\n    G = game_coins_xy(x, y)\n    print(f\"x={x}, y={y} ->\\n{G}   column sums {G.sum(axis=0)}\")\n",
           "source": "qbook101/qbook101/QB21_CS12_Coin_Flip_Game.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are."
+          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-fundamentals-14",
@@ -177,11 +189,14 @@
           "title": "Suppose that Balvis secretly flips a coin having the bias .",
           "prompt": "Task 1 \n\nSuppose that Balvis secretly flips a coin having the bias $ \\dfrac{Pr(Heads)}{Pr(Tails)} = \\dfrac{1}{4}$.\n\nRepresent your information about the outcome as a column vector.",
           "starterCode": "#\n# your code is here\n#",
-          "solution": "",
+          "solution": "# Task 1 — bias Pr(Heads)/Pr(Tails) = 1/4 as a column vector\nheads_ratio, tails_ratio = 1, 4\ntotal = heads_ratio + tails_ratio\np_head = heads_ratio / total\np_tail = tails_ratio / total\nprint(f\"Pr(Heads) = {p_head}   Pr(Tails) = {p_tail}\")\nprint(\"column vector: [\", p_head, \",\", p_tail, \"]  (sums to\", p_head + p_tail, \")\")\n",
           "source": "qbook101/qbook101/QB21_CS16_Probabilistic_States.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "Entanglement means the pair has a definite joint state while neither qubit has a state of its own. Measuring one instantly fixes the other's outcome, yet no information travels — the individual results are random, and only comparing both reveals the correlation."
+          "explanation": "Entanglement means the pair has a definite joint state while neither qubit has a state of its own. Measuring one instantly fixes the other's outcome, yet no information travels — the individual results are random, and only comparing both reveals the correlation.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-fundamentals-15",
@@ -217,10 +232,13 @@
           "title": "[extra]",
           "prompt": "Task 4 [extra] \n\nAs given in the hint for Task 3, you may pick your random numbers between 0 and $ 10^k $. For better precision, you may take bigger values of $ k $.\n\nWrite a function that randomly creates a probabilisitic state of size $ n $ with a precision up to $ k $ digits. \n\nTest your function.",
           "starterCode": "#\n# your solution is here\n#",
-          "solution": "",
+          "solution": "# Task 4 [extra] — random probabilistic state with k digits of precision\nimport random\n\ndef random_state(n, k=4):\n    \"\"\"n outcomes, probabilities drawn from 0..10^k then normalised.\"\"\"\n    raw = [random.randrange(0, 10 ** k + 1) for _ in range(n)]\n    if sum(raw) == 0:\n        raw[0] = 1\n    total = sum(raw)\n    return [v / total for v in raw]\n\nrandom.seed(3)\nfor n in (2, 3, 4):\n    s = random_state(n, k=6)\n    print(f\"n={n}: {[round(p, 6) for p in s]}  sum={round(sum(s), 10)}\")\n",
           "source": "qbook101/qbook101/QB21_CS16_Probabilistic_States.ipynb",
           "difficulty": "complex",
-          "explanation": "A biased coin is the classical stand-in for a qubit: both give probabilistic outcomes with weights summing to 1. The difference is that coin probabilities only ever add, while quantum amplitudes can be negative and cancel. Interference is what a coin can never do."
+          "explanation": "A biased coin is the classical stand-in for a qubit: both give probabilistic outcomes with weights summing to 1. The difference is that coin probabilities only ever add, while quantum amplitudes can be negative and cancel. Interference is what a coin can never do.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-fundamentals-18",
@@ -228,11 +246,14 @@
           "title": "The operator is applied to the probabilistic state .",
           "prompt": "Task 1 \n\nThe operator $ GameCoins = \\mymatrix{cc}{ 0.6 & 0.3 \\\\ 0.4 & 0.7 } $ is applied to the probabilistic state $ \\myvector{ 0.1 \\\\ 0.9 } $. \n\nThen, the new probabilistic state is\n\n$ \\mymatrix{cc}{ 0.6 & 0.3 \\\\ 0.4 & 0.7 } \\myvector{ 0.1 \\\\ 0.9 } = \\myvector{ 0.33 \\\\ 0.67 }. $\n\nPlease verify the correctness of matrix-vector multiplication.",
           "starterCode": "SolutionToTask2()  # show solution for task 2",
-          "solution": "",
+          "solution": "# Task 1 — apply GameCoins to a probabilistic state\nimport numpy as np\n\nGameCoins = np.array([[0.6, 0.3],\n                      [0.4, 0.7]])\nstate = np.array([0.1, 0.9])\n\nnew_state = GameCoins @ state\nprint(\"GameCoins @ [0.1, 0.9] =\", np.round(new_state, 10))\nprint(\"total probability =\", round(float(new_state.sum()), 10))\n",
           "source": "qbook101/qbook101/QB21_CS20_Probabilistic_Operators.ipynb",
           "difficulty": "complex",
           "titleDerived": true,
-          "explanation": "A biased coin is the classical stand-in for a qubit: both give probabilistic outcomes with weights summing to 1. The difference is that coin probabilities only ever add, while quantum amplitudes can be negative and cancel. Interference is what a coin can never do."
+          "explanation": "A biased coin is the classical stand-in for a qubit: both give probabilistic outcomes with weights summing to 1. The difference is that coin probabilities only ever add, while quantum amplitudes can be negative and cancel. Interference is what a coin can never do.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-fundamentals-19",
@@ -327,11 +348,14 @@
           "title": "Calculate the following values on the paper",
           "prompt": "Task 1 \n\nCalculate the following values on the paper.\n\n$(3-2i) + (7+i)$;\n\n$(4+5i) - (2+2i)$;\n\n$(2+i) \\cdot (8-4i)$;\n\n$\\mathopen|4+3i\\mathclose|$;\n\n$\\overline{5-6i}$.",
           "starterCode": "SolutionToTask1()  # show solution for task 1",
-          "solution": "",
+          "solution": "# Task 1 — complex arithmetic\nprint(\"(3-2i) + (7+i) =\", (3-2j) + (7+1j))\nprint(\"(4+5i) - (2+2i) =\", (4+5j) - (2+2j))\nprint(\"(2+i) * (8-4i)  =\", (2+1j) * (8-4j))\nprint(\"|4+3i|          =\", abs(4+3j))\nprint(\"conj(5-6i)      =\", (5-6j).conjugate())\n",
           "source": "qbook101/qbook101/QB31_C01_Complex_Number_Basics.ipynb",
           "difficulty": "easy",
           "titleDerived": true,
-          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic."
+          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-2",
@@ -339,11 +363,14 @@
           "title": "Convert to polar form.",
           "prompt": "Task 2 \n\nConvert $4-4i$ to polar form.\n\nConvert $2 \\cdot e^{i \\pi}$ from polar form to the rectangular form.",
           "starterCode": "SolutionToTask2()  # show solution for task 2",
-          "solution": "",
+          "solution": "# Task 2 — rectangular <-> polar\nimport cmath, math\n\nz = 4 - 4j\nr, theta = abs(z), cmath.phase(z)\nprint(f\"4-4i in polar: r = {r:.4f} (= 4*sqrt(2)), theta = {theta:.4f} rad = {math.degrees(theta):.1f} deg\")\n\nw = 2 * cmath.exp(1j * math.pi)          # 2 * e^(i*pi)\nprint(\"2*e^(i*pi) in rectangular:\", complex(round(w.real, 10), round(w.imag, 10)))\n",
           "source": "qbook101/qbook101/QB31_C01_Complex_Number_Basics.ipynb",
           "difficulty": "easy",
           "titleDerived": true,
-          "explanation": "Quantum amplitudes are complex numbers, and the complex phase is not decorative — it decides whether paths interfere constructively or destructively. Probability discards the phase, so it only becomes visible through interference."
+          "explanation": "Quantum amplitudes are complex numbers, and the complex phase is not decorative — it decides whether paths interfere constructively or destructively. Probability discards the phase, so it only becomes visible through interference.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-3",
@@ -393,11 +420,14 @@
           "title": "Consider the quantum states and .",
           "prompt": "Task 1 \n\n Consider the quantum states $ \\ket{\\psi}=\\dsqrttwo \\ket{0} - \\dfrac{i}{\\sqrt{2}} \\ket{1} $ and $ \\ket{\\phi} = \\dsqrttwo \\ket{0} + \\dfrac{i}{\\sqrt{2}}\\ket{1}  $.  Compute $ \\bra{\\psi}$ and $\\bra{\\phi}$.",
           "starterCode": "SolutionToTask1()  # show solution for task 1",
-          "solution": "",
+          "solution": "# Task 1 — the bra is the conjugate transpose of the ket\nimport numpy as np\n\npsi = np.array([1/np.sqrt(2), -1j/np.sqrt(2)])   # |psi> = (1/sqrt2)|0> - (i/sqrt2)|1>\nphi = np.array([1/np.sqrt(2),  1j/np.sqrt(2)])   # |phi> = (1/sqrt2)|0> + (i/sqrt2)|1>\n\nprint(\"<psi| =\", np.round(psi.conj(), 4))\nprint(\"<phi| =\", np.round(phi.conj(), 4))\n",
           "source": "qbook101/qbook101/QB31_C02_Mathematical_Notation.ipynb",
           "difficulty": "easy",
           "titleDerived": true,
-          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic."
+          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-7",
@@ -405,11 +435,14 @@
           "title": "What can you conclude about these quantum states?",
           "prompt": "Task 2 \n\nCompute $ \\braket{\\psi}{\\phi} $. What can you conclude about these quantum states?",
           "starterCode": "SolutionToTask2()  # show solution for task 2",
-          "solution": "",
+          "solution": "# Task 2 — inner product <psi|phi>\nimport numpy as np\n\npsi = np.array([1/np.sqrt(2), -1j/np.sqrt(2)])\nphi = np.array([1/np.sqrt(2),  1j/np.sqrt(2)])\n\nbraket = np.vdot(psi, phi)               # vdot conjugates the first argument\nprint(\"<psi|phi> =\", np.round(braket, 10))\nprint(\"orthogonal\" if abs(braket) < 1e-12 else \"not orthogonal\")\n",
           "source": "qbook101/qbook101/QB31_C02_Mathematical_Notation.ipynb",
           "difficulty": "easy",
           "titleDerived": true,
-          "explanation": "The inner product measures overlap between states. Orthogonal states are perfectly distinguishable in one measurement; non-orthogonal ones are not, and that impossibility is precisely what makes quantum key distribution secure."
+          "explanation": "The inner product measures overlap between states. Orthogonal states are perfectly distinguishable in one measurement; non-orthogonal ones are not, and that impossibility is precisely what makes quantum key distribution secure.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-8",
@@ -417,11 +450,14 @@
           "title": "Verify that and are valid quantum states",
           "prompt": "Task 3 \n\nVerify that $ \\ket{\\psi} $ and $ \\ket{\\phi} $ are valid quantum states.",
           "starterCode": "SolutionToTask3()  # show solution for task 3",
-          "solution": "",
+          "solution": "# Task 3 — a valid quantum state has norm 1\nimport numpy as np\n\npsi = np.array([1/np.sqrt(2), -1j/np.sqrt(2)])\nphi = np.array([1/np.sqrt(2),  1j/np.sqrt(2)])\n\nfor name, state in ((\"psi\", psi), (\"phi\", phi)):\n    total = float(np.sum(np.abs(state) ** 2))\n    print(f\"sum |amplitude|^2 for {name} = {total:.10f} -> {'valid' if abs(total-1) < 1e-12 else 'INVALID'}\")\n",
           "source": "qbook101/qbook101/QB31_C02_Mathematical_Notation.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic."
+          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-9",
@@ -429,11 +465,14 @@
           "title": "Verify that is a basis set for a qubit",
           "prompt": "Task 4 \n\nVerify that $ \\{ \\ket{+},\\ket{-} \\} $ is a basis set for a qubit.",
           "starterCode": "SolutionToTask4()  # show solution for task 4",
-          "solution": "",
+          "solution": "# Task 4 — is {|+>, |->} a basis for one qubit?\nimport numpy as np\n\nplus  = np.array([1,  1]) / np.sqrt(2)\nminus = np.array([1, -1]) / np.sqrt(2)\n\nprint(\"norm |+> =\", round(float(np.linalg.norm(plus)), 10))\nprint(\"norm |-> =\", round(float(np.linalg.norm(minus)), 10))\nprint(\"<+|-> =\", round(float(np.vdot(plus, minus).real), 10))\n\nM = np.column_stack([plus, minus])\nprint(\"rank =\", int(np.linalg.matrix_rank(M)), \"-> spans C^2\" if np.linalg.matrix_rank(M) == 2 else \"\")\nprint(\"orthonormal basis\" if abs(np.vdot(plus, minus)) < 1e-12 else \"not a basis\")\n",
           "source": "qbook101/qbook101/QB31_C02_Mathematical_Notation.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic."
+          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-10",
@@ -441,11 +480,14 @@
           "title": "Given , compute",
           "prompt": "Task 5 \n\nGiven $A=  \\mymatrix{cc}{3 + 7i & 0 \\\\ 2i & 4-i}$, compute $A^{\\dagger}$:",
           "starterCode": "SolutionToTask5()  # show solution for task 5",
-          "solution": "",
+          "solution": "# Task 5 — conjugate transpose (dagger)\nimport numpy as np\n\nA = np.array([[3+7j, 0],\n              [2j,   4-1j]])\nprint(\"A =\\n\", A)\nprint(\"A-dagger =\\n\", A.conj().T)\n",
           "source": "qbook101/qbook101/QB31_C02_Mathematical_Notation.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic."
+          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-11",
@@ -453,11 +495,14 @@
           "title": "Given , show that is unitary",
           "prompt": "Task 6 \n\nGiven $A=  \\frac{1}{2} \\mymatrix{cc}{1 + i & 1 - i \\\\ 1 - i & 1 + i}$, show that $A$ is unitary",
           "starterCode": "SolutionToTask6()  # show solution for task 6",
-          "solution": "",
+          "solution": "# Task 6 — show A is unitary: A-dagger @ A == I\nimport numpy as np\n\nA = 0.5 * np.array([[1+1j, 1-1j],\n                    [1-1j, 1+1j]])\nprod = A.conj().T @ A\nprint(\"A-dagger @ A =\\n\", np.round(prod, 10))\nprint(\"unitary\" if np.allclose(prod, np.eye(2)) else \"NOT unitary\")\n",
           "source": "qbook101/qbook101/QB31_C02_Mathematical_Notation.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic."
+          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-12",
