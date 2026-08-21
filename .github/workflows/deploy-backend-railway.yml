@@ -10,7 +10,7 @@ name: Deploy Backend to Railway
 
 on:
   push:
-    branches: [main, clean-main]
+    branches: [main]
     paths:
       - 'quantum-executor/**'
       - 'railway.json'
@@ -43,6 +43,15 @@ jobs:
       PROD_URL: ${{ vars.PRODUCTION_URL || 'https://www.sroobservotary.com' }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Guard — production deploys come from main only
+        # `branches:` already limits the push trigger, but workflow_dispatch can
+        # be fired from any ref in the UI. Without this, "Run workflow" on a
+        # feature branch would put unreviewed work straight into production.
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::Refusing to deploy ${{ github.ref }}. Production deploys run from main only."
+          exit 1
 
       - name: Guard — verify this is the production codebase
         run: |
