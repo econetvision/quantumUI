@@ -33,7 +33,13 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     env:
+      # Railway has two token kinds and the CLI reads them from different
+      # variables: RAILWAY_TOKEN must be a *project* token, RAILWAY_API_TOKEN an
+      # *account* one. An account token placed in RAILWAY_TOKEN fails with
+      # "Invalid RAILWAY_TOKEN", which reads like a bad secret rather than the
+      # wrong kind of secret. Both are passed, so whichever exists is used.
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
       # Public hostname of the executor. Falls back to the service's generated
       # Railway domain so the health check still runs when the secret is unset —
       # previously it was wrapped in `if: secrets.RAILWAY_PUBLIC_URL != ''`, so a
@@ -61,6 +67,16 @@ jobs:
           grep -q 'quantum-executor/Dockerfile' railway.json \
             || fail "railway.json no longer points at quantum-executor/Dockerfile."
           echo "Guard passed."
+
+      - name: Check a Railway token is present
+        run: |
+          if [ -z "$RAILWAY_TOKEN" ] && [ -z "$RAILWAY_API_TOKEN" ]; then
+            echo "::error::No Railway token set. RAILWAY_TOKEN takes a project token (quantum-executor -> Settings -> Tokens); RAILWAY_API_TOKEN takes an account token (Account Settings -> Tokens). Railway recommends a project token for deploys."
+            exit 1
+          fi
+          [ -n "$RAILWAY_TOKEN" ] && echo "RAILWAY_TOKEN set - must be a PROJECT token."
+          [ -n "$RAILWAY_API_TOKEN" ] && echo "RAILWAY_API_TOKEN set - must be an ACCOUNT token."
+          exit 0
 
       - name: Install Railway CLI
         run: |
