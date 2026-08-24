@@ -3,6 +3,12 @@
 
 generator client {
   provider = "prisma-client-js"
+  // Vercel's Node runtime is Amazon Linux (OpenSSL 3), which is not the
+  // platform CI builds on. Without this, `vercel build` in GitHub Actions
+  // emitted only a debian engine and the --prebuilt deploy shipped a client
+  // that could not start — every query failed and the app reported the
+  // database as unavailable while static pages served fine.
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {

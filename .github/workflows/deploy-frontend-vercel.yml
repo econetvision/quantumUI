@@ -137,7 +137,23 @@ jobs:
           echo "$body" | grep -q '"status"' \
             || fail "/api/quantum/execute did not return a status payload: $body"
 
-          echo "Smoke test passed. Executor reported: $body"
+          # The database, which nothing above touches. Every check before this
+          # one passes on a deployment whose Prisma client cannot start: static
+          # pages render, /tracks still 307s (the proxy only reads a cookie),
+          # and the executor is a separate service. A --prebuilt deploy built on
+          # a different Linux than Vercel's runtime shipped exactly that, and
+          # this smoke test called it healthy while every account feature was
+          # dead.
+          #
+          # Registering an address that already exists is a read with no side
+          # effect: 409 when the database answers, 503 when it does not.
+          db=$(curl -s -o /dev/null -w '%{http_code}' --max-time 45 \
+            -X POST "$PROD_URL/api/auth/register" \
+            -H 'Content-Type: application/json' \
+            -d '{"email":"admin@quantumui.local","password":"smoke-test-not-used","name":"smoke"}')
+          [ "$db" = "409" ] || fail "database unreachable from the deployment: /api/auth/register returned $db, expected 409"
+
+          echo "Smoke test passed. Database reachable. Executor reported: $body"
 
       # Only fires if the smoke test failed. Puts the previous deployment back
       # in front of traffic rather than leaving a broken build serving.
