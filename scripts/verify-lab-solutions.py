@@ -11,7 +11,7 @@ check that stops that shipping.
   ... --candidates FILE     # JSON {id: code} to test before writing them in
 """
 from __future__ import annotations
-import argparse, json, os, sys, time, urllib.request, urllib.error
+import argparse, json, os, re, sys, time, urllib.request, urllib.error
 
 BANK = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                     "src", "data", "labs", "lab-questions.json")
@@ -20,18 +20,40 @@ KEY = os.environ.get("EXECUTOR_API_KEY", "")
 PACE = float(os.environ.get("PACE_SECONDS", "2.2"))   # executor allows 30/min
 
 
-def run(code: str, timeout: int = 60):
+def run(code: str, timeout: int = 90, attempts: int = 4):
+    """
+    POST one program to the executor.
+
+    Retries on 429 rather than recording it as a failure. The executor allows
+    30 requests a minute; a sweep that ignores that reports perfectly good
+    solutions as broken, which is worse than being slow — it is the harness
+    lying about the thing it exists to check. The wait comes from the
+    executor's own "Retry in Ns" message where it offers one.
+    """
     body = json.dumps({"code": code, "shots": 128}).encode()
-    req = urllib.request.Request(f"{URL}/execute", data=body, method="POST",
-                                 headers={"Content-Type": "application/json",
-                                          "X-Executor-Key": KEY})
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            return json.loads(r.read())
-    except urllib.error.HTTPError as e:
-        return {"success": False, "error": f"HTTP {e.code}: {e.read()[:200].decode(errors='replace')}"}
-    except Exception as e:
-        return {"success": False, "error": f"{type(e).__name__}: {e}"}
+    for attempt in range(attempts):
+        req = urllib.request.Request(f"{URL}/execute", data=body, method="POST",
+                                     headers={"Content-Type": "application/json",
+                                              "X-Executor-Key": KEY})
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return json.loads(r.read())
+        except urllib.error.HTTPError as e:
+            detail = e.read()[:200].decode(errors="replace")
+            if e.code == 429 and attempt < attempts - 1:
+                m = re.search(r"Retry in (\d+)", detail)
+                wait = int(m.group(1)) + 1 if m else 15
+                print(f"        rate limited, waiting {wait}s")
+                sys.stdout.flush()
+                time.sleep(wait)
+                continue
+            return {"success": False, "error": f"HTTP {e.code}: {detail}"}
+        except Exception as e:
+            if attempt < attempts - 1:
+                time.sleep(5)
+                continue
+            return {"success": False, "error": f"{type(e).__name__}: {e}"}
+    return {"success": False, "error": "exhausted retries"}
 
 
 def main() -> int:

@@ -20,6 +20,20 @@ import { prisma } from "@/lib/prisma";
  * upserts the Google identity into `User` by email, so an OAuth login lands on
  * the same row (and the same `User.id`) that progress, labs and roles key off.
  */
+/**
+ * Google credentials, treated as absent unless both halves are non-empty.
+ *
+ * `.trim()` matters: a variable set to "" in a hosting dashboard arrives as an
+ * empty string rather than undefined, which is truthy enough to register a
+ * provider that cannot work.
+ */
+const GOOGLE_CLIENT_ID = (
+  process.env.AUTH_GOOGLE_ID ?? process.env.GOOGLE_CLIENT_ID ?? ""
+).trim();
+const GOOGLE_CLIENT_SECRET = (
+  process.env.AUTH_GOOGLE_SECRET ?? process.env.GOOGLE_CLIENT_SECRET ?? ""
+).trim();
+
 export const authOptions: NextAuthConfig = {
   session: {
     strategy: "jwt",
@@ -39,16 +53,28 @@ export const authOptions: NextAuthConfig = {
     // primary path; Google is additive. Both env names are read because
     // NextAuth v5 auto-discovers AUTH_GOOGLE_*, while GOOGLE_CLIENT_* is what
     // the Google Cloud console hands you.
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID ?? process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET ?? process.env.GOOGLE_CLIENT_SECRET,
-      // Ask Google for a fresh account chooser instead of silently reusing the
-      // one browser session, which is what people expect from a "sign in with"
-      // button on a shared machine.
-      authorization: {
-        params: { prompt: "select_account" },
-      },
-    }),
+    //
+    // Registered only when both halves are actually present. It used to be
+    // unconditional, so with the variables unset NextAuth still advertised a
+    // "google" provider at /api/auth/providers, the sign-in page still drew
+    // the button, and clicking it sent an empty client_id to Google — which
+    // answers "Error 401: invalid_client, The OAuth client was not found".
+    // .env.example promises that leaving these blank disables Google sign-in;
+    // this is what makes that true.
+    ...(GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET
+      ? [
+          Google({
+            clientId: GOOGLE_CLIENT_ID,
+            clientSecret: GOOGLE_CLIENT_SECRET,
+            // Ask Google for a fresh account chooser instead of silently
+            // reusing the one browser session, which is what people expect
+            // from a "sign in with" button on a shared machine.
+            authorization: {
+              params: { prompt: "select_account" },
+            },
+          }),
+        ]
+      : []),
 
     Credentials({
       name: "Credentials",

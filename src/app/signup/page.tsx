@@ -134,15 +134,7 @@ export default function SignupPage() {
         </fieldset>
 
         <div className="mt-6">
-          <GoogleSignInButton label="Sign up with Google" />
-        </div>
-
-        <div className="my-6 flex items-center gap-3">
-          <span className="h-px flex-1 bg-line" />
-          <span className="font-mono text-xs uppercase tracking-wider text-content-subtle">
-            or
-          </span>
-          <span className="h-px flex-1 bg-line" />
+          <GoogleSignInButton label="Sign up with Google" withDivider />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

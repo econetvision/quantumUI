@@ -1,23 +1,53 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { signIn } from 'next-auth/react';
 
 /**
  * Shared by `/login` and `/signup` — Google draws no distinction between the
  * two (the first sign-in creates the account), so both pages get the same
  * button rather than a separate "sign up with Google" flow.
+ *
+ * Renders nothing unless the server actually offers the provider. The button
+ * used to be unconditional, so a deployment without AUTH_GOOGLE_ID showed a
+ * sign-in option that could only ever end on Google's "Error 401:
+ * invalid_client" page. Asking /api/auth/providers keeps the button and the
+ * server's real configuration from drifting apart — there is no second place
+ * to remember to switch off.
  */
 export function GoogleSignInButton({
   callbackUrl = '/tracks',
   label = 'Continue with Google',
+  withDivider = false,
 }: {
   callbackUrl?: string;
   label?: string;
+  /** Render the "or" separator beneath the button. Hidden with it. */
+  withDivider?: boolean;
 }) {
   const [loading, setLoading] = useState(false);
+  const [available, setAvailable] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/auth/providers')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((providers) => {
+        if (!cancelled) setAvailable(Boolean(providers?.google));
+      })
+      .catch(() => {
+        // Offline or the route is unreachable — leave the button hidden rather
+        // than offering a sign-in that cannot complete.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (!available) return null;
 
   return (
+    <>
     <button
       type="button"
       disabled={loading}
@@ -32,6 +62,16 @@ export function GoogleSignInButton({
       <GoogleMark />
       {loading ? 'Redirecting…' : label}
     </button>
+    {withDivider && (
+      <div className="my-6 flex items-center gap-3">
+        <span className="h-px flex-1 bg-line" />
+        <span className="font-mono text-xs uppercase tracking-wider text-content-subtle">
+          or
+        </span>
+        <span className="h-px flex-1 bg-line" />
+      </div>
+    )}
+    </>
   );
 }
 
