@@ -1,0 +1,159 @@
+name: Deploy Frontend to Vercel
+
+# Production deploy for the Next.js app.
+#
+# Three things guard production here, in order:
+#   1. CI must pass — the whole ci.yml suite runs as a gate, not alongside.
+#   2. The commit must actually BE this codebase (see "Guard"). The repository
+#      contains a second, unrelated history whose main branch is the old MySQL
+#      version of this project; deploying it would replace the live site with
+#      an app that cannot reach the database.
+#   3. The deployment must answer correctly afterwards, or it is rolled back.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'prisma/**'
+      - 'public/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'next.config.ts'
+      - 'vercel.json'
+      - '.github/workflows/deploy-frontend-vercel.yml'
+      - '.github/workflows/ci.yml'
+  workflow_dispatch:
+
+concurrency:
+  # Deliberately NOT cancel-in-progress: killing a half-finished production
+  # deploy is how you end up serving a partially-swapped build.
+  group: deploy-frontend
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    name: Gate
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    name: Vercel
+    needs: ci
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      PROD_URL: ${{ vars.PRODUCTION_URL || 'https://www.sroobservotary.com' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Guard — production deploys come from main only
+        # `branches:` already limits the push trigger, but workflow_dispatch can
+        # be fired from any ref in the UI. Without this, "Run workflow" on a
+        # feature branch would put unreviewed work straight into production.
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::Refusing to deploy ${{ github.ref }}. Production deploys run from main only."
+          exit 1
+
+      # ---------------------------------------------------------------------
+      # Guard: refuse to deploy a commit that is not this application.
+      #
+      # `git log origin/main` shares no ancestor with the deployed history —
+      # it is a different, older project that happens to live in the same
+      # repository. Its schema targets MySQL and it still uses the pre-Next-16
+      # src/middleware.ts. Either marker means "this is not what production
+      # runs", and shipping it would take the site down rather than update it.
+      # ---------------------------------------------------------------------
+      - name: Guard — verify this is the production codebase
+        run: |
+          fail() { echo "::error::$1"; exit 1; }
+          grep -q 'provider *= *"postgresql"' prisma/schema.prisma \
+            || fail "prisma/schema.prisma is not PostgreSQL — refusing to deploy (looks like the stale MySQL history)."
+          [ -f src/proxy.ts ] \
+            || fail "src/proxy.ts is missing — refusing to deploy (pre-Next-16 tree)."
+          [ -f next.config.ts ] || fail "next.config.ts is missing — not a deployable tree."
+          echo "Guard passed: PostgreSQL schema and src/proxy.ts present."
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npx prisma generate
+
+      # Recorded BEFORE the deploy so the rollback step has somewhere to go
+      # back to. `vercel inspect` prints the deployment currently serving the
+      # production alias.
+      - name: Record the deployment currently in production
+        id: prev
+        run: |
+          id=$(npx vercel inspect "$PROD_URL" --token="$VERCEL_TOKEN" 2>&1 \
+                | awk '$1 == "id" { print $2; exit }')
+          echo "id=$id" >> "$GITHUB_OUTPUT"
+          echo "Current production deployment: ${id:-<none found>}"
+
+      - name: Pull Vercel environment
+        run: npx vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Build
+        run: npx vercel build --prod --token="$VERCEL_TOKEN"
+
+      - name: Deploy
+        run: npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+
+      # ---------------------------------------------------------------------
+      # Smoke test. A green `vercel deploy` only means the build shipped; it
+      # says nothing about whether the site answers. Each check below maps to
+      # something that has actually broken this app before:
+      #   /            — the build renders at all
+      #   /login       — a public route serves
+      #   /tracks      — 307, proving the proxy reads the session cookie
+      #                  (it silently stopped doing so once, and every
+      #                  signed-in user was bounced back to /login)
+      #   /api/quantum/execute — the API route runs and env vars resolved
+      # ---------------------------------------------------------------------
+      - name: Smoke test production
+        id: smoke
+        run: |
+          fail() { echo "::error::$1"; exit 1; }
+          code() { curl -s -o /dev/null -w '%{http_code}' --max-time 45 "$1"; }
+
+          for attempt in 1 2 3 4 5; do
+            [ "$(code "$PROD_URL/")" = "200" ] && break
+            echo "root not ready (attempt $attempt), waiting 10s"; sleep 10
+          done
+
+          [ "$(code "$PROD_URL/")" = "200" ]      || fail "GET / did not return 200"
+          [ "$(code "$PROD_URL/login")" = "200" ] || fail "GET /login did not return 200"
+
+          gated=$(code "$PROD_URL/tracks")
+          [ "$gated" = "307" ] || fail "GET /tracks returned $gated, expected 307 — route protection is not working"
+
+          body=$(curl -s --max-time 45 "$PROD_URL/api/quantum/execute")
+          echo "$body" | grep -q '"status"' \
+            || fail "/api/quantum/execute did not return a status payload: $body"
+
+          echo "Smoke test passed. Executor reported: $body"
+
+      # Only fires if the smoke test failed. Puts the previous deployment back
+      # in front of traffic rather than leaving a broken build serving.
+      - name: Roll back on smoke-test failure
+        if: failure() && steps.smoke.outcome == 'failure' && steps.prev.outputs.id != ''
+        run: |
+          echo "::warning::Smoke test failed — rolling back to ${{ steps.prev.outputs.id }}"
+          npx vercel rollback "${{ steps.prev.outputs.id }}" --token="$VERCEL_TOKEN" --timeout 5m
+          echo "### Rolled back" >> "$GITHUB_STEP_SUMMARY"
+          echo "Smoke test failed; production was reverted to \`${{ steps.prev.outputs.id }}\`." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Summary
+        if: success()
+        run: |
+          {
+            echo "### Frontend deployed"
+            echo "commit \`${{ github.sha }}\`"
+            echo "verified live at $PROD_URL"
+          } >> "$GITHUB_STEP_SUMMARY"

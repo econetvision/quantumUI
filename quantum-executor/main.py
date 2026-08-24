@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import ast
 import io
+import logging
 import os
 import re
 import sys
@@ -17,12 +18,14 @@ import time
 import traceback
 from typing import Any, Dict, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 import catalog
+import guards
 import qpiai_bridge
+import sandbox
 from mock_circuit import MockCircuit
 
 # Headless matplotlib: circuit.show() must never open a blocking GUI window
@@ -46,7 +49,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MAX_CODE_LENGTH = 10_000
+MAX_CODE_LENGTH = sandbox.MAX_CODE_LENGTH
+
+# Wall-clock budget for a single run. Kept under the frontend's 60s fetch
+# timeout so a stuck run surfaces as a clean error, not a dead socket.
+EXECUTION_TIMEOUT = float(os.environ.get("EXECUTION_TIMEOUT_SECONDS", "15"))
+
+# Tracebacks expose absolute paths and module layout. On by default only
+# outside production, where the log is the right place for them.
+INCLUDE_TRACEBACKS = os.environ.get("INCLUDE_TRACEBACKS", "").lower() == "true"
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger("executor")
 
 # In-memory REPL sessions: session_id -> exec namespace
 REPL_SESSIONS: Dict[str, Dict[str, Any]] = {}
@@ -57,39 +71,18 @@ MAX_REPL_SESSIONS = 50
 # Sandboxing
 # ---------------------------------------------------------------------------
 
-# Blocklist covering filesystem, process and import escapes. This is a teaching
-# sandbox, not a security boundary — untrusted multi-tenant use needs real
-# isolation (separate container per run, seccomp, no network).
-_DANGEROUS_PATTERNS = [
-    r"\bimport\s+os\b",
-    r"\bimport\s+subprocess\b",
-    r"\bimport\s+sys\b",
-    r"\bimport\s+shutil\b",
-    r"\bimport\s+socket\b",
-    r"\bimport\s+requests\b",
-    r"\b__import__\b",
-    r"\beval\s*\(",
-    r"\bexec\s*\(",
-    r"\bopen\s*\(",
-    r"\bcompile\s*\(",
-    r"\bglobals\s*\(",
-    r"\blocals\s*\(",
-    r"\bgetattr\s*\(",
-    r"\bsetattr\s*\(",
-    r"__subclasses__",
-    r"__globals__",
-    r"__builtins__",
-]
+# The real checks live in sandbox.py: an AST allowlist, a restricted builtins
+# mapping and a wall-clock deadline. The regex denylist that used to sit here
+# was bypassable with `from os import system` — it only ever matched the
+# `import os` form.
 
 
-def sanitize_code(code: str) -> str:
-    """Reject code containing obviously dangerous constructs."""
-    for pattern in _DANGEROUS_PATTERNS:
-        if re.search(pattern, code):
-            raise ValueError(
-                f"Blocked for safety: this sandbox does not allow `{pattern}`."
-            )
-    return code
+def sanitize_code(code: str) -> ast.Module:
+    """Validate learner code, returning the parsed tree. Raises ValueError."""
+    try:
+        return sandbox.validate_code(code)
+    except sandbox.SandboxError as exc:
+        raise ValueError(str(exc)) from exc
 
 
 def strip_sdk_imports(code: str) -> str:
@@ -117,7 +110,7 @@ def build_namespace(device: str, force_mock: bool = False) -> Dict[str, Any]:
     """Execution namespace with Circuit pinned to the resolved backend."""
     circuit_cls = MockCircuit if force_mock else qpiai_bridge.get_circuit_class(device)
     namespace: Dict[str, Any] = {
-        "__builtins__": __builtins__,
+        "__builtins__": sandbox.safe_builtins(),
         "Circuit": circuit_cls,
         "QuantumCircuit": circuit_cls,  # qiskit-style alias for QWorld lab code
     }
@@ -197,9 +190,17 @@ def execute_user_code(
     sys.stdout = captured = io.StringIO()
 
     try:
-        sanitize_code(code)
+        # Validate the *stripped* source: strip_sdk_imports removes the
+        # qpiai/qiskit import lines the namespace already provides, and those
+        # modules are deliberately absent from the sandbox allowlist.
+        stripped = strip_sdk_imports(code)
+        tree = sanitize_code(stripped)
         namespace = build_namespace(device, force_mock=force_mock)
-        exec(strip_sdk_imports(code), namespace)
+        compiled = compile(tree, "<lab>", "exec")
+        with guards.execution_slot():
+            sandbox.run_with_timeout(
+                lambda: exec(compiled, namespace), EXECUTION_TIMEOUT
+            )
 
         payload: Dict[str, Any] = {}
 
@@ -239,10 +240,29 @@ def execute_user_code(
         )
 
     except Exception as exc:
+        # Learners need the message; nobody outside needs our file paths and
+        # frame layout. The full traceback goes to the container log instead.
+        #
+        # But not every failure here is ours. A rejected import, a NameError, a
+        # SyntaxError — those are someone learning, and the request still
+        # returns 200. Logging them at ERROR with a full traceback buried the
+        # real faults: a single verification sweep filled the Railway log with
+        # tracebacks for code that was simply wrong, which is the normal case
+        # for a teaching tool. Those are now one INFO line. ERROR is kept for
+        # faults the operator can actually act on.
+        if isinstance(exc, (ValueError, SyntaxError, NameError, TypeError,
+                            AttributeError, IndexError, KeyError,
+                            ZeroDivisionError)):
+            log.info("lab code failed: %s: %s", type(exc).__name__, exc)
+        else:
+            log.exception("execution failed")
+        detail = f"{type(exc).__name__}: {exc}"
+        if INCLUDE_TRACEBACKS:
+            detail = f"{detail}\n{traceback.format_exc()}"
         return ExecutionResult(
             success=False,
             output=captured.getvalue(),
-            error=f"{type(exc).__name__}: {exc}\n{traceback.format_exc()}",
+            error=detail,
             backend=device,
         )
     finally:
@@ -277,6 +297,7 @@ async def root():
 async def health_check():
     mode = qpiai_bridge.execution_mode()
     return {
+        **guards.public_config(),
         "status": "healthy",
         "sdk_available": qpiai_bridge.sdk_module() is not None,
         "sdk_version": qpiai_bridge.sdk_version(),
@@ -322,7 +343,10 @@ async def list_algorithms():
 
 
 @app.post("/algorithms/{algorithm_id}/run")
-async def run_algorithm(algorithm_id: str, request: AlgorithmRunRequest):
+async def run_algorithm(
+    algorithm_id: str, request: AlgorithmRunRequest,
+    caller: str = Depends(guards.require_execution_auth),
+):
     if algorithm_id not in catalog.CATALOG:
         raise HTTPException(status_code=404, detail=f"Unknown algorithm: {algorithm_id}")
 
@@ -349,7 +373,10 @@ async def run_algorithm(algorithm_id: str, request: AlgorithmRunRequest):
 
 
 @app.post("/execute", response_model=ExecutionResult)
-async def execute_code(request: CodeExecutionRequest):
+async def execute_code(
+    request: CodeExecutionRequest,
+    caller: str = Depends(guards.require_execution_auth),
+):
     if not request.code.strip():
         raise HTTPException(status_code=400, detail="No code provided")
     if len(request.code) > MAX_CODE_LENGTH:
@@ -388,7 +415,10 @@ async def execute_code(request: CodeExecutionRequest):
 
 
 @app.post("/repl", response_model=ReplResult)
-async def repl_execute(request: ReplRequest):
+async def repl_execute(
+    request: ReplRequest,
+    caller: str = Depends(guards.require_execution_auth),
+):
     """
     Stateful REPL for the in-browser Lab Shell.
 
@@ -422,19 +452,25 @@ async def repl_execute(request: ReplRequest):
     sys.stdout = captured = io.StringIO()
 
     try:
-        sanitize_code(request.code)
-        tree = ast.parse(strip_sdk_imports(request.code), mode="exec")
+        tree = sanitize_code(strip_sdk_imports(request.code))
 
         # Echo the value of a trailing expression, like a Python shell.
         if tree.body and isinstance(tree.body[-1], ast.Expr):
             last = ast.Expression(tree.body[-1].value)
             tree.body = tree.body[:-1]
-            exec(compile(tree, "<repl>", "exec"), namespace)
-            value = eval(compile(last, "<repl>", "eval"), namespace)
+            body = compile(tree, "<repl>", "exec")
+            tail = compile(last, "<repl>", "eval")
+
+            def _run():
+                exec(body, namespace)
+                return eval(tail, namespace)
+
+            value = sandbox.run_with_timeout(_run, EXECUTION_TIMEOUT)
             if value is not None:
                 print(repr(value))
         else:
-            exec(compile(tree, "<repl>", "exec"), namespace)
+            body = compile(tree, "<repl>", "exec")
+            sandbox.run_with_timeout(lambda: exec(body, namespace), EXECUTION_TIMEOUT)
 
         return ReplResult(
             success=True,

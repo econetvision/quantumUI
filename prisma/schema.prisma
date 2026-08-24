@@ -35,7 +35,10 @@ model User {
   id            String    @id @default(cuid())
   email         String    @unique
   name          String?
-  password      String    // bcrypt hashed
+  // Nullable: accounts created through Google OAuth never set one. The
+  // Credentials provider treats a null password as "not a password account"
+  // and refuses the sign-in rather than comparing against nothing.
+  password      String?   // bcrypt hashed
   role          UserRole  @default(FREE)
 
   // Account-wide progress. Previously these lived on a UserProgress row with

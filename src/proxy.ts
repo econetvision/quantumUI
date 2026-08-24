@@ -1,32 +1,41 @@
 import { NextResponse } from "next/server";
-
-// ============================================
-// DEMO MODE: Authentication Disabled
-// ============================================
-// All routes are publicly accessible for demo purposes
-// To enable authentication, uncomment the code below
-
-export async function proxy() {
-  // Allow all requests in demo mode
-  return NextResponse.next();
-}
-
-/* ============================================
-   PRODUCTION MODE (Commented Out)
-   ============================================
-
 import { getToken } from "next-auth/jwt";
 import type { NextRequest } from "next/server";
 
+/**
+ * Route protection.
+ *
+ * This file previously exported `matcher: []` under a "DEMO MODE" banner, which
+ * meant nothing was protected at all. The rules below are the ones that were
+ * sitting commented out beneath it, with one correction: the admin check tested
+ * for `ENTERPRISE`, but `UserRole.ADMIN` is what the admin API routes require
+ * (see src/app/api/admin/*), so the old check would have admitted the wrong
+ * group and locked out real admins.
+ *
+ * Per the Next.js proxy docs this runs before rendering and may be hoisted to a
+ * CDN, so it does a JWT check only — no database access, no shared module state.
+ * It is a redirect layer for humans, NOT the security boundary: every sensitive
+ * route handler re-checks the session itself.
+ */
 export async function proxy(req: NextRequest) {
   const token = await getToken({
     req,
-    secret: process.env.NEXTAUTH_SECRET,
+    // NextAuth v5 signs with AUTH_SECRET; NEXTAUTH_SECRET is the v4 name kept
+    // as a fallback, matching src/lib/auth.ts.
+    secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+    // Over HTTPS the session cookie is written as `__Secure-authjs.session-token`,
+    // and getToken only looks for that prefixed name when told to. Its own default
+    // is derived from AUTH_URL, which this app deliberately does not set — auth.ts
+    // uses `trustHost: true` instead. Left to the default it searched for the
+    // unprefixed name, found nothing, and bounced every signed-in user back to
+    // /login. Deriving it from the request keeps http://localhost and the
+    // https:// deployment both working, with no URL baked into the environment.
+    secureCookie:
+      (req.headers.get("x-forwarded-proto") ?? req.nextUrl.protocol).startsWith("https"),
   });
 
   const path = req.nextUrl.pathname;
 
-  // If not authenticated, redirect to login
   if (!token) {
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("callbackUrl", req.url);
@@ -35,8 +44,7 @@ export async function proxy(req: NextRequest) {
 
   const role = token.role as string | undefined;
 
-  // Role-based access control
-  if (path.startsWith("/admin") && role !== "ENTERPRISE") {
+  if (path.startsWith("/admin") && role !== "ADMIN") {
     return NextResponse.redirect(new URL("/unauthorized", req.url));
   }
 
@@ -57,11 +65,4 @@ export const config = {
     "/admin/:path*",
     "/pro/:path*",
   ],
-};
-
-============================================ */
-
-// No routes are protected in demo mode
-export const config = {
-  matcher: [],
 };

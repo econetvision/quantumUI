@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Suspense, useId, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { Callout, Card, Container } from '@/components/ui/primitives';
+import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton';
 
 function LoginForm() {
   // Labels were previously not associated with their inputs, so screen readers
@@ -12,7 +13,6 @@ function LoginForm() {
   const emailId = useId();
   const passwordId = useId();
 
-  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') ?? '/tracks';
 
@@ -43,8 +43,25 @@ function LoginForm() {
       return;
     }
 
-    router.push(callbackUrl);
-    router.refresh();
+    // A full document navigation, deliberately not router.push.
+    //
+    // While signed out the App Router prefetched this callback route and the
+    // proxy answered that prefetch with a redirect back to /login. That
+    // redirect sits in the client cache, which replays it on navigation
+    // WITHOUT asking the server — so a user who had just signed in correctly
+    // was thrown straight back to the login form, looking like the sign-in had
+    // silently failed. router.refresh() cannot rescue it: it clears the cache
+    // for the current route only, and it ran after push had already consumed
+    // the stale entry. Reloading the document drops the whole client cache and
+    // re-requests with the new session cookie.
+    //
+    // Resolving against the current origin also stops a hand-crafted
+    // ?callbackUrl=https://evil.example from turning sign-in into an open
+    // redirect; anything off-origin falls back to the default destination.
+    const target = new URL(callbackUrl, window.location.origin);
+    window.location.assign(
+      target.origin === window.location.origin ? target.toString() : '/tracks',
+    );
   }
 
   return (
@@ -57,7 +74,11 @@ function LoginForm() {
           Sign in to keep your progress and streaks
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-7 space-y-4">
+        <div className="mt-7">
+          <GoogleSignInButton callbackUrl={callbackUrl} label="Sign in with Google" withDivider />
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
               htmlFor={emailId}

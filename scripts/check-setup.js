@@ -25,52 +25,84 @@ if (nodeMajor >= 18) {
   allChecksPassed = false;
 }
 
-// Check 2: Environment file
-console.log('\n✓ Checking .env file...');
-const envPath = path.join(__dirname, '..', '.env');
-if (fs.existsSync(envPath)) {
-  console.log('  ✅ .env file exists');
-
-  // Check for required env vars
-  const envContent = fs.readFileSync(envPath, 'utf-8');
-  const requiredVars = ['DATABASE_URL', 'NEXTAUTH_SECRET', 'NEXTAUTH_URL'];
-  const missingVars = requiredVars.filter(varName => {
-    return !envContent.includes(varName) || envContent.includes(`${varName}=""`);
-  });
-
-  if (missingVars.length === 0) {
-    console.log('  ✅ All required environment variables set');
-  } else {
-    console.log(`  ⚠️  Missing or empty: ${missingVars.join(', ')}`);
-    console.log('     Edit .env and add your values');
+// Secrets moved to .env.local, which the Prisma CLI does not auto-load (it
+// reads .env only). Parse it into process.env so the db-connection probe below
+// inherits DATABASE_URL when it shells out.
+for (const file of ['.env.local', '.env']) {
+  const p = path.join(__dirname, '..', file);
+  if (!fs.existsSync(p)) continue;
+  for (const line of fs.readFileSync(p, 'utf-8').split('\n')) {
+    const m = line.match(/^[ \t]*([A-Z_][A-Z0-9_]*)[ \t]*=[ \t]*(.*)$/);
+    if (!m) continue;
+    const value = m[2].trim().replace(/^["']|["']$/g, '');
+    if (value && !(m[1] in process.env)) process.env[m[1]] = value;
   }
+}
+
+// Check 2: Environment files
+//
+// Secrets live in .env.local, not .env — .env holds only non-secret defaults.
+// Both are read (Next.js merges them, .env.local winning), so a value in
+// either one counts as set.
+console.log('\n✓ Checking environment files...');
+const envLocalPath = path.join(__dirname, '..', '.env.local');
+const envPath = path.join(__dirname, '..', '.env');
+
+const readIfPresent = (p) => (fs.existsSync(p) ? fs.readFileSync(p, 'utf-8') : '');
+const envContent = readIfPresent(envLocalPath) + '\n' + readIfPresent(envPath);
+
+if (fs.existsSync(envLocalPath)) {
+  console.log('  ✅ .env.local exists (secrets)');
 } else {
-  console.log('  ❌ .env file not found');
-  console.log('     Run: cp .env.example .env');
+  console.log('  ❌ .env.local not found — this is where secrets go');
+  console.log('     Run: cp .env.example .env.local  (then fill in the values)');
   allChecksPassed = false;
 }
 
-// Check 3: MySQL connection
-console.log('\n✓ Checking MySQL...');
-try {
-  execSync('which mysql', { stdio: 'ignore' });
-  console.log('  ✅ MySQL installed');
+// AUTH_SECRET is the NextAuth v5 name; NEXTAUTH_SECRET is the v4 fallback that
+// src/lib/auth.ts still accepts, so either satisfies the check.
+const requiredVars = [
+  ['DATABASE_URL'],
+  ['AUTH_SECRET', 'NEXTAUTH_SECRET'],
+];
+// [ \t] rather than \s: \s matches newlines, so `KEY=` followed by a blank
+// line swallowed the break and tested the *next* assignment for emptiness,
+// reporting empty vars as set.
+const isSet = (name) =>
+  new RegExp(`^[ \t]*${name}[ \t]*=[ \t]*(?!$|""|'')`, 'm').test(envContent);
 
-  // Try to connect (this will only work if DATABASE_URL is set)
-  try {
-    execSync('npx prisma db execute --stdin < /dev/null', { stdio: 'ignore' });
-    console.log('  ✅ Database connection successful');
-  } catch {
-    console.log('  ⚠️  Cannot connect to database');
-    console.log('     Make sure MySQL is running and DATABASE_URL is correct');
-  }
+const missingVars = requiredVars
+  .filter((names) => !names.some(isSet))
+  .map((names) => names.join(' or '));
+
+if (missingVars.length === 0) {
+  console.log('  ✅ All required environment variables set');
+} else {
+  console.log(`  ⚠️  Missing or empty: ${missingVars.join(', ')}`);
+  console.log('     Add them to .env.local');
+}
+
+// Optional, but sign-in with Google silently falls back to password-only
+// without them — worth surfacing rather than debugging at the login screen.
+if (isSet('AUTH_GOOGLE_ID') && isSet('AUTH_GOOGLE_SECRET')) {
+  console.log('  ✅ Google OAuth configured');
+} else {
+  console.log('  ℹ️  Google OAuth not configured (optional)');
+  console.log('     Add AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET to .env.local');
+}
+
+// Check 3: MySQL connection
+console.log('\n✓ Checking PostgreSQL...');
+try {
+  execSync('npx prisma db execute --stdin < /dev/null', { stdio: 'ignore' });
+  console.log('  ✅ Database connection successful');
 } catch {
-  console.log('  ⚠️  MySQL not found locally');
-  console.log('     Options:');
-  console.log('     1. Install locally: brew install mysql');
-  console.log('     2. Use PlanetScale (free cloud MySQL)');
-  console.log('     3. Use Docker: docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=pass mysql:8.0');
-  console.log('     See MYSQL_SETUP.md for details');
+  console.log('  ⚠️  Cannot connect to the database');
+  console.log('     DATABASE_URL must point at PostgreSQL — the schema declares');
+  console.log('     provider = "postgresql". Start one with:');
+  console.log('       docker compose up -d db      (recommended)');
+  console.log('       brew services start postgresql@16');
+  console.log('     Then: npm run db:push');
 }
 
 // Check 4: Prisma client

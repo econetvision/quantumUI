@@ -162,7 +162,7 @@ export function AlgorithmGallery() {
         if (data.offline || !data.algorithms?.length) {
           setLoadError(
             data.error ??
-              'The quantum executor is not running, so the algorithm catalogue is unavailable.',
+              'Circuit execution is temporarily unavailable, so the algorithm catalogue cannot load.',
           );
         }
       })
@@ -223,16 +223,16 @@ export function AlgorithmGallery() {
 
   if (loadError) {
     return (
+      // `loadError` already carries the full sentence from the API. This block
+      // used to append a restart command after it, which both duplicated the
+      // message and told a visitor to run a shell command they have no shell
+      // for. The reader gets the state and what still works; the operator gets
+      // the cause from the server log.
       <EmptyState
         title="Algorithm catalogue unavailable"
         description={
           <>
-            {loadError}
-            <br />
-            Start it with{' '}
-            <code className="rounded bg-code-bg px-1.5 py-0.5 font-mono text-code-text">
-              cd quantum-executor &amp;&amp; ./run.sh
-            </code>
+            {loadError} The curriculum and lesson material are unaffected.
           </>
         }
       />

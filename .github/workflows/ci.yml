@@ -1,12 +1,17 @@
 name: CI
 
+# `workflow_call` lets the deploy workflows run these same checks as a gate
+# before they touch production, instead of deploying in parallel with them and
+# finding out afterwards. Nothing here needs a secret, so callers do not pass any.
 on:
   push:
-    branches: [main]
+    branches: [main, clean-main, 'feat/**']
   pull_request:
+  workflow_call:
 
 concurrency:
-  # A new push supersedes an in-flight run on the same branch.
+  # A new push supersedes an in-flight run on the same branch. Safe here — these
+  # jobs only read. The deploy workflows deliberately do NOT cancel in progress.
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
@@ -36,7 +41,8 @@ jobs:
         env:
           # Build-time only. Prisma needs a parseable URL to generate against;
           # nothing connects during `next build`.
-          DATABASE_URL: mysql://user:pass@localhost:3306/quantumui
+          DATABASE_URL: postgresql://user:pass@localhost:5432/quantumui
+          DIRECT_URL: postgresql://user:pass@localhost:5432/quantumui
           AUTH_SECRET: ci-build-only-secret-not-used-at-runtime
 
   executor:
@@ -56,6 +62,9 @@ jobs:
 
       - run: pip install -r requirements.txt
 
+      - name: Sandbox escape regression tests
+        run: python test_sandbox.py
+
       - name: Import check
         run: python -c "import main, catalog, qpiai_bridge, mock_circuit; print('modules import cleanly')"
 
@@ -72,8 +81,12 @@ jobs:
           print('Bell state correct:', result['counts'])
           PY
 
+      # Built from the repository root, NOT from quantum-executor/. The
+      # Dockerfile's COPY paths are repo-root-relative because that is the
+      # context Railway uses (railway.json -> dockerfilePath).
       - name: Docker image builds
-        run: docker build -t quantum-executor .
+        working-directory: .
+        run: docker build -f quantum-executor/Dockerfile -t quantum-executor .
 
   content:
     name: Question bank integrity

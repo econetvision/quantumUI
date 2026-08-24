@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { getStreakData, StreakData, STREAK_EVENT } from '@/lib/streak';
+import { getStreakData, hydrateFromServer, StreakData, STREAK_EVENT } from '@/lib/streak';
 
 export default function StreakBadge() {
   const [data, setData] = useState<StreakData | null>(null);
@@ -11,6 +11,13 @@ export default function StreakBadge() {
     // Defer the initial localStorage read past the sync effect body
     const t = setTimeout(handler, 0);
     window.addEventListener(STREAK_EVENT, handler);
+
+    // Then reconcile with the account. Signed out or offline this is a no-op;
+    // signed in on a new browser it is the difference between showing the
+    // learner's real streak and showing them a zero. hydrateFromServer emits
+    // STREAK_EVENT when it changes anything, so `handler` picks it up.
+    void hydrateFromServer();
+
     return () => {
       clearTimeout(t);
       window.removeEventListener(STREAK_EVENT, handler);

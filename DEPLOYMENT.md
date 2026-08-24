@@ -7,7 +7,7 @@ them is a security incident, not a rough edge.
 
 ### 1. Replace the auth secret
 
-`.env` currently holds `AUTH_SECRET="dev-only-secret-change-before-deploying-…"`.
+`.env.local` holds a development `AUTH_SECRET`.
 Anyone who knows it can mint valid session tokens for any account.
 
 ```bash
@@ -20,9 +20,11 @@ The local database uses `quantumui:quantumui`. Create a production user with a
 generated password and grant it only what the app needs:
 
 ```sql
-CREATE USER 'quantumui'@'%' IDENTIFIED BY '<generated>';
-GRANT SELECT, INSERT, UPDATE, DELETE ON quantumui.* TO 'quantumui'@'%';
--- deliberately no DROP/ALTER: migrations run separately
+CREATE USER quantumui WITH PASSWORD '<generated>';
+GRANT CONNECT ON DATABASE quantumui TO quantumui;
+GRANT USAGE ON SCHEMA public TO quantumui;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO quantumui;
+-- deliberately no DROP/ALTER: migrations run separately, via DIRECT_URL
 ```
 
 ### 3. Rotate the seeded accounts
@@ -32,7 +34,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON quantumui.* TO 'quantumui'@'%';
 site is reachable:
 
 ```sql
-DELETE FROM User WHERE email LIKE '%@quantumui.local';
+DELETE FROM "User" WHERE email LIKE '%@quantumui.local';  -- quoted: Postgres folds unquoted identifiers to lowercase
 ```
 
 ### 4. Point the executor's CORS at the real origin
@@ -46,11 +48,14 @@ DELETE FROM User WHERE email LIKE '%@quantumui.local';
 
 | Variable | Purpose | Required |
 | --- | --- | --- |
-| `DATABASE_URL` | MySQL connection (`mysql://…`, **not** postgres) | yes |
+| `DATABASE_URL` | PostgreSQL, **pooled** (`postgresql://…`) | yes |
+| `DIRECT_URL` | PostgreSQL, unpooled — migrations only | yes |
 | `AUTH_SECRET` | NextAuth session signing | yes |
 | `QUANTUM_EXECUTOR_URL` | Executor base URL | yes |
 | `CORS_ORIGINS` | Allowed origins, executor side | yes |
 | `QWORLD_CONTENT_ROOT` | Override vendored content location | no |
+| `AUTH_GOOGLE_ID` | Google OAuth client ID — enables Google sign-in | no |
+| `AUTH_GOOGLE_SECRET` | Google OAuth client secret | no |
 | `QPIAI_API_KEY` | Unlocks cloud simulators and the Indus-1 QPU | no |
 
 Without `QPIAI_API_KEY` the platform runs entirely on the local statevector
@@ -76,7 +81,7 @@ npm run build
 npm start
 ```
 
-Or `docker compose up -d` — the compose file now includes MySQL with a
+Or `docker compose up -d` — the compose file now includes PostgreSQL with a
 healthcheck, and the app waits for it.
 
 ## Health checks
@@ -109,9 +114,80 @@ Be aware of these before promising them to users:
 
 ## Rollback
 
-The app is stateless apart from MySQL. Redeploy the previous build and, if a
+The app is stateless apart from PostgreSQL. Redeploy the previous build and, if a
 migration ran, restore from a dump taken immediately before:
 
 ```bash
-mysqldump -u quantumui -p quantumui > backup-$(date +%F).sql
+pg_dump -U quantumui quantumui > backup-$(date +%F).sql
 ```
+
+---
+
+## Enabling Google sign-in
+
+Optional. Without it the password form works exactly as before, and the
+"Sign in with Google" button does not render at all — `src/lib/auth.ts`
+registers the provider only when both variables below are present and
+non-empty, and `GoogleSignInButton` asks `/api/auth/providers` before
+drawing itself. Setting only one half leaves Google switched off rather
+than half-configured.
+
+### 1. Create the OAuth client
+
+[console.cloud.google.com/apis/credentials](https://console.cloud.google.com/apis/credentials)
+→ **Create credentials → OAuth client ID → Web application**.
+
+**Authorised redirect URIs** — every origin the app answers on. The
+`/api/auth/callback/google` path is NextAuth's, not ours; it must match
+character for character, and a trailing slash breaks it:
+
+    https://www.sroobservotary.com/api/auth/callback/google
+    https://sroobservotary.com/api/auth/callback/google
+    https://quantumui-app.vercel.app/api/auth/callback/google
+    http://localhost:3000/api/auth/callback/google
+
+**Authorised JavaScript origins:**
+
+    https://www.sroobservotary.com
+    http://localhost:3000
+
+A redirect URI that is missing here is the usual cause of
+`Error 400: redirect_uri_mismatch` after the consent screen.
+
+### 2. Add the credentials
+
+Production:
+
+    vercel env add AUTH_GOOGLE_ID production
+    vercel env add AUTH_GOOGLE_SECRET production
+    vercel deploy --prod        # env vars are read at build time
+
+Local development — in `.env.local`, which is gitignored:
+
+    AUTH_GOOGLE_ID="...apps.googleusercontent.com"
+    AUTH_GOOGLE_SECRET="GOCSPX-..."
+
+`GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` are read as fallbacks, since
+that is what the Google console labels them.
+
+### 3. Publish the consent screen
+
+A new consent screen starts in **Testing**, where only accounts listed
+under *Test users* can sign in — everyone else gets `access_denied`.
+Publish it before real learners arrive.
+
+### What a Google sign-in does to the account
+
+The `jwt` callback upserts by email, so signing in with Google using an
+address that already has a password account **links to that same row**
+rather than creating a second one: the same `User.id`, so progress, XP
+and streaks carry over, and the password keeps working. A genuinely new
+Google account is created with the schema default role, `FREE`.
+
+### Verifying
+
+    curl -s https://www.sroobservotary.com/api/auth/providers
+
+`google` appears in that JSON once the variables are live. If it does
+not, the deploy has not picked them up yet — the button follows this
+endpoint, so there is nothing else to switch on.

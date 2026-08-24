@@ -1,0 +1,20 @@
+# Mirrors .vercelignore where it makes sense: keep the build context small so
+# `docker build` does not ship 35 MB of notebooks into every layer.
+node_modules
+.next
+.git
+.github
+.vercel
+.venv
+content/
+quantum-executor/venv/
+quantum-executor/.next/
+**/__pycache__/
+scripts/
+*.md
+!README.md
+.env*
+!.env.example
+*.tsbuildinfo
+npm-debug.log*
+.DS_Store

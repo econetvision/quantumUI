@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { quantumExecutor, toErrorResponse } from '@/lib/quantum-client';
+import { requireSession } from '@/lib/api-auth';
 
 interface ReplBody {
   sessionId?: string;
@@ -10,6 +11,9 @@ interface ReplBody {
 
 /** Stateful REPL for the Lab Shell — variables persist per `sessionId`. */
 export async function POST(request: NextRequest) {
+  const gate = await requireSession();
+  if (gate.response) return gate.response;
+
   let body: ReplBody;
   try {
     body = await request.json();

@@ -127,7 +127,8 @@ export default function LessonLab({
       });
       const data = await res.json();
       setResult(data);
-      recordActivity(XP_REWARDS.run);
+      // Streak on every attempt, XP only when it ran clean — same rule as LabShell.
+      recordActivity(data.success ? XP_REWARDS.run : 0);
     } catch {
       setResult({ success: false, output: '', error: 'Executor unreachable. Is the quantum-executor service running on :8080?' });
     } finally {

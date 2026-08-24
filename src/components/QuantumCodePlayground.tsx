@@ -138,12 +138,10 @@ export default function QuantumCodePlayground({
       </div>
 
       {status === 'offline' && (
-        <Callout tone="warning" title="The quantum executor is not running">
-          Circuits cannot be executed until it starts. Run{' '}
-          <code className="rounded bg-code-bg px-1.5 py-0.5 font-mono text-code-text">
-            cd quantum-executor &amp;&amp; ./run.sh
-          </code>{' '}
-          and reload. Results are never faked in the browser.
+        <Callout tone="warning" title="Circuit execution is temporarily unavailable">
+          You can still write and edit circuits here — they just cannot be run
+          until execution is back. Results are never simulated in the browser,
+          so nothing below is faked.
         </Callout>
       )}
 

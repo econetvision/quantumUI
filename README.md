@@ -109,8 +109,9 @@ npm install
 
 3. **Set up environment variables**
 ```bash
-cp .env.example .env
-# Edit .env with your database credentials
+cp .env.example .env.local
+# Edit .env.local — it holds the secrets and is gitignored.
+# .env is for non-secret defaults only; .env.local overrides it.
 ```
 
 4. **Set up the database**

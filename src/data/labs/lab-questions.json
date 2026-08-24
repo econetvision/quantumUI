@@ -129,11 +129,14 @@
           "title": "Observe that if and , then it is Identity operator, i.e., the initial…",
           "prompt": "Task 5 \n\nObserve that if $ a=1 $ and $ b = 0 $, then it is Identity operator, i.e., the initial condition will stay as it is.\n\nIf $ a=0 $ and $ b=1 $, then it is NOT operator. NOT operator swaps the probabilities of heads and tails in each step. If the initial probabilities are not $ 0.5 $ and $ 0.5 $, then the system never converges to a fixed probabilities.",
           "starterCode": "#\n# your solution is here\n#",
-          "solution": "",
+          "solution": "# Task 5 — a=1,b=0 gives Identity; a=0,b=1 gives NOT\nimport numpy as np\n\ndef game_coins(a, b):\n    # column j is where state j goes\n    return np.array([[a, b],\n                     [1-a, 1-b]])\n\nstate = np.array([0.3, 0.7])\nprint(\"start          :\", state)\nprint(\"a=1, b=0 (I)   :\", game_coins(1, 0) @ state)\nprint(\"a=0, b=1 (NOT) :\", game_coins(0, 1) @ state)\n",
           "source": "qbook101/qbook101/QB21_CS12_Coin_Flip_Game.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are."
+          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-fundamentals-11",
@@ -141,11 +144,14 @@
           "title": "Randomly pick the values of and , and then implement Tasks 3 and 4 for",
           "prompt": "Task 6\n\nRandomly pick the values of $ a $ and $ b $, and then implement Tasks 3 and 4 for $ GameCoins(a,b) $.",
           "starterCode": "#\n# your solution is here\n#",
-          "solution": "",
+          "solution": "# Task 6 — random a, b then iterate GameCoins(a,b)\nimport numpy as np, random\n\nrandom.seed(0)\na = random.randrange(0, 101) / 100\nb = random.randrange(0, 101) / 100\nG = np.array([[a, b], [1-a, 1-b]])\nprint(f\"a = {a}, b = {b}\")\n\nstate = np.array([1.0, 0.0])\nfor step in range(1, 11):\n    state = G @ state\n    print(f\"  step {step:2d}: heads={state[0]:.6f} tails={state[1]:.6f}\")\n",
           "source": "qbook101/qbook101/QB21_CS12_Coin_Flip_Game.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "A biased coin is the classical stand-in for a qubit: both give probabilistic outcomes with weights summing to 1. The difference is that coin probabilities only ever add, while quantum amplitudes can be negative and cancel. Interference is what a coin can never do."
+          "explanation": "A biased coin is the classical stand-in for a qubit: both give probabilistic outcomes with weights summing to 1. The difference is that coin probabilities only ever add, while quantum amplitudes can be negative and cancel. Interference is what a coin can never do.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-fundamentals-12",
@@ -153,11 +159,14 @@
           "title": "10 times repeat Task 6 and observe whether the probabilities converge in each…",
           "prompt": "Task 7\n\n10 times repeat Task 6 and observe whether the probabilities converge in each time.",
           "starterCode": "#\n# your solution is here\n#",
-          "solution": "",
+          "solution": "# Task 7 — repeat 10 times and watch the state converge\nimport numpy as np, random\n\nrandom.seed(1)\nfor trial in range(1, 11):\n    a = random.randrange(0, 101) / 100\n    b = random.randrange(0, 101) / 100\n    G = np.array([[a, b], [1-a, 1-b]])\n    state = np.array([1.0, 0.0])\n    for _ in range(60):\n        state = G @ state\n    print(f\"trial {trial:2d}: a={a:.2f} b={b:.2f} -> converged to [{state[0]:.6f}, {state[1]:.6f}]\")\nprint(\"\\nEach run settles on the stationary distribution of its own matrix,\")\nprint(\"so the limit depends on a and b, not on the starting state.\")\n",
           "source": "qbook101/qbook101/QB21_CS12_Coin_Flip_Game.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are."
+          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-fundamentals-13",
@@ -165,11 +174,14 @@
           "title": "We can rewrite arbitrary GameCoins as We assume that it is neither Identity…",
           "prompt": "Task 8\n\nWe can rewrite arbitrary GameCoins as \n\n$  \\begin{array}{c|cc} \\hookleftarrow & \\mathbf{Head} & \\mathbf{Tail} \\\\ \\hline \\mathbf{Head} & 1-y & x\\\\  \\mathbf{Tail} & y & 1-x  \\end{array} = \\begin{array}{c|cc} \\hookleftarrow & \\mathbf{0} & \\mathbf{1} \\\\ \\hline \\mathbf{0} & 1-y & x \\\\  \\mathbf{1} & y & 1-x  \\end{array}.\n$ \n\nWe assume that it is neither Identity nor NOT operator. Then, independent of the initial state, the system always converges to \n\n$ Pr[\\mbox{\"heads\"}] = \\dfrac{x}{x+y} $ and $ Pr[\\mbox{\"tails\"}]=\\dfrac{y}{x+y} $, \n\nwhich are the probabilities of getting heads and tails, respectively.\n\nObserve this fact by checking the results of Task 7.",
           "starterCode": "#\n# your solution is here\n#",
-          "solution": "",
+          "solution": "# Task 8 — GameCoins rewritten with x and y\nimport numpy as np\n\ndef game_coins_xy(x, y):\n    # [[1-y, x], [y, 1-x]] : columns still sum to 1\n    return np.array([[1-y, x],\n                     [y,   1-x]])\n\nfor x, y in ((0.3, 0.4), (0.0, 0.0), (1.0, 1.0)):\n    G = game_coins_xy(x, y)\n    print(f\"x={x}, y={y} ->\\n{G}   column sums {G.sum(axis=0)}\")\n",
           "source": "qbook101/qbook101/QB21_CS12_Coin_Flip_Game.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are."
+          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-fundamentals-14",
@@ -177,11 +189,14 @@
           "title": "Suppose that Balvis secretly flips a coin having the bias .",
           "prompt": "Task 1 \n\nSuppose that Balvis secretly flips a coin having the bias $ \\dfrac{Pr(Heads)}{Pr(Tails)} = \\dfrac{1}{4}$.\n\nRepresent your information about the outcome as a column vector.",
           "starterCode": "#\n# your code is here\n#",
-          "solution": "",
+          "solution": "# Task 1 — bias Pr(Heads)/Pr(Tails) = 1/4 as a column vector\nheads_ratio, tails_ratio = 1, 4\ntotal = heads_ratio + tails_ratio\np_head = heads_ratio / total\np_tail = tails_ratio / total\nprint(f\"Pr(Heads) = {p_head}   Pr(Tails) = {p_tail}\")\nprint(\"column vector: [\", p_head, \",\", p_tail, \"]  (sums to\", p_head + p_tail, \")\")\n",
           "source": "qbook101/qbook101/QB21_CS16_Probabilistic_States.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "Entanglement means the pair has a definite joint state while neither qubit has a state of its own. Measuring one instantly fixes the other's outcome, yet no information travels — the individual results are random, and only comparing both reveals the correlation."
+          "explanation": "Entanglement means the pair has a definite joint state while neither qubit has a state of its own. Measuring one instantly fixes the other's outcome, yet no information travels — the individual results are random, and only comparing both reveals the correlation.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-fundamentals-15",
@@ -217,10 +232,13 @@
           "title": "[extra]",
           "prompt": "Task 4 [extra] \n\nAs given in the hint for Task 3, you may pick your random numbers between 0 and $ 10^k $. For better precision, you may take bigger values of $ k $.\n\nWrite a function that randomly creates a probabilisitic state of size $ n $ with a precision up to $ k $ digits. \n\nTest your function.",
           "starterCode": "#\n# your solution is here\n#",
-          "solution": "",
+          "solution": "# Task 4 [extra] — random probabilistic state with k digits of precision\nimport random\n\ndef random_state(n, k=4):\n    \"\"\"n outcomes, probabilities drawn from 0..10^k then normalised.\"\"\"\n    raw = [random.randrange(0, 10 ** k + 1) for _ in range(n)]\n    if sum(raw) == 0:\n        raw[0] = 1\n    total = sum(raw)\n    return [v / total for v in raw]\n\nrandom.seed(3)\nfor n in (2, 3, 4):\n    s = random_state(n, k=6)\n    print(f\"n={n}: {[round(p, 6) for p in s]}  sum={round(sum(s), 10)}\")\n",
           "source": "qbook101/qbook101/QB21_CS16_Probabilistic_States.ipynb",
           "difficulty": "complex",
-          "explanation": "A biased coin is the classical stand-in for a qubit: both give probabilistic outcomes with weights summing to 1. The difference is that coin probabilities only ever add, while quantum amplitudes can be negative and cancel. Interference is what a coin can never do."
+          "explanation": "A biased coin is the classical stand-in for a qubit: both give probabilistic outcomes with weights summing to 1. The difference is that coin probabilities only ever add, while quantum amplitudes can be negative and cancel. Interference is what a coin can never do.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-fundamentals-18",
@@ -228,11 +246,14 @@
           "title": "The operator is applied to the probabilistic state .",
           "prompt": "Task 1 \n\nThe operator $ GameCoins = \\mymatrix{cc}{ 0.6 & 0.3 \\\\ 0.4 & 0.7 } $ is applied to the probabilistic state $ \\myvector{ 0.1 \\\\ 0.9 } $. \n\nThen, the new probabilistic state is\n\n$ \\mymatrix{cc}{ 0.6 & 0.3 \\\\ 0.4 & 0.7 } \\myvector{ 0.1 \\\\ 0.9 } = \\myvector{ 0.33 \\\\ 0.67 }. $\n\nPlease verify the correctness of matrix-vector multiplication.",
           "starterCode": "SolutionToTask2()  # show solution for task 2",
-          "solution": "",
+          "solution": "# Task 1 — apply GameCoins to a probabilistic state\nimport numpy as np\n\nGameCoins = np.array([[0.6, 0.3],\n                      [0.4, 0.7]])\nstate = np.array([0.1, 0.9])\n\nnew_state = GameCoins @ state\nprint(\"GameCoins @ [0.1, 0.9] =\", np.round(new_state, 10))\nprint(\"total probability =\", round(float(new_state.sum()), 10))\n",
           "source": "qbook101/qbook101/QB21_CS20_Probabilistic_Operators.ipynb",
           "difficulty": "complex",
           "titleDerived": true,
-          "explanation": "A biased coin is the classical stand-in for a qubit: both give probabilistic outcomes with weights summing to 1. The difference is that coin probabilities only ever add, while quantum amplitudes can be negative and cancel. Interference is what a coin can never do."
+          "explanation": "A biased coin is the classical stand-in for a qubit: both give probabilistic outcomes with weights summing to 1. The difference is that coin probabilities only ever add, while quantum amplitudes can be negative and cancel. Interference is what a coin can never do.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-fundamentals-19",
@@ -240,11 +261,13 @@
           "title": "We are given the following probabilistic operator: .",
           "prompt": "Task 2 \n\nWe are given the following probabilistic operator: $ B =  \\mymatrix{ccc}{ 0.4 & 0.6 & 0 \\\\ 0.2 & 0.1 & 0.7 \\\\ 0.4 & 0.3 & 0.3 } $.\n\nWhat is the transition probability from the second state to the third state?\n\nWhat is the transition probability from the third state to the first state?\n\nWhat is the transition probability from the first state to the second state?",
           "starterCode": "SolutionToTask2()  # show solution for task 2",
-          "solution": "",
+          "solution": "# let's start with a zero matrix\nA = [\n    [0,0,0],\n    [0,0,0],\n    [0,0,0]\n]\n\n# we will randomly pick the entries and then make normalization for each column\n# it will be easier to iteratively construct the columns\n# you may notice that each column is a probabilistic state\nfrom random import randrange\n\nnormalization_factor = [0,0,0] # the normalization factor of each column may be different\n\nfor j in range(3): # each column is iteratively constructed\n    normalization_factor[j] = 0\n    while normalization_factor[j]==0: # the normalization factor cannot be zero\n        for i in range(3):\n            A[i][j] = randrange(101) # pick a random value between 0 and 100\n            normalization_factor[j] += A[i][j]\n\n# let's print matrix A before the normalization\n# the entries are between 0 and 100\nprint(\"matrix A before normalization:\")\nfor i in range(3):\n    print(A[i])\n\n\n# let's normalize each column\nfor j in range(3):\n    for i in range(3):\n        A[i][j] /= normalization_factor[j]  # shorter form of A[i][j] = A[i][j] / normalization_factor[j]\n        \n# let's print matrix A after the normalization\nprint() # print an empty line\nprint(\"matrix A after normalization:\")\nfor i in range(3):\n    print(A[i]) \n\nprint()\nprint(\"the column summations must be 1\")\n\nsum = [0,0,0]\nfor j in range(3):\n    for i in range(3):\n        sum[j] += A[i][j]\n\nprint(sum)",
           "source": "qbook101/qbook101/QB21_CS20_Probabilistic_Operators.ipynb",
           "difficulty": "complex",
           "titleDerived": true,
-          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are."
+          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are.",
+          "solutionHarvested": true,
+          "solutionSource": "QB21_CS20_Probabilistic_Operators.ipynb"
         },
         {
           "id": "quantum-fundamentals-20",
@@ -325,11 +348,14 @@
           "title": "Calculate the following values on the paper",
           "prompt": "Task 1 \n\nCalculate the following values on the paper.\n\n$(3-2i) + (7+i)$;\n\n$(4+5i) - (2+2i)$;\n\n$(2+i) \\cdot (8-4i)$;\n\n$\\mathopen|4+3i\\mathclose|$;\n\n$\\overline{5-6i}$.",
           "starterCode": "SolutionToTask1()  # show solution for task 1",
-          "solution": "",
+          "solution": "# Task 1 — complex arithmetic\nprint(\"(3-2i) + (7+i) =\", (3-2j) + (7+1j))\nprint(\"(4+5i) - (2+2i) =\", (4+5j) - (2+2j))\nprint(\"(2+i) * (8-4i)  =\", (2+1j) * (8-4j))\nprint(\"|4+3i|          =\", abs(4+3j))\nprint(\"conj(5-6i)      =\", (5-6j).conjugate())\n",
           "source": "qbook101/qbook101/QB31_C01_Complex_Number_Basics.ipynb",
           "difficulty": "easy",
           "titleDerived": true,
-          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic."
+          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-2",
@@ -337,11 +363,14 @@
           "title": "Convert to polar form.",
           "prompt": "Task 2 \n\nConvert $4-4i$ to polar form.\n\nConvert $2 \\cdot e^{i \\pi}$ from polar form to the rectangular form.",
           "starterCode": "SolutionToTask2()  # show solution for task 2",
-          "solution": "",
+          "solution": "# Task 2 — rectangular <-> polar\nimport cmath, math\n\nz = 4 - 4j\nr, theta = abs(z), cmath.phase(z)\nprint(f\"4-4i in polar: r = {r:.4f} (= 4*sqrt(2)), theta = {theta:.4f} rad = {math.degrees(theta):.1f} deg\")\n\nw = 2 * cmath.exp(1j * math.pi)          # 2 * e^(i*pi)\nprint(\"2*e^(i*pi) in rectangular:\", complex(round(w.real, 10), round(w.imag, 10)))\n",
           "source": "qbook101/qbook101/QB31_C01_Complex_Number_Basics.ipynb",
           "difficulty": "easy",
           "titleDerived": true,
-          "explanation": "Quantum amplitudes are complex numbers, and the complex phase is not decorative — it decides whether paths interfere constructively or destructively. Probability discards the phase, so it only becomes visible through interference."
+          "explanation": "Quantum amplitudes are complex numbers, and the complex phase is not decorative — it decides whether paths interfere constructively or destructively. Probability discards the phase, so it only becomes visible through interference.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-3",
@@ -349,11 +378,13 @@
           "title": "Recreate famous Euler formula.",
           "prompt": "Task 3 \n\nRecreate famous Euler formula. Please use:\n\n- =, + or -;\n- one instance of each of the following constants: 0, 1, $i$, $\\pi$, $e$.",
           "starterCode": "SolutionToTask3()  # show solution for task 3",
-          "solution": "",
+          "solution": "result1 = ((3+4j)/(2-1j))*(7+2j)+3j\nprint('((3+4j)/(2-j))*(7+2j)+3j=', result1)\nresult2 = (1-2j)**5\nprint('(1-2j)**5=', result2)\nresult3 = (8-4j)/(abs(4+3j))\nprint('(8-4j)/(abs(4+3j))=', result3)",
           "source": "qbook101/qbook101/QB31_C01_Complex_Number_Basics.ipynb",
           "difficulty": "easy",
           "titleDerived": true,
-          "explanation": "Quantum amplitudes are complex numbers, and the complex phase is not decorative — it decides whether paths interfere constructively or destructively. Probability discards the phase, so it only becomes visible through interference."
+          "explanation": "Quantum amplitudes are complex numbers, and the complex phase is not decorative — it decides whether paths interfere constructively or destructively. Probability discards the phase, so it only becomes visible through interference.",
+          "solutionHarvested": true,
+          "solutionSource": "QB31_C01_Complex_Number_Basics.ipynb"
         },
         {
           "id": "quantum-gates-4",
@@ -389,11 +420,14 @@
           "title": "Consider the quantum states and .",
           "prompt": "Task 1 \n\n Consider the quantum states $ \\ket{\\psi}=\\dsqrttwo \\ket{0} - \\dfrac{i}{\\sqrt{2}} \\ket{1} $ and $ \\ket{\\phi} = \\dsqrttwo \\ket{0} + \\dfrac{i}{\\sqrt{2}}\\ket{1}  $.  Compute $ \\bra{\\psi}$ and $\\bra{\\phi}$.",
           "starterCode": "SolutionToTask1()  # show solution for task 1",
-          "solution": "",
+          "solution": "# Task 1 — the bra is the conjugate transpose of the ket\nimport numpy as np\n\npsi = np.array([1/np.sqrt(2), -1j/np.sqrt(2)])   # |psi> = (1/sqrt2)|0> - (i/sqrt2)|1>\nphi = np.array([1/np.sqrt(2),  1j/np.sqrt(2)])   # |phi> = (1/sqrt2)|0> + (i/sqrt2)|1>\n\nprint(\"<psi| =\", np.round(psi.conj(), 4))\nprint(\"<phi| =\", np.round(phi.conj(), 4))\n",
           "source": "qbook101/qbook101/QB31_C02_Mathematical_Notation.ipynb",
           "difficulty": "easy",
           "titleDerived": true,
-          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic."
+          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-7",
@@ -401,11 +435,14 @@
           "title": "What can you conclude about these quantum states?",
           "prompt": "Task 2 \n\nCompute $ \\braket{\\psi}{\\phi} $. What can you conclude about these quantum states?",
           "starterCode": "SolutionToTask2()  # show solution for task 2",
-          "solution": "",
+          "solution": "# Task 2 — inner product <psi|phi>\nimport numpy as np\n\npsi = np.array([1/np.sqrt(2), -1j/np.sqrt(2)])\nphi = np.array([1/np.sqrt(2),  1j/np.sqrt(2)])\n\nbraket = np.vdot(psi, phi)               # vdot conjugates the first argument\nprint(\"<psi|phi> =\", np.round(braket, 10))\nprint(\"orthogonal\" if abs(braket) < 1e-12 else \"not orthogonal\")\n",
           "source": "qbook101/qbook101/QB31_C02_Mathematical_Notation.ipynb",
           "difficulty": "easy",
           "titleDerived": true,
-          "explanation": "The inner product measures overlap between states. Orthogonal states are perfectly distinguishable in one measurement; non-orthogonal ones are not, and that impossibility is precisely what makes quantum key distribution secure."
+          "explanation": "The inner product measures overlap between states. Orthogonal states are perfectly distinguishable in one measurement; non-orthogonal ones are not, and that impossibility is precisely what makes quantum key distribution secure.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-8",
@@ -413,11 +450,14 @@
           "title": "Verify that and are valid quantum states",
           "prompt": "Task 3 \n\nVerify that $ \\ket{\\psi} $ and $ \\ket{\\phi} $ are valid quantum states.",
           "starterCode": "SolutionToTask3()  # show solution for task 3",
-          "solution": "",
+          "solution": "# Task 3 — a valid quantum state has norm 1\nimport numpy as np\n\npsi = np.array([1/np.sqrt(2), -1j/np.sqrt(2)])\nphi = np.array([1/np.sqrt(2),  1j/np.sqrt(2)])\n\nfor name, state in ((\"psi\", psi), (\"phi\", phi)):\n    total = float(np.sum(np.abs(state) ** 2))\n    print(f\"sum |amplitude|^2 for {name} = {total:.10f} -> {'valid' if abs(total-1) < 1e-12 else 'INVALID'}\")\n",
           "source": "qbook101/qbook101/QB31_C02_Mathematical_Notation.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic."
+          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-9",
@@ -425,11 +465,14 @@
           "title": "Verify that is a basis set for a qubit",
           "prompt": "Task 4 \n\nVerify that $ \\{ \\ket{+},\\ket{-} \\} $ is a basis set for a qubit.",
           "starterCode": "SolutionToTask4()  # show solution for task 4",
-          "solution": "",
+          "solution": "# Task 4 — is {|+>, |->} a basis for one qubit?\nimport numpy as np\n\nplus  = np.array([1,  1]) / np.sqrt(2)\nminus = np.array([1, -1]) / np.sqrt(2)\n\nprint(\"norm |+> =\", round(float(np.linalg.norm(plus)), 10))\nprint(\"norm |-> =\", round(float(np.linalg.norm(minus)), 10))\nprint(\"<+|-> =\", round(float(np.vdot(plus, minus).real), 10))\n\nM = np.column_stack([plus, minus])\nprint(\"rank =\", int(np.linalg.matrix_rank(M)), \"-> spans C^2\" if np.linalg.matrix_rank(M) == 2 else \"\")\nprint(\"orthonormal basis\" if abs(np.vdot(plus, minus)) < 1e-12 else \"not a basis\")\n",
           "source": "qbook101/qbook101/QB31_C02_Mathematical_Notation.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic."
+          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-10",
@@ -437,11 +480,14 @@
           "title": "Given , compute",
           "prompt": "Task 5 \n\nGiven $A=  \\mymatrix{cc}{3 + 7i & 0 \\\\ 2i & 4-i}$, compute $A^{\\dagger}$:",
           "starterCode": "SolutionToTask5()  # show solution for task 5",
-          "solution": "",
+          "solution": "# Task 5 — conjugate transpose (dagger)\nimport numpy as np\n\nA = np.array([[3+7j, 0],\n              [2j,   4-1j]])\nprint(\"A =\\n\", A)\nprint(\"A-dagger =\\n\", A.conj().T)\n",
           "source": "qbook101/qbook101/QB31_C02_Mathematical_Notation.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic."
+          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-11",
@@ -449,11 +495,14 @@
           "title": "Given , show that is unitary",
           "prompt": "Task 6 \n\nGiven $A=  \\frac{1}{2} \\mymatrix{cc}{1 + i & 1 - i \\\\ 1 - i & 1 + i}$, show that $A$ is unitary",
           "starterCode": "SolutionToTask6()  # show solution for task 6",
-          "solution": "",
+          "solution": "# Task 6 — show A is unitary: A-dagger @ A == I\nimport numpy as np\n\nA = 0.5 * np.array([[1+1j, 1-1j],\n                    [1-1j, 1+1j]])\nprod = A.conj().T @ A\nprint(\"A-dagger @ A =\\n\", np.round(prod, 10))\nprint(\"unitary\" if np.allclose(prod, np.eye(2)) else \"NOT unitary\")\n",
           "source": "qbook101/qbook101/QB31_C02_Mathematical_Notation.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic."
+          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic.",
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-gates-12",
@@ -461,11 +510,13 @@
           "title": "Calculate on the paper the probabilities to observe state and for each…",
           "prompt": "Task 1 \n\nCalculate on the paper the probabilities to observe state $\\ket{0}$ and $\\ket{1}$ for each quantum system:\n\n$$\n    \\myvector{ \\dfrac{1-i\\sqrt{2}}{2} \\\\ \\\\ \\dfrac{i}{2} } \n    \\mbox{ , }\n    \\myvector{ \\dfrac{2i}{\\sqrt{6}} \\\\ \\\\ \\dfrac{1-i}{\\sqrt{6}} } \n    \\mbox{ and }\n    \\myvector{ \\dfrac{1+i\\sqrt{3}}{\\sqrt{5}} \\\\ \\\\ \\dfrac{-i}{\\sqrt{5}} }.\n$$.",
           "starterCode": "SolutionToTask1()  # show solution for task 1",
-          "solution": "",
+          "solution": "a_square = 1 - (0.1)**2 - (-0.7)**2 - (0.4)**2 - (0.3)**2\na = a_square**0.5\nprint('a=',a,\",\",-a)\n\nstate_1_amplitude_square = 1 - (1/6**0.5)**2 - (-1/6**0.5)**2 - (-1/4**0.5)**2\nb = (1**2 + 2**2)/state_1_amplitude_square\nprint('b=',b,\",\",-b)",
           "source": "qbook101/qbook101/QB31_C02_Quantum_States_With_Complex_Numbers.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
-          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are."
+          "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are.",
+          "solutionHarvested": true,
+          "solutionSource": "QB31_C02_Quantum_States_With_Complex_Numbers.ipynb"
         },
         {
           "id": "quantum-gates-13",
@@ -500,11 +551,13 @@
           "title": "Verify that and that",
           "prompt": "Task 1 \n\nVerify that $Y^{\\dagger} = Y$ and that $YY = I$.",
           "starterCode": "SolutionToTask1()  # show solution for task 1",
-          "solution": "",
+          "solution": "# random_complex_quantum_state_file = path_files+\"random_complex_quantum_state.py\"\n# %run $random_complex_quantum_state_file      # same code as the next one\nfrom random import randrange\ndef random_complex_quantum_state():\n    # quantum state \n    quantum_state=[0,0]\n    length_square = 0\n    while length_square == 0:\n        first_entry_real = randrange(-100,101)\n        first_entry_imag = randrange(-100,101)\n        second_entry_real = randrange(-100,101)\n        second_entry_imag = randrange(-100,101)\n        length_square = first_entry_real**2+first_entry_imag**2+second_entry_real**2+second_entry_imag**2\n    first_entry_real = first_entry_real / length_square**0.5\n    first_entry_imag = first_entry_imag / length_square**0.5\n    second_entry_real = second_entry_real / length_square**0.5\n    second_entry_imag = second_entry_imag / length_square**0.5\n    quantum_state[0] = complex(first_entry_real, first_entry_imag)\n    quantum_state[1] = complex(second_entry_real, second_entry_imag)\n    return quantum_state",
           "source": "qbook101/qbook101/QB31_C03_Briefly_Unitary_Operators.ipynb",
           "difficulty": "complex",
           "titleDerived": true,
-          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic."
+          "explanation": "Quantum gates are reversible unitary operations, so no information is lost and every gate can be undone. That constraint is why quantum circuits look so different from classical logic.",
+          "solutionHarvested": true,
+          "solutionSource": "QB31_C03_Briefly_Unitary_Operators.ipynb"
         },
         {
           "id": "quantum-gates-16",
@@ -573,11 +626,13 @@
           "title": "Randomly pick and draw the state in Cirq",
           "prompt": "### Task 2\n\nRandomly pick $ (\\theta,\\phi) $ and draw the state in Cirq.",
           "starterCode": "#\n# your solution is here\n#",
-          "solution": "from cirq_web import BlochSphere\nimport numpy as np\nfrom random import randrange \n\ntheta = randrange(18000)/100\nphi = randrange(36000)/100\nprint(\"theta in degree is\",round(theta,1),\"| phi in degree is\",round(phi,1))\n\ntheta_radian = theta*np.pi/180\nphi_radian = phi*np.pi/180\nprint(\"theta in radian is\",round(theta_radian,2),\"| phi in radian is\",round(phi_radian,2))\n\nr1 = np.cos(theta_radian/2)\nr2 = np.sin(theta_radian/2)\nphase = complex(np.cos(phi_radian),np.sin(phi_radian))\na = round(phase.real,3)\nb = round(phase.imag,3)\nprint(\"quantum state is\",round(r1,3),\"|0> + (\",a,\"+\",b,\"j)\",round(r2,3),\"|1>\")\n\nstate = [ r1,r2*phase ]\n\nsphere = BlochSphere(state_vector=state)\ndisplay(sphere)",
+          "solution": "# Task 2 — random (theta, phi) and the resulting Bloch vector\n# cirq_web's BlochSphere is not available here; run() returns bloch_vectors\n# and the app renders them, so the state is built on the real backend instead.\nimport math\nfrom random import randrange\n\ntheta = randrange(18000) / 100          # 0..180 degrees\nphi = randrange(36000) / 100            # 0..360 degrees\nprint(\"theta =\", round(theta, 1), \"deg | phi =\", round(phi, 1), \"deg\")\n\nt, p = math.radians(theta), math.radians(phi)\nprint(\"theta =\", round(t, 4), \"rad | phi =\", round(p, 4), \"rad\")\n\n# |psi> = cos(t/2)|0> + e^(i*phi) sin(t/2)|1>\nqc = Circuit(1, 1)\nqc.ry(0, t)\nqc.rz(0, p)\nresult = qc.run(shots=1024)\n\nprint(\"amplitudes: cos(t/2) =\", round(math.cos(t/2), 4),\n      \"| sin(t/2) =\", round(math.sin(t/2), 4))\nprint(\"Bloch vector (x, y, z) =\",\n      round(math.sin(t)*math.cos(p), 4),\n      round(math.sin(t)*math.sin(p), 4),\n      round(math.cos(t), 4))\n",
           "source": "qbook101/qbook101/QB32_C07_Bloch_Sphere.ipynb",
           "difficulty": "complex",
           "explanation": "The Bloch sphere makes single-qubit states visual: θ sets the measurement probabilities and φ sets the relative phase. Phase is invisible to a computational-basis measurement, which is exactly why algorithms must interfere states before measuring.",
-          "verificationError": "Traceback (most recent call last):\n  File \"/var/folders/jn/kx5t5rdx7b7fnx35gl55k0pr0000gn/T/tmpu99p3pd3.py\", line 8, in <module>\n    from cirq_web import BlochSphere\nModuleNotFoundError: No module nam"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         }
       ]
     },
@@ -605,13 +660,15 @@
           "title": "Randomly picking an 8-bit binary number",
           "prompt": "Task 2: Randomly picking an 8-bit binary number \n\nDesign a quantum circuit with 8 quantum bits and 8 classical bits.\n\nFor each quantum bit, flip a coin by python, and apply x-gate if the outcome is head.\n\nMeasure your quantum bits.\n\nExecute your circuit 10 times.\n\nRepeat this task as much as you want, and enjoy your random choices.",
           "starterCode": "#\n# your solution is here\n#",
-          "solution": "# we import all necessary methods and objects\nfrom qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit, execute, Aer\nfrom random import randrange\n\n# we use 8 qubits and 8 classical bits\nq = QuantumRegister(8)\nc = ClassicalRegister(8)\n\nqc = QuantumCircuit(q,c)\n\n# we store the index of each qubit to which x-gate is applied\npicked_qubits=[] \n\nfor i in range(8):\n    if randrange(2) == 0: # Assume that 0 is Head and 1 is Tail\n        qc.x(q[i]) # apply x-gate\n        print(\"x-gate is applied to the qubit with index\",i)\n        picked_qubits.append(i) # i is picked\n\n# define a barrier\nqc.barrier()\n\n# measurement \nqc.measure(q,c)  \n\n# draw the circuit\n\ndisplay(qc.draw(output='mpl',reverse_bits=True))",
+          "solution": "# Task 2 — random 8-bit number on 8 qubits\n# The SDK's Circuit takes plain integer qubit indices; there is no separate\n# QuantumRegister object to subscript.\nfrom random import randrange\n\nqc = Circuit(8, 8)\npicked = []\nfor i in range(8):\n    if randrange(2) == 1:\n        qc.x(i)\n        picked.append(i)\nprint(\"x-gate applied to qubits:\", picked)\n\nqc.measure(list(range(8)), list(range(8)))\ncounts = qc.run(shots=1).get_counts()\nprint(\"measured bit string:\", list(counts)[0])\n",
           "source": "qbook101/qbook101/appendices/C_qiskit/QB_C2_Q12_First_Quantum_Programs_with_Qiskit.ipynb",
           "difficulty": "medium",
           "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are.",
           "solutionSource": "qbook101/qbook101/appendices/C_qiskit/QB_C2_Q12_First_Quantum_Programs_with_Qiskit_Solution.ipynb",
           "solutionHarvested": true,
-          "verificationError": "TypeError: 'QuantumRegister' object is not subscriptable"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         }
       ]
     },
@@ -750,14 +807,16 @@
           "title": "We play this game for .",
           "prompt": "Task 1\n\nWe play this game for $ N = 8 $.\n\nSuppose that only the 4th element is marked.\n\nWe can visualize the values of elements in the list in the beginning as follows.",
           "starterCode": "from matplotlib.pyplot import bar\n\nlabels = []\nelements = []\nfor i in range(8):\n    labels = labels + [i+1]\n    elements  = elements + [1]\n\n# visualize the values of elements in the list \nbar(labels,elements)",
-          "solution": "from matplotlib.pyplot import bar\n\nlabels = []\nelements = []\nfor i in range(8):\n    labels = labels + [i+1]\n    elements  = elements + [1]\n\n# visualize the values of elements in the list \nbar(labels,elements)",
+          "solution": "# Task 1 — N = 8, only the 4th element marked\n# matplotlib is not available here, so the same distribution is drawn as text.\nN = 8\nmarked = 4\nlabels = [i + 1 for i in range(N)]\nelements = [1 for _ in range(N)]\n\nprint(\"before marking:\")\nfor lab, val in zip(labels, elements):\n    print(f\"  {lab}: {'#' * (val * 20)} {val}\")\n\nelements[marked - 1] = -1\nprint(\"\\nafter marking element\", marked, \"with a sign flip:\")\nfor lab, val in zip(labels, elements):\n    bar = \"#\" * 20 if val > 0 else \"-\" * 20\n    print(f\"  {lab}: {bar} {val}\")\n",
           "source": "qbook101/qbook101/QB42_Q84_Inversion_About_the_Mean.ipynb",
           "difficulty": "easy",
           "titleDerived": true,
           "explanation": "Entanglement is the resource that separates quantum from classical computing — correlations no classical system can reproduce.",
           "solutionSource": "qbook101/qbook101/QB42_Q84_Inversion_About_the_Mean_Solutions.ipynb",
           "solutionHarvested": true,
-          "verificationError": "no output"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-entanglement-8",
@@ -969,13 +1028,14 @@
           "title": "Task 2",
           "prompt": "Task 2",
           "starterCode": "quantum_file = path_files+\"quantum.py\"\n%run $quantum_file",
-          "solution": "quantum_file = path_files+\"quantum.py\"\n%run $quantum_file",
+          "solution": "",
           "source": "qbook101/qbook101/QB42_Q92_Grovers_Search_Implementation.ipynb",
           "difficulty": "complex",
           "explanation": "Entanglement is the resource that separates quantum from classical computing — correlations no classical system can reproduce.",
           "solutionSource": "qbook101/qbook101/QB42_Q92_Grovers_Search_Implementation_Solutions.ipynb",
           "solutionHarvested": true,
-          "verificationError": "File \"/var/folders/jn/kx5t5rdx7b7fnx35gl55k0pr0000gn/T/tmp8kar9uoa.py\", line 9\n    %run $quantum_file\n    ^\nSyntaxError: invalid syntax"
+          "verificationError": "File \"/var/folders/jn/kx5t5rdx7b7fnx35gl55k0pr0000gn/T/tmp8kar9uoa.py\", line 9\n    %run $quantum_file\n    ^\nSyntaxError: invalid syntax",
+          "needsAuthoring": "no task text in the source cell"
         },
         {
           "id": "quantum-entanglement-24",
@@ -1303,12 +1363,14 @@
           "title": "Write a method named myQFT that takes a list of qubits and then returns the…",
           "prompt": "Task 6\n\nWrite a method named `myQFT` that takes a list of qubits and then returns the circuit implementing QFT on those qubits.\n\nTest your method with three and four qubits.\n\nPrint your circuits and compare them with our solutions.",
           "starterCode": "import cirq\nfrom cirq import H, SWAP\nfrom math import pi\n\ndef myQFT(qubits):\n    \n    circuit = cirq.Circuit()\n    \n    #\n    #Your code here\n    #\n    \n    return circuit",
-          "solution": "import cirq\nfrom cirq import H, SWAP\nfrom cirq.circuits import InsertStrategy\nfrom math import pi\n\ndef myQFT(qubits):\n\n    circuit = cirq.Circuit() # create a circuit\n    \n    n = len(qubits)\n    for i in range(n):\n        #Apply Hadamard\n        circuit.append(H(qubits[i]), strategy = InsertStrategy.NEW) # strategy is for the circuit to look neat\n        \n        # apply Controlled-PhaseShift \n        phase_divisor = 4 # 4,8,16,...\n        for j in range(i+1,n):\n            circuit.append(cirq.CZPowGate(exponent = 2/phase_divisor).on(qubits[j],qubits[i]))\n            phase_divisor = 2 * phase_divisor\n \n    # swap the qubits\n    for j in range(n//2): # integer division\n        circuit.append(SWAP.on(qubits[j],qubits[n-j-1]), strategy = InsertStrategy.NEW)  \n    \n    return circuit",
+          "solution": "# Task 6 — myQFT on a list of qubit indices\n# Written with the SDK's Circuit (h, cp, swap) rather than cirq, which this\n# environment does not carry.\nimport math\n\ndef myQFT(circuit, qubits):\n    \"\"\"Apply the Quantum Fourier Transform to `qubits` in place.\"\"\"\n    n = len(qubits)\n    for i in range(n):\n        circuit.h(qubits[i])\n        for j in range(i + 1, n):\n            circuit.cp(qubits[j], qubits[i], math.pi / (2 ** (j - i)))\n    # reverse the qubit order, as QFT leaves the result bit-reversed\n    for i in range(n // 2):\n        circuit.swap(qubits[i], qubits[n - 1 - i])\n    return circuit\n\nqc = Circuit(3, 3)\nqc.x(0)                       # prepare |001> so the transform is visible\nmyQFT(qc, [0, 1, 2])\nqc.measure([0, 1, 2], [0, 1, 2])\ncounts = qc.run(shots=1024).get_counts()\nprint(\"QFT on 3 qubits, counts:\", dict(sorted(counts.items())))\nprint(\"a flat spread across all 8 outcomes is the expected signature\")\n",
           "source": "silver-qcourse511/silver/D02_Quantum_Fourier_Transform.ipynb",
           "difficulty": "complex",
           "titleDerived": true,
           "explanation": "The Hadamard gate creates superposition, and applying it twice returns the original state. That reversibility is the point: superposition is not 'the qubit is secretly 0 or 1', it is a definite state whose amplitudes can later interfere and cancel.",
-          "verificationError": "ModuleNotFoundError: No module named 'cirq'"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-algorithms-24",
@@ -1316,11 +1378,13 @@
           "title": "\">click for our solution",
           "prompt": "click for our solution",
           "starterCode": "from math import pi, sin, cos\n#\n# our code here\n#",
-          "solution": "import cirq\nfrom cirq import H, SWAP\nfrom cirq.circuits import InsertStrategy\nfrom math import pi\n\ndef myQFT(qubits):\n\n    circuit = cirq.Circuit() # create a circuit\n    \n    n = len(qubits)\n    for i in range(n):\n        #Apply Hadamard\n        circuit.append(H(qubits[i]), strategy = InsertStrategy.NEW) # strategy is for the circuit to look neat\n        \n        # apply Controlled-PhaseShift \n        phase_divisor = 4 # 4,8,16,...\n        for j in range(i+1,n):\n            circuit.append(cirq.CZPowGate(exponent = 2/phase_divisor).on(qubits[j],qubits[i]))\n            phase_divisor = 2 * phase_divisor\n \n    # swap the qubits\n    for j in range(n//2): # integer division\n        circuit.append(SWAP.on(qubits[j],qubits[n-j-1]), strategy = InsertStrategy.NEW)  \n    \n    return circuit",
+          "solution": "# Task 6 — myQFT on a list of qubit indices\n# Written with the SDK's Circuit (h, cp, swap) rather than cirq, which this\n# environment does not carry.\nimport math\n\ndef myQFT(circuit, qubits):\n    \"\"\"Apply the Quantum Fourier Transform to `qubits` in place.\"\"\"\n    n = len(qubits)\n    for i in range(n):\n        circuit.h(qubits[i])\n        for j in range(i + 1, n):\n            circuit.cp(qubits[j], qubits[i], math.pi / (2 ** (j - i)))\n    # reverse the qubit order, as QFT leaves the result bit-reversed\n    for i in range(n // 2):\n        circuit.swap(qubits[i], qubits[n - 1 - i])\n    return circuit\n\nqc = Circuit(3, 3)\nqc.x(0)                       # prepare |001> so the transform is visible\nmyQFT(qc, [0, 1, 2])\nqc.measure([0, 1, 2], [0, 1, 2])\ncounts = qc.run(shots=1024).get_counts()\nprint(\"QFT on 3 qubits, counts:\", dict(sorted(counts.items())))\nprint(\"a flat spread across all 8 outcomes is the expected signature\")\n",
           "source": "silver-qcourse511/silver/D02_Quantum_Fourier_Transform.ipynb",
           "difficulty": "complex",
           "explanation": "The Hadamard gate creates superposition, and applying it twice returns the original state. That reversibility is the point: superposition is not 'the qubit is secretly 0 or 1', it is a definite state whose amplitudes can later interfere and cancel.",
-          "verificationError": "ModuleNotFoundError: No module named 'cirq'"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         }
       ]
     },
@@ -1384,11 +1448,13 @@
           "title": "Encrypt and decrypt the message \"15\" using RSA encryption scheme.",
           "prompt": "Task 1 \n\nEncrypt and decrypt the message \"15\" using RSA encryption scheme. Let $A=3$ & $B=7$.",
           "starterCode": "import math\n\nA = 3\nB = 11\nn = A*B\nphi = (A-1)*(B-1)\n\nk = 1\ne = 7\nd = (k*phi + 1)//e\n \nM = 5\n\n# Encryption E = (M ^ e) % n\nE = (M**e) % n\nprint(\"Encrypted Data = \", int(E))\n \n# Decryption\n\nM = ### YOUR CODE HERE ###\n\nprint(\"Decrypted Data = \", int(M))",
-          "solution": "",
+          "solution": "import math\n\nA = 3\nB = 11\nn = A*B\nphi = (A-1)*(B-1)\n\nk = 1\ne = 7\nd = (k*phi + 1)//e  #// for integer division\n \nM = 5\n\n# Encryption E = (M ^ e) % n\nE = (M**e) % n\nprint(\"Encrypted Data = \", int(E))\n \n# Decryption M = (E ^ d) % n\nM = (E**d) % n\nprint(\"Decrypted Data = \", int(M))",
           "source": "qkd/notebooks/QC03_RSA.ipynb",
           "difficulty": "easy",
           "titleDerived": true,
-          "explanation": "Quantum cryptography's security rests on physics rather than computational hardness — measurement disturbs a state, and that disturbance is detectable."
+          "explanation": "Quantum cryptography's security rests on physics rather than computational hardness — measurement disturbs a state, and that disturbance is detectable.",
+          "solutionHarvested": true,
+          "solutionSource": "QC03_RSA.ipynb"
         },
         {
           "id": "quantum-cryptography-6",
@@ -1746,12 +1812,14 @@
           "title": "Complete the code below to perform a measurement",
           "prompt": "Task 2 \n\nComplete the code below to perform a measurement.",
           "starterCode": "#Balvis performs a measurement\n#YOUR CODE HERE#",
-          "solution": "#Balvis performs a measurement\nbalvis.measure(qreg,creg)",
+          "solution": "# Task 2 — perform the measurement\n# Self-contained: the original fragment referenced `balvis`, `qreg` and `creg`\n# from earlier notebook cells that do not exist here.\nbalvis = Circuit(2, 2)\nbalvis.h(0)\nbalvis.cx(0, 1)               # entangle the pair\nbalvis.measure([0, 1], [0, 1])\n\ncounts = balvis.run(shots=1024).get_counts()\nprint(\"measurement outcomes:\", dict(sorted(counts.items())))\nprint(\"only 00 and 11 appear — the qubits are correlated\")\n",
           "source": "qkd/notebooks/QC07_Quantum_communication_in_Qiskit.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
           "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are.",
-          "verificationError": "Traceback (most recent call last):\n  File \"/var/folders/jn/kx5t5rdx7b7fnx35gl55k0pr0000gn/T/tmpqocdppdr.py\", line 9, in <module>\n    balvis.measure(qreg,creg)\n    ^^^^^^\nNameError: name 'balvis' is no"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-cryptography-13",
@@ -2510,11 +2578,13 @@
           "title": "Calculating correlation values",
           "prompt": "Task 1: Calculating correlation values \n\nCalculate correlation value for each experiment using the formula:\n\n$⟨A\\otimes B⟩=P(1,1)+P(0,0)-P(1,0)-P(0,1)$\n\nwhere $P(1,1)$ and $P(0,0)$ are probabilities of correlated results.\\\nThey can be calculated as number of rounds where Asja and Balvis obtained identical bits after measurement ($11$ and $00$) divided by 100 (all rounds);\n\n$P(1,0)$ and $P(0,1)$ are probabilities of uncorrelated results.\\\nThey can be calculated as number of rounds where Asja and Balvis obtained different bits ($10$ and $01$) divided by 100 (all rounds).",
           "starterCode": "ZW= ### YOUR CODE HERE ###\nXW= ### YOUR CODE HERE ###\nXV= ### YOUR CODE HERE ###\nZV= ### YOUR CODE HERE ###\n\nprint(ZW, XW, XV, ZV)",
-          "solution": "ZW=(countsZW.get('00')+countsZW.get('11')-countsZW.get('01')-countsZW.get('10'))/100\nXW=(countsXW.get('00')+countsXW.get('11')-countsXW.get('01')-countsXW.get('10'))/100\nXV=(countsXV.get('00')+countsXV.get('11')-countsXV.get('01')-countsXV.get('10'))/100\nZV=(countsZV.get('00')+countsZV.get('11')-countsZV.get('01')-countsZV.get('10'))/100\n\nprint(ZW, XW, XV, ZV)",
+          "solution": "import math\n\ndef correlation(alice_angle, bob_angle, shots=1024):\n    \"\"\"<A x B> for the Bell state, measuring along the given X-Z plane angles.\"\"\"\n    qc = Circuit(2, 2)\n    qc.h(0)\n    qc.cx(0, 1)                       # |Phi+> = (|00> + |11>)/sqrt(2)\n    qc.ry(0, -alice_angle)            # rotate each measurement axis onto Z\n    qc.ry(1, -bob_angle)\n    qc.measure([0, 1], [0, 1])\n    counts = qc.run(shots=shots).get_counts()\n    g = lambda k: counts.get(k, 0)\n    return (g('00') + g('11') - g('01') - g('10')) / shots\n\nZ, X = 0.0, math.pi / 2               # Alice's two settings\nW, V = math.pi / 4, -math.pi / 4      # Bob's two settings\n\nZW = correlation(Z, W)\nXW = correlation(X, W)\nXV = correlation(X, V)\nZV = correlation(Z, V)\n\nprint(\"ZW =\", round(ZW, 3))\nprint(\"XW =\", round(XW, 3))\nprint(\"XV =\", round(XV, 3))\nprint(\"ZV =\", round(ZV, 3))\nprint(\"each should sit near +/-0.707 (= 1/sqrt(2))\")\n",
           "source": "qkd/notebooks/QC20_CHSH_inequality.ipynb",
           "difficulty": "complex",
           "explanation": "The CHSH value is the sharpest dividing line in physics. Any theory where particles carry pre-set values obeys |S| ≤ 2; quantum mechanics reaches 2√2 ≈ 2.83. Measuring above 2 rules out local hidden variables — this is the experiment that settled the Einstein–Bohr argument, and it won the 2022 Nobel Prize.",
-          "verificationError": "Traceback (most recent call last):\n  File \"/var/folders/jn/kx5t5rdx7b7fnx35gl55k0pr0000gn/T/tmp02lb1yk2.py\", line 8, in <module>\n    ZW=(countsZW.get('00')+countsZW.get('11')-countsZW.get('01')-counts"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-cryptography-21",
@@ -2522,11 +2592,13 @@
           "title": "CHSH inequality value",
           "prompt": "Task 2: CHSH inequality value \n\nCalculate CHSH inequality value using formula $S=ZW+XW-XV+ZV$ and correlation values calculated previously.",
           "starterCode": "S= ### YOUR CODE HERE ###\n\nprint(\"CHSH inequality value is\", S)",
-          "solution": "S=ZW+XW-XV+ZV\n\nprint(\"CHSH inequality value is\", S)",
+          "solution": "import math\n\ndef correlation(alice_angle, bob_angle, shots=1024):\n    \"\"\"<A x B> for the Bell state, measuring along the given X-Z plane angles.\"\"\"\n    qc = Circuit(2, 2)\n    qc.h(0)\n    qc.cx(0, 1)                       # |Phi+> = (|00> + |11>)/sqrt(2)\n    qc.ry(0, -alice_angle)            # rotate each measurement axis onto Z\n    qc.ry(1, -bob_angle)\n    qc.measure([0, 1], [0, 1])\n    counts = qc.run(shots=shots).get_counts()\n    g = lambda k: counts.get(k, 0)\n    return (g('00') + g('11') - g('01') - g('10')) / shots\n\nZ, X = 0.0, math.pi / 2               # Alice's two settings\nW, V = math.pi / 4, -math.pi / 4      # Bob's two settings\n\nZW = correlation(Z, W)\nXW = correlation(X, W)\nXV = correlation(X, V)\nZV = correlation(Z, V)\n\nS = ZW + XW - XV + ZV\nprint(\"correlations:\", round(ZW, 3), round(XW, 3), round(XV, 3), round(ZV, 3))\nprint(\"CHSH inequality value is\", round(S, 3))\nprint(\"classical bound is 2; the quantum maximum is 2*sqrt(2) =\", round(2 * math.sqrt(2), 3))\nprint(\"violated\" if abs(S) > 2 else \"not violated\")\n",
           "source": "qkd/notebooks/QC20_CHSH_inequality.ipynb",
           "difficulty": "complex",
           "explanation": "The CHSH value is the sharpest dividing line in physics. Any theory where particles carry pre-set values obeys |S| ≤ 2; quantum mechanics reaches 2√2 ≈ 2.83. Measuring above 2 rules out local hidden variables — this is the experiment that settled the Einstein–Bohr argument, and it won the 2022 Nobel Prize.",
-          "verificationError": "Traceback (most recent call last):\n  File \"/var/folders/jn/kx5t5rdx7b7fnx35gl55k0pr0000gn/T/tmpvd31dqey.py\", line 8, in <module>\n    S=ZW+XW-XV+ZV\n      ^^\nNameError: name 'ZW' is not defined"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-cryptography-22",
