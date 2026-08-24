@@ -626,11 +626,13 @@
           "title": "Randomly pick and draw the state in Cirq",
           "prompt": "### Task 2\n\nRandomly pick $ (\\theta,\\phi) $ and draw the state in Cirq.",
           "starterCode": "#\n# your solution is here\n#",
-          "solution": "from cirq_web import BlochSphere\nimport numpy as np\nfrom random import randrange \n\ntheta = randrange(18000)/100\nphi = randrange(36000)/100\nprint(\"theta in degree is\",round(theta,1),\"| phi in degree is\",round(phi,1))\n\ntheta_radian = theta*np.pi/180\nphi_radian = phi*np.pi/180\nprint(\"theta in radian is\",round(theta_radian,2),\"| phi in radian is\",round(phi_radian,2))\n\nr1 = np.cos(theta_radian/2)\nr2 = np.sin(theta_radian/2)\nphase = complex(np.cos(phi_radian),np.sin(phi_radian))\na = round(phase.real,3)\nb = round(phase.imag,3)\nprint(\"quantum state is\",round(r1,3),\"|0> + (\",a,\"+\",b,\"j)\",round(r2,3),\"|1>\")\n\nstate = [ r1,r2*phase ]\n\nsphere = BlochSphere(state_vector=state)\ndisplay(sphere)",
+          "solution": "# Task 2 — random (theta, phi) and the resulting Bloch vector\n# cirq_web's BlochSphere is not available here; run() returns bloch_vectors\n# and the app renders them, so the state is built on the real backend instead.\nimport math\nfrom random import randrange\n\ntheta = randrange(18000) / 100          # 0..180 degrees\nphi = randrange(36000) / 100            # 0..360 degrees\nprint(\"theta =\", round(theta, 1), \"deg | phi =\", round(phi, 1), \"deg\")\n\nt, p = math.radians(theta), math.radians(phi)\nprint(\"theta =\", round(t, 4), \"rad | phi =\", round(p, 4), \"rad\")\n\n# |psi> = cos(t/2)|0> + e^(i*phi) sin(t/2)|1>\nqc = Circuit(1, 1)\nqc.ry(0, t)\nqc.rz(0, p)\nresult = qc.run(shots=1024)\n\nprint(\"amplitudes: cos(t/2) =\", round(math.cos(t/2), 4),\n      \"| sin(t/2) =\", round(math.sin(t/2), 4))\nprint(\"Bloch vector (x, y, z) =\",\n      round(math.sin(t)*math.cos(p), 4),\n      round(math.sin(t)*math.sin(p), 4),\n      round(math.cos(t), 4))\n",
           "source": "qbook101/qbook101/QB32_C07_Bloch_Sphere.ipynb",
           "difficulty": "complex",
           "explanation": "The Bloch sphere makes single-qubit states visual: θ sets the measurement probabilities and φ sets the relative phase. Phase is invisible to a computational-basis measurement, which is exactly why algorithms must interfere states before measuring.",
-          "verificationError": "Traceback (most recent call last):\n  File \"/var/folders/jn/kx5t5rdx7b7fnx35gl55k0pr0000gn/T/tmpu99p3pd3.py\", line 8, in <module>\n    from cirq_web import BlochSphere\nModuleNotFoundError: No module nam"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         }
       ]
     },
@@ -658,13 +660,15 @@
           "title": "Randomly picking an 8-bit binary number",
           "prompt": "Task 2: Randomly picking an 8-bit binary number \n\nDesign a quantum circuit with 8 quantum bits and 8 classical bits.\n\nFor each quantum bit, flip a coin by python, and apply x-gate if the outcome is head.\n\nMeasure your quantum bits.\n\nExecute your circuit 10 times.\n\nRepeat this task as much as you want, and enjoy your random choices.",
           "starterCode": "#\n# your solution is here\n#",
-          "solution": "# we import all necessary methods and objects\nfrom qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit, execute, Aer\nfrom random import randrange\n\n# we use 8 qubits and 8 classical bits\nq = QuantumRegister(8)\nc = ClassicalRegister(8)\n\nqc = QuantumCircuit(q,c)\n\n# we store the index of each qubit to which x-gate is applied\npicked_qubits=[] \n\nfor i in range(8):\n    if randrange(2) == 0: # Assume that 0 is Head and 1 is Tail\n        qc.x(q[i]) # apply x-gate\n        print(\"x-gate is applied to the qubit with index\",i)\n        picked_qubits.append(i) # i is picked\n\n# define a barrier\nqc.barrier()\n\n# measurement \nqc.measure(q,c)  \n\n# draw the circuit\n\ndisplay(qc.draw(output='mpl',reverse_bits=True))",
+          "solution": "# Task 2 — random 8-bit number on 8 qubits\n# The SDK's Circuit takes plain integer qubit indices; there is no separate\n# QuantumRegister object to subscript.\nfrom random import randrange\n\nqc = Circuit(8, 8)\npicked = []\nfor i in range(8):\n    if randrange(2) == 1:\n        qc.x(i)\n        picked.append(i)\nprint(\"x-gate applied to qubits:\", picked)\n\nqc.measure(list(range(8)), list(range(8)))\ncounts = qc.run(shots=1).get_counts()\nprint(\"measured bit string:\", list(counts)[0])\n",
           "source": "qbook101/qbook101/appendices/C_qiskit/QB_C2_Q12_First_Quantum_Programs_with_Qiskit.ipynb",
           "difficulty": "medium",
           "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are.",
           "solutionSource": "qbook101/qbook101/appendices/C_qiskit/QB_C2_Q12_First_Quantum_Programs_with_Qiskit_Solution.ipynb",
           "solutionHarvested": true,
-          "verificationError": "TypeError: 'QuantumRegister' object is not subscriptable"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         }
       ]
     },
@@ -803,14 +807,16 @@
           "title": "We play this game for .",
           "prompt": "Task 1\n\nWe play this game for $ N = 8 $.\n\nSuppose that only the 4th element is marked.\n\nWe can visualize the values of elements in the list in the beginning as follows.",
           "starterCode": "from matplotlib.pyplot import bar\n\nlabels = []\nelements = []\nfor i in range(8):\n    labels = labels + [i+1]\n    elements  = elements + [1]\n\n# visualize the values of elements in the list \nbar(labels,elements)",
-          "solution": "from matplotlib.pyplot import bar\n\nlabels = []\nelements = []\nfor i in range(8):\n    labels = labels + [i+1]\n    elements  = elements + [1]\n\n# visualize the values of elements in the list \nbar(labels,elements)",
+          "solution": "# Task 1 — N = 8, only the 4th element marked\n# matplotlib is not available here, so the same distribution is drawn as text.\nN = 8\nmarked = 4\nlabels = [i + 1 for i in range(N)]\nelements = [1 for _ in range(N)]\n\nprint(\"before marking:\")\nfor lab, val in zip(labels, elements):\n    print(f\"  {lab}: {'#' * (val * 20)} {val}\")\n\nelements[marked - 1] = -1\nprint(\"\\nafter marking element\", marked, \"with a sign flip:\")\nfor lab, val in zip(labels, elements):\n    bar = \"#\" * 20 if val > 0 else \"-\" * 20\n    print(f\"  {lab}: {bar} {val}\")\n",
           "source": "qbook101/qbook101/QB42_Q84_Inversion_About_the_Mean.ipynb",
           "difficulty": "easy",
           "titleDerived": true,
           "explanation": "Entanglement is the resource that separates quantum from classical computing — correlations no classical system can reproduce.",
           "solutionSource": "qbook101/qbook101/QB42_Q84_Inversion_About_the_Mean_Solutions.ipynb",
           "solutionHarvested": true,
-          "verificationError": "no output"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-entanglement-8",
@@ -1022,13 +1028,14 @@
           "title": "Task 2",
           "prompt": "Task 2",
           "starterCode": "quantum_file = path_files+\"quantum.py\"\n%run $quantum_file",
-          "solution": "quantum_file = path_files+\"quantum.py\"\n%run $quantum_file",
+          "solution": "",
           "source": "qbook101/qbook101/QB42_Q92_Grovers_Search_Implementation.ipynb",
           "difficulty": "complex",
           "explanation": "Entanglement is the resource that separates quantum from classical computing — correlations no classical system can reproduce.",
           "solutionSource": "qbook101/qbook101/QB42_Q92_Grovers_Search_Implementation_Solutions.ipynb",
           "solutionHarvested": true,
-          "verificationError": "File \"/var/folders/jn/kx5t5rdx7b7fnx35gl55k0pr0000gn/T/tmp8kar9uoa.py\", line 9\n    %run $quantum_file\n    ^\nSyntaxError: invalid syntax"
+          "verificationError": "File \"/var/folders/jn/kx5t5rdx7b7fnx35gl55k0pr0000gn/T/tmp8kar9uoa.py\", line 9\n    %run $quantum_file\n    ^\nSyntaxError: invalid syntax",
+          "needsAuthoring": "no task text in the source cell"
         },
         {
           "id": "quantum-entanglement-24",
@@ -1356,12 +1363,14 @@
           "title": "Write a method named myQFT that takes a list of qubits and then returns the…",
           "prompt": "Task 6\n\nWrite a method named `myQFT` that takes a list of qubits and then returns the circuit implementing QFT on those qubits.\n\nTest your method with three and four qubits.\n\nPrint your circuits and compare them with our solutions.",
           "starterCode": "import cirq\nfrom cirq import H, SWAP\nfrom math import pi\n\ndef myQFT(qubits):\n    \n    circuit = cirq.Circuit()\n    \n    #\n    #Your code here\n    #\n    \n    return circuit",
-          "solution": "import cirq\nfrom cirq import H, SWAP\nfrom cirq.circuits import InsertStrategy\nfrom math import pi\n\ndef myQFT(qubits):\n\n    circuit = cirq.Circuit() # create a circuit\n    \n    n = len(qubits)\n    for i in range(n):\n        #Apply Hadamard\n        circuit.append(H(qubits[i]), strategy = InsertStrategy.NEW) # strategy is for the circuit to look neat\n        \n        # apply Controlled-PhaseShift \n        phase_divisor = 4 # 4,8,16,...\n        for j in range(i+1,n):\n            circuit.append(cirq.CZPowGate(exponent = 2/phase_divisor).on(qubits[j],qubits[i]))\n            phase_divisor = 2 * phase_divisor\n \n    # swap the qubits\n    for j in range(n//2): # integer division\n        circuit.append(SWAP.on(qubits[j],qubits[n-j-1]), strategy = InsertStrategy.NEW)  \n    \n    return circuit",
+          "solution": "# Task 6 — myQFT on a list of qubit indices\n# Written with the SDK's Circuit (h, cp, swap) rather than cirq, which this\n# environment does not carry.\nimport math\n\ndef myQFT(circuit, qubits):\n    \"\"\"Apply the Quantum Fourier Transform to `qubits` in place.\"\"\"\n    n = len(qubits)\n    for i in range(n):\n        circuit.h(qubits[i])\n        for j in range(i + 1, n):\n            circuit.cp(qubits[j], qubits[i], math.pi / (2 ** (j - i)))\n    # reverse the qubit order, as QFT leaves the result bit-reversed\n    for i in range(n // 2):\n        circuit.swap(qubits[i], qubits[n - 1 - i])\n    return circuit\n\nqc = Circuit(3, 3)\nqc.x(0)                       # prepare |001> so the transform is visible\nmyQFT(qc, [0, 1, 2])\nqc.measure([0, 1, 2], [0, 1, 2])\ncounts = qc.run(shots=1024).get_counts()\nprint(\"QFT on 3 qubits, counts:\", dict(sorted(counts.items())))\nprint(\"a flat spread across all 8 outcomes is the expected signature\")\n",
           "source": "silver-qcourse511/silver/D02_Quantum_Fourier_Transform.ipynb",
           "difficulty": "complex",
           "titleDerived": true,
           "explanation": "The Hadamard gate creates superposition, and applying it twice returns the original state. That reversibility is the point: superposition is not 'the qubit is secretly 0 or 1', it is a definite state whose amplitudes can later interfere and cancel.",
-          "verificationError": "ModuleNotFoundError: No module named 'cirq'"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-algorithms-24",
@@ -1369,11 +1378,13 @@
           "title": "\">click for our solution",
           "prompt": "click for our solution",
           "starterCode": "from math import pi, sin, cos\n#\n# our code here\n#",
-          "solution": "import cirq\nfrom cirq import H, SWAP\nfrom cirq.circuits import InsertStrategy\nfrom math import pi\n\ndef myQFT(qubits):\n\n    circuit = cirq.Circuit() # create a circuit\n    \n    n = len(qubits)\n    for i in range(n):\n        #Apply Hadamard\n        circuit.append(H(qubits[i]), strategy = InsertStrategy.NEW) # strategy is for the circuit to look neat\n        \n        # apply Controlled-PhaseShift \n        phase_divisor = 4 # 4,8,16,...\n        for j in range(i+1,n):\n            circuit.append(cirq.CZPowGate(exponent = 2/phase_divisor).on(qubits[j],qubits[i]))\n            phase_divisor = 2 * phase_divisor\n \n    # swap the qubits\n    for j in range(n//2): # integer division\n        circuit.append(SWAP.on(qubits[j],qubits[n-j-1]), strategy = InsertStrategy.NEW)  \n    \n    return circuit",
+          "solution": "# Task 6 — myQFT on a list of qubit indices\n# Written with the SDK's Circuit (h, cp, swap) rather than cirq, which this\n# environment does not carry.\nimport math\n\ndef myQFT(circuit, qubits):\n    \"\"\"Apply the Quantum Fourier Transform to `qubits` in place.\"\"\"\n    n = len(qubits)\n    for i in range(n):\n        circuit.h(qubits[i])\n        for j in range(i + 1, n):\n            circuit.cp(qubits[j], qubits[i], math.pi / (2 ** (j - i)))\n    # reverse the qubit order, as QFT leaves the result bit-reversed\n    for i in range(n // 2):\n        circuit.swap(qubits[i], qubits[n - 1 - i])\n    return circuit\n\nqc = Circuit(3, 3)\nqc.x(0)                       # prepare |001> so the transform is visible\nmyQFT(qc, [0, 1, 2])\nqc.measure([0, 1, 2], [0, 1, 2])\ncounts = qc.run(shots=1024).get_counts()\nprint(\"QFT on 3 qubits, counts:\", dict(sorted(counts.items())))\nprint(\"a flat spread across all 8 outcomes is the expected signature\")\n",
           "source": "silver-qcourse511/silver/D02_Quantum_Fourier_Transform.ipynb",
           "difficulty": "complex",
           "explanation": "The Hadamard gate creates superposition, and applying it twice returns the original state. That reversibility is the point: superposition is not 'the qubit is secretly 0 or 1', it is a definite state whose amplitudes can later interfere and cancel.",
-          "verificationError": "ModuleNotFoundError: No module named 'cirq'"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         }
       ]
     },
@@ -1801,12 +1812,14 @@
           "title": "Complete the code below to perform a measurement",
           "prompt": "Task 2 \n\nComplete the code below to perform a measurement.",
           "starterCode": "#Balvis performs a measurement\n#YOUR CODE HERE#",
-          "solution": "#Balvis performs a measurement\nbalvis.measure(qreg,creg)",
+          "solution": "# Task 2 — perform the measurement\n# Self-contained: the original fragment referenced `balvis`, `qreg` and `creg`\n# from earlier notebook cells that do not exist here.\nbalvis = Circuit(2, 2)\nbalvis.h(0)\nbalvis.cx(0, 1)               # entangle the pair\nbalvis.measure([0, 1], [0, 1])\n\ncounts = balvis.run(shots=1024).get_counts()\nprint(\"measurement outcomes:\", dict(sorted(counts.items())))\nprint(\"only 00 and 11 appear — the qubits are correlated\")\n",
           "source": "qkd/notebooks/QC07_Quantum_communication_in_Qiskit.ipynb",
           "difficulty": "medium",
           "titleDerived": true,
           "explanation": "A single measurement tells you almost nothing; the distribution over many shots is the result. Probabilities are the squared magnitudes of amplitudes, which is why amplitudes may be negative or complex while probabilities never are.",
-          "verificationError": "Traceback (most recent call last):\n  File \"/var/folders/jn/kx5t5rdx7b7fnx35gl55k0pr0000gn/T/tmpqocdppdr.py\", line 9, in <module>\n    balvis.measure(qreg,creg)\n    ^^^^^^\nNameError: name 'balvis' is no"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-cryptography-13",
@@ -2565,11 +2578,13 @@
           "title": "Calculating correlation values",
           "prompt": "Task 1: Calculating correlation values \n\nCalculate correlation value for each experiment using the formula:\n\n$⟨A\\otimes B⟩=P(1,1)+P(0,0)-P(1,0)-P(0,1)$\n\nwhere $P(1,1)$ and $P(0,0)$ are probabilities of correlated results.\\\nThey can be calculated as number of rounds where Asja and Balvis obtained identical bits after measurement ($11$ and $00$) divided by 100 (all rounds);\n\n$P(1,0)$ and $P(0,1)$ are probabilities of uncorrelated results.\\\nThey can be calculated as number of rounds where Asja and Balvis obtained different bits ($10$ and $01$) divided by 100 (all rounds).",
           "starterCode": "ZW= ### YOUR CODE HERE ###\nXW= ### YOUR CODE HERE ###\nXV= ### YOUR CODE HERE ###\nZV= ### YOUR CODE HERE ###\n\nprint(ZW, XW, XV, ZV)",
-          "solution": "ZW=(countsZW.get('00')+countsZW.get('11')-countsZW.get('01')-countsZW.get('10'))/100\nXW=(countsXW.get('00')+countsXW.get('11')-countsXW.get('01')-countsXW.get('10'))/100\nXV=(countsXV.get('00')+countsXV.get('11')-countsXV.get('01')-countsXV.get('10'))/100\nZV=(countsZV.get('00')+countsZV.get('11')-countsZV.get('01')-countsZV.get('10'))/100\n\nprint(ZW, XW, XV, ZV)",
+          "solution": "import math\n\ndef correlation(alice_angle, bob_angle, shots=1024):\n    \"\"\"<A x B> for the Bell state, measuring along the given X-Z plane angles.\"\"\"\n    qc = Circuit(2, 2)\n    qc.h(0)\n    qc.cx(0, 1)                       # |Phi+> = (|00> + |11>)/sqrt(2)\n    qc.ry(0, -alice_angle)            # rotate each measurement axis onto Z\n    qc.ry(1, -bob_angle)\n    qc.measure([0, 1], [0, 1])\n    counts = qc.run(shots=shots).get_counts()\n    g = lambda k: counts.get(k, 0)\n    return (g('00') + g('11') - g('01') - g('10')) / shots\n\nZ, X = 0.0, math.pi / 2               # Alice's two settings\nW, V = math.pi / 4, -math.pi / 4      # Bob's two settings\n\nZW = correlation(Z, W)\nXW = correlation(X, W)\nXV = correlation(X, V)\nZV = correlation(Z, V)\n\nprint(\"ZW =\", round(ZW, 3))\nprint(\"XW =\", round(XW, 3))\nprint(\"XV =\", round(XV, 3))\nprint(\"ZV =\", round(ZV, 3))\nprint(\"each should sit near +/-0.707 (= 1/sqrt(2))\")\n",
           "source": "qkd/notebooks/QC20_CHSH_inequality.ipynb",
           "difficulty": "complex",
           "explanation": "The CHSH value is the sharpest dividing line in physics. Any theory where particles carry pre-set values obeys |S| ≤ 2; quantum mechanics reaches 2√2 ≈ 2.83. Measuring above 2 rules out local hidden variables — this is the experiment that settled the Einstein–Bohr argument, and it won the 2022 Nobel Prize.",
-          "verificationError": "Traceback (most recent call last):\n  File \"/var/folders/jn/kx5t5rdx7b7fnx35gl55k0pr0000gn/T/tmp02lb1yk2.py\", line 8, in <module>\n    ZW=(countsZW.get('00')+countsZW.get('11')-countsZW.get('01')-counts"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-cryptography-21",
@@ -2577,11 +2592,13 @@
           "title": "CHSH inequality value",
           "prompt": "Task 2: CHSH inequality value \n\nCalculate CHSH inequality value using formula $S=ZW+XW-XV+ZV$ and correlation values calculated previously.",
           "starterCode": "S= ### YOUR CODE HERE ###\n\nprint(\"CHSH inequality value is\", S)",
-          "solution": "S=ZW+XW-XV+ZV\n\nprint(\"CHSH inequality value is\", S)",
+          "solution": "import math\n\ndef correlation(alice_angle, bob_angle, shots=1024):\n    \"\"\"<A x B> for the Bell state, measuring along the given X-Z plane angles.\"\"\"\n    qc = Circuit(2, 2)\n    qc.h(0)\n    qc.cx(0, 1)                       # |Phi+> = (|00> + |11>)/sqrt(2)\n    qc.ry(0, -alice_angle)            # rotate each measurement axis onto Z\n    qc.ry(1, -bob_angle)\n    qc.measure([0, 1], [0, 1])\n    counts = qc.run(shots=shots).get_counts()\n    g = lambda k: counts.get(k, 0)\n    return (g('00') + g('11') - g('01') - g('10')) / shots\n\nZ, X = 0.0, math.pi / 2               # Alice's two settings\nW, V = math.pi / 4, -math.pi / 4      # Bob's two settings\n\nZW = correlation(Z, W)\nXW = correlation(X, W)\nXV = correlation(X, V)\nZV = correlation(Z, V)\n\nS = ZW + XW - XV + ZV\nprint(\"correlations:\", round(ZW, 3), round(XW, 3), round(XV, 3), round(ZV, 3))\nprint(\"CHSH inequality value is\", round(S, 3))\nprint(\"classical bound is 2; the quantum maximum is 2*sqrt(2) =\", round(2 * math.sqrt(2), 3))\nprint(\"violated\" if abs(S) > 2 else \"not violated\")\n",
           "source": "qkd/notebooks/QC20_CHSH_inequality.ipynb",
           "difficulty": "complex",
           "explanation": "The CHSH value is the sharpest dividing line in physics. Any theory where particles carry pre-set values obeys |S| ≤ 2; quantum mechanics reaches 2√2 ≈ 2.83. Measuring above 2 rules out local hidden variables — this is the experiment that settled the Einstein–Bohr argument, and it won the 2022 Nobel Prize.",
-          "verificationError": "Traceback (most recent call last):\n  File \"/var/folders/jn/kx5t5rdx7b7fnx35gl55k0pr0000gn/T/tmpvd31dqey.py\", line 8, in <module>\n    S=ZW+XW-XV+ZV\n      ^^\nNameError: name 'ZW' is not defined"
+          "solutionAuthored": true,
+          "solutionSdk": "qpiai",
+          "verifiedAgainst": "QpiAI-QSV-Local"
         },
         {
           "id": "quantum-cryptography-22",

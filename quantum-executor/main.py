@@ -242,7 +242,20 @@ def execute_user_code(
     except Exception as exc:
         # Learners need the message; nobody outside needs our file paths and
         # frame layout. The full traceback goes to the container log instead.
-        log.exception("execution failed")
+        #
+        # But not every failure here is ours. A rejected import, a NameError, a
+        # SyntaxError — those are someone learning, and the request still
+        # returns 200. Logging them at ERROR with a full traceback buried the
+        # real faults: a single verification sweep filled the Railway log with
+        # tracebacks for code that was simply wrong, which is the normal case
+        # for a teaching tool. Those are now one INFO line. ERROR is kept for
+        # faults the operator can actually act on.
+        if isinstance(exc, (ValueError, SyntaxError, NameError, TypeError,
+                            AttributeError, IndexError, KeyError,
+                            ZeroDivisionError)):
+            log.info("lab code failed: %s: %s", type(exc).__name__, exc)
+        else:
+            log.exception("execution failed")
         detail = f"{type(exc).__name__}: {exc}"
         if INCLUDE_TRACEBACKS:
             detail = f"{detail}\n{traceback.format_exc()}"
