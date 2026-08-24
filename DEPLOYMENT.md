@@ -120,3 +120,74 @@ migration ran, restore from a dump taken immediately before:
 ```bash
 pg_dump -U quantumui quantumui > backup-$(date +%F).sql
 ```
+
+---
+
+## Enabling Google sign-in
+
+Optional. Without it the password form works exactly as before, and the
+"Sign in with Google" button does not render at all — `src/lib/auth.ts`
+registers the provider only when both variables below are present and
+non-empty, and `GoogleSignInButton` asks `/api/auth/providers` before
+drawing itself. Setting only one half leaves Google switched off rather
+than half-configured.
+
+### 1. Create the OAuth client
+
+[console.cloud.google.com/apis/credentials](https://console.cloud.google.com/apis/credentials)
+→ **Create credentials → OAuth client ID → Web application**.
+
+**Authorised redirect URIs** — every origin the app answers on. The
+`/api/auth/callback/google` path is NextAuth's, not ours; it must match
+character for character, and a trailing slash breaks it:
+
+    https://www.sroobservotary.com/api/auth/callback/google
+    https://sroobservotary.com/api/auth/callback/google
+    https://quantumui-app.vercel.app/api/auth/callback/google
+    http://localhost:3000/api/auth/callback/google
+
+**Authorised JavaScript origins:**
+
+    https://www.sroobservotary.com
+    http://localhost:3000
+
+A redirect URI that is missing here is the usual cause of
+`Error 400: redirect_uri_mismatch` after the consent screen.
+
+### 2. Add the credentials
+
+Production:
+
+    vercel env add AUTH_GOOGLE_ID production
+    vercel env add AUTH_GOOGLE_SECRET production
+    vercel deploy --prod        # env vars are read at build time
+
+Local development — in `.env.local`, which is gitignored:
+
+    AUTH_GOOGLE_ID="...apps.googleusercontent.com"
+    AUTH_GOOGLE_SECRET="GOCSPX-..."
+
+`GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` are read as fallbacks, since
+that is what the Google console labels them.
+
+### 3. Publish the consent screen
+
+A new consent screen starts in **Testing**, where only accounts listed
+under *Test users* can sign in — everyone else gets `access_denied`.
+Publish it before real learners arrive.
+
+### What a Google sign-in does to the account
+
+The `jwt` callback upserts by email, so signing in with Google using an
+address that already has a password account **links to that same row**
+rather than creating a second one: the same `User.id`, so progress, XP
+and streaks carry over, and the password keeps working. A genuinely new
+Google account is created with the schema default role, `FREE`.
+
+### Verifying
+
+    curl -s https://www.sroobservotary.com/api/auth/providers
+
+`google` appears in that JSON once the variables are live. If it does
+not, the deploy has not picked them up yet — the button follows this
+endpoint, so there is nothing else to switch on.
