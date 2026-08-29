@@ -125,6 +125,37 @@ Be aware of these before promising them to users:
   imagery is CC-BY-NC-ND, which conflicts with the paid tiers on `/upgrade`.
   See `public/images/ATTRIBUTION.md`.
 
+## Database schema changes
+
+The deploy workflow runs `prisma migrate deploy` before the build, so a schema
+change ships with the code that needs it. Two things follow from that.
+
+**Every change to `schema.prisma` needs a committed migration.** Generate it
+with `prisma migrate dev --name <change>` and commit
+`prisma/migrations/<stamp>_<change>/`. A schema edit without one does not fail
+quietly: the step after the migration compares the schema against the database
+and fails the deploy with the SQL it expected to run.
+
+This exists because it went wrong. #7 added `AnalyticsEvent`, `lastLoginAt` and
+`loginCount`, nothing applied them, and the deploy shipped code that threw on
+every request touching `User`.
+
+**Migrations use `DIRECT_URL`, not `DATABASE_URL`.** DDL and advisory locks do
+not survive a connection pooler, so `schema.prisma` declares a `directUrl` and
+Prisma Migrate uses it. The workflow resolves it as:
+
+    DIRECT_URL -> POSTGRES_URL_NON_POOLING -> DATABASE_URL
+
+The project's own `DIRECT_URL` is stored empty, which failed the first run with
+`P1013: the scheme is not recognized` — an empty string is not a URL. Neon's
+Vercel integration already supplies the unpooled host as
+`POSTGRES_URL_NON_POOLING`, so the chain resolves without anyone having to
+remember to fill a variable in.
+
+Credentials come from the environment `vercel pull` downloads rather than a
+separate GitHub secret, so the migration step and the deployment cannot drift
+apart the way two copies of a connection string do.
+
 ## Rollback
 
 The app is stateless apart from PostgreSQL. Redeploy the previous build and, if a
@@ -135,6 +166,25 @@ pg_dump -U quantumui quantumui > backup-$(date +%F).sql
 ```
 
 ---
+
+## A rollback pins production
+
+`vercel rollback` does not merely restore the previous build — it **pins the
+production alias to it**. Every later `vercel deploy --prod` then builds,
+uploads and reports success while the alias keeps serving the pinned
+deployment. The deploy is green and the site does not change.
+
+It is worse than a silent no-op, because the smoke test requests `PROD_URL`.
+Against a pinned alias it tests the *old* deployment and passes, certifying a
+build that is not serving. Three deploys in a row were invisible in production
+this way before it was noticed.
+
+The workflow now captures its own deployment URL, promotes it when the alias
+has not moved, and asserts that the deployment answering `PROD_URL` is the one
+just built — failing loudly if it is not. If you ever roll back by hand, either
+promote the next good deployment yourself or let the workflow do it.
+
+    npx vercel promote <deployment-url> --token=... --timeout 5m
 
 ## Enabling Google sign-in
 

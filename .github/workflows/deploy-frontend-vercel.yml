@@ -121,11 +121,32 @@ jobs:
         run: |
           set -a; . ./.vercel/.env.production.local; set +a
           [ -n "$DATABASE_URL" ] || { echo "::error::DATABASE_URL missing from the pulled Vercel environment"; exit 1; }
+
+          # schema.prisma declares `directUrl = env("DIRECT_URL")`, and Prisma
+          # Migrate uses that rather than the pooled DATABASE_URL — advisory
+          # locks and DDL do not survive a connection pooler.
+          #
+          # The project's DIRECT_URL is stored empty, so the first run of this
+          # step failed with P1013 "the scheme is not recognized": an empty
+          # string is not a URL. Neon's own integration already supplies the
+          # unpooled host as POSTGRES_URL_NON_POOLING, so resolve through it
+          # rather than depending on a variable somebody has to remember to
+          # fill in. DATABASE_URL is the last resort: pooled migrations are
+          # worse than none only in edge cases, and failing to deploy at all
+          # is worse than both.
+          export DIRECT_URL="${DIRECT_URL:-${POSTGRES_URL_NON_POOLING:-$DATABASE_URL}}"
+          case "$DIRECT_URL" in
+            postgres://*|postgresql://*) ;;
+            *) echo "::error::no usable direct database URL (DIRECT_URL and POSTGRES_URL_NON_POOLING are both empty or malformed)"; exit 1 ;;
+          esac
+          echo "migrating against $(echo "$DIRECT_URL" | sed 's|.*@||;s|/.*||')"
+
           npx prisma migrate deploy
 
       - name: Fail if the schema still differs from the database
         run: |
           set -a; . ./.vercel/.env.production.local; set +a
+          export DIRECT_URL="${DIRECT_URL:-${POSTGRES_URL_NON_POOLING:-$DATABASE_URL}}"
           # `migrate deploy` succeeds when there is nothing to apply, including
           # when someone edited schema.prisma and forgot the migration. This
           # catches that case before the build ships code for a schema the
