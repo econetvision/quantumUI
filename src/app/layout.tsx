@@ -12,6 +12,7 @@ import { SiteFooter } from '@/components/layout/SiteFooter';
 import { AnalyticsTracker } from '@/components/analytics/AnalyticsTracker';
 import { JsonLd, organisationJsonLd, websiteJsonLd } from '@/components/seo/JsonLd';
 import {
+  ORG_NAME,
   SITE_DESCRIPTION,
   SITE_NAME,
   SITE_TAGLINE,
@@ -75,9 +76,9 @@ export const metadata: Metadata = {
     'QWorld',
   ],
 
-  authors: [{ name: SITE_NAME, url: SITE_URL }],
-  creator: SITE_NAME,
-  publisher: SITE_NAME,
+  authors: [{ name: ORG_NAME, url: SITE_URL }],
+  creator: ORG_NAME,
+  publisher: ORG_NAME,
 
   /**
    * Preview deployments and local builds are marked `noindex` at the tag level

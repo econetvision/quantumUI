@@ -47,6 +47,13 @@ export const SITE_URL = resolveSiteUrl();
 export const SITE_NAME = 'QuantumUI';
 export const SITE_TAGLINE = 'Learn Quantum Computing Interactively';
 
+/**
+ * The studio behind the site. Shown as the byline under the wordmark and named
+ * as the issuer on completion certificates.
+ */
+export const ORG_NAME = 'Sroorbitary Labs';
+export const SITE_BYLINE = `by ${ORG_NAME}`;
+
 export const SITE_DESCRIPTION =
   'Interactive quantum computing curriculum. Run real circuits on the QpiAI Quantum SDK, visualise Bloch spheres and statevectors, and prepare for IBM Qiskit certification. Start with Track 0 — free, no account needed.';
 

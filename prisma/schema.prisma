@@ -66,6 +66,16 @@ model User {
   lastLoginAt DateTime?
   loginCount  Int       @default(0)
 
+  // Email lifecycle. The welcome mail must go exactly once, on the first
+  // completed sign-in; the digest stamps let the weekly/monthly cron routes
+  // re-run safely without double-sending after a partial failure.
+  welcomeEmailSentAt  DateTime?
+  weeklyDigestSentAt  DateTime?
+  monthlyDigestSentAt DateTime?
+  // Learners can opt out of progress digests; transactional mail (welcome,
+  // certificates they request) is unaffected.
+  emailOptOut         Boolean   @default(false)
+
   // OAuth fields (optional)
   emailVerified DateTime?
   image         String?
@@ -88,6 +98,7 @@ model User {
   examAttempts ExamAttempt[]
   achievements UserAchievement[]
   events       AnalyticsEvent[]
+  certificates Certificate[]
 
   @@index([email])
   // The roster and the "new sign-ups this week" tile both sort/filter on
@@ -352,6 +363,21 @@ model UserProgress {
 
   @@unique([userId, trackId])
   @@index([userId])
+}
+
+// A certificate of completion issued by the site once every lesson of a track
+// is done. The row is the certificate — /certificates/[id] renders it, and the
+// serial printed on it is the row id, so anyone can verify one by URL.
+model Certificate {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trackSlug String
+  trackName String
+  issuedAt  DateTime @default(now())
+
+  @@unique([userId, trackSlug])
+  @@index([userId, issuedAt])
 }
 
 // =====================================================
