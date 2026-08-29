@@ -167,7 +167,6 @@ CATALOG: dict[str, dict[str, Any]] = {
         # "110", get "011"), while Bernstein-Vazirani and Simon report in the
         # same order as their input. Verified per algorithm on the local
         # simulator — hence a per-entry flag rather than a global setting.
-        "reverse_bits": True,
         "insight": _grover_insight,
     },
     "shor": {
@@ -473,7 +472,10 @@ def run_algorithm(
         experiment_name=f"QuantumUI · {spec['name']}",
         need_statevector=True,
         device_name=device,
-        reverse_bits=spec.get("reverse_bits", False),
+        # Canonical ordering for every algorithm -- see the note in
+        # qpiai_bridge.get_circuit_class. This path builds circuits directly
+        # rather than through PinnedCircuit, so it sets the same default here.
+        reverse_bits=spec.get("reverse_bits", True),
     )
 
     payload: dict[str, Any] = {
