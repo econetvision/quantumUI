@@ -14,7 +14,10 @@
     "db:push": "dotenv -e .env.local -e .env -- prisma db push",
     "db:seed": "dotenv -e .env.local -e .env -- tsx prisma/seed.ts",
     "db:seed:users": "dotenv -e .env.local -e .env -- tsx prisma/seed-users.ts",
-    "db:studio": "dotenv -e .env.local -e .env -- prisma studio"
+    "db:studio": "dotenv -e .env.local -e .env -- prisma studio",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "prisma": {
     "seed": "dotenv -e .env.local -e .env -- tsx prisma/seed.ts"
@@ -22,7 +25,10 @@
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
     "@prisma/client": "^5.22.0",
+    "@types/katex": "^0.16.8",
     "bcryptjs": "^2.4.3",
+    "katex": "^0.18.4",
+    "motion": "^13.1.1",
     "next": "^16.2.4",
     "next-auth": "^5.0.0-beta.20",
     "nodemailer": "^7.0.13",
@@ -37,6 +43,7 @@
     "@types/nodemailer": "^8.0.1",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
+    "@vitest/coverage-v8": "^4.1.11",
     "dotenv-cli": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "^16.2.4",
@@ -44,6 +51,7 @@
     "prisma": "^5.22.0",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.11"
   }
 }

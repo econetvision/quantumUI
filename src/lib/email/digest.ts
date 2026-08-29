@@ -77,7 +77,7 @@ export async function runDigest(period: 'weekly' | 'monthly'): Promise<DigestRun
 
   for (const user of users) {
     const [lessonsCompleted, labsPassed, certificates] = await Promise.all([
-      prisma.lessonProgress.count({
+      prisma.lessonCompletion.count({
         where: { userId: user.id, completedAt: { gte: windowStart } },
       }),
       prisma.labAttempt.count({

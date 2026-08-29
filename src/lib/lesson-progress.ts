@@ -95,7 +95,11 @@ export function completedLessonCount(trackSlug: string): number {
   return (getLessonProgress().completed[trackSlug] ?? []).length;
 }
 
-/** Idempotent. Mirrors to the server for signed-in learners, best-effort. */
+/**
+ * Idempotent. Mirrors to the server (`/api/lessons/progress`, the same
+ * endpoint the LessonComplete control uses — one LessonCompletion table
+ * underneath both) for signed-in learners, best-effort.
+ */
 export function markLessonComplete(trackSlug: string, lessonId: number): void {
   if (typeof window === 'undefined') return;
   const data = getLessonProgress();
@@ -104,7 +108,7 @@ export function markLessonComplete(trackSlug: string, lessonId: number): void {
   data.completed[trackSlug] = [...list, lessonId].sort((a, b) => a - b);
   save(data);
 
-  void fetch('/api/progress/lessons', {
+  void fetch('/api/lessons/progress', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ trackSlug, lessonId }),
@@ -145,14 +149,14 @@ export async function hydrateLessonProgress(): Promise<LessonProgressData | null
   if (typeof window === 'undefined' || hydrated) return null;
   hydrated = true;
   try {
-    const res = await fetch('/api/progress/lessons');
+    const res = await fetch('/api/lessons/progress');
     if (!res.ok) return null;
     const payload = (await res.json()) as {
       signedIn?: boolean;
-      completed?: Record<string, number[]> | null;
+      completedByTrack?: Record<string, number[]> | null;
     };
     if (!payload.signedIn) return null;
-    const remote = payload.completed ?? {};
+    const remote = payload.completedByTrack ?? {};
 
     const local = getLessonProgress();
     let changed = false;
@@ -168,7 +172,7 @@ export async function hydrateLessonProgress(): Promise<LessonProgressData | null
       const remoteIds = new Set(remote[slug] ?? []);
       for (const lessonId of ids) {
         if (remoteIds.has(lessonId)) continue;
-        void fetch('/api/progress/lessons', {
+        void fetch('/api/lessons/progress', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ trackSlug: slug, lessonId }),

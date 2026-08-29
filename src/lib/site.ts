@@ -55,7 +55,7 @@ export const ORG_NAME = 'Sroorbitary Labs';
 export const SITE_BYLINE = `by ${ORG_NAME}`;
 
 export const SITE_DESCRIPTION =
-  'Interactive quantum computing curriculum. Run real circuits on the QpiAI Quantum SDK, visualise Bloch spheres and statevectors, and prepare for IBM Qiskit certification — free, no registration required.';
+  'Interactive quantum computing curriculum. Run real circuits on the QpiAI Quantum SDK, visualise Bloch spheres and statevectors, and prepare for IBM Qiskit certification. Start with Track 0 — free, no account needed.';
 
 /**
  * True only on the real production host.
@@ -72,4 +72,41 @@ export const IS_PRODUCTION_HOST =
 export function absoluteUrl(path = '/'): string {
   if (/^https?:\/\//i.test(path)) return path;
   return `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`;
+}
+
+/**
+ * Where a stuck user goes to reach a human.
+ *
+ * A Google Workspace mailbox on `econetvision.com`, which is also the identity
+ * outbound mail authenticates as. Kept here rather than inlined at each call
+ * site because it appears on pages that render when the app is already broken —
+ * the last place you want a stale address — and because the mail sender will
+ * need the same constant for its `From` header.
+ */
+export const SUPPORT_EMAIL = 'contact@econetvision.com';
+
+/**
+ * A `mailto:` for {@link SUPPORT_EMAIL}, with anything supplied prefilled.
+ *
+ * Hand-built mailto links are a reliable source of dead UI: an unencoded `&`
+ * silently splits the subject into a second parameter, and an unencoded `#`
+ * truncates everything after it, both without any visible failure. Encoding
+ * happens here so no caller has to remember.
+ *
+ * Blank values are dropped rather than emitted empty, so an error page with no
+ * reference to quote produces a clean link instead of `?body=`.
+ */
+export function supportMailto(
+  { subject, body }: { subject?: string; body?: string } = {},
+): string {
+  const params = [
+    ['subject', subject],
+    ['body', body],
+  ]
+    .filter(([, value]) => value?.trim())
+    .map(([key, value]) => `${key}=${encodeURIComponent(value!.trim())}`);
+
+  return params.length
+    ? `mailto:${SUPPORT_EMAIL}?${params.join('&')}`
+    : `mailto:${SUPPORT_EMAIL}`;
 }

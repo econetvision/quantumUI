@@ -54,7 +54,7 @@ export const REPO_MAPPINGS = {
       'QB32_C02_CNOT_Gate.ipynb',
     ]
   },
-  'qiskit-sdk': {
+  'qiskit-sdk-deep-dive': {
     repo: 'qbook101',
     path: 'qbook101/appendices/C_qiskit',
     notebooks: [
@@ -83,7 +83,7 @@ export const REPO_MAPPINGS = {
       'D06_Shors_Algorithm.ipynb',
     ]
   },
-  'quantum-cryptography': {
+  'quantum-cryptography-qkd': {
     repo: 'qkd',
     path: 'notebooks',
     notebooks: [
@@ -94,7 +94,7 @@ export const REPO_MAPPINGS = {
       'QC16_E91_protocol.ipynb',
     ]
   },
-  'error-correction': {
+  'quantum-error-correction': {
     repo: 'qec',
     path: 'chapters',
     notebooks: [

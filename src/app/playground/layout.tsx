@@ -8,7 +8,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Quantum circuit playground',
   description:
-    'Write and run quantum circuits in your browser. Real statevectors, measurement histograms and per-qubit Bloch vectors from the QpiAI Quantum SDK — no install, no registration.',
+    'Write and run quantum circuits in your browser. Real statevectors, measurement histograms and per-qubit Bloch vectors from the QpiAI Quantum SDK — no install, sign in to run.',
   alternates: { canonical: '/playground' },
   openGraph: {
     title: 'Quantum circuit playground · QuantumUI',

@@ -202,6 +202,20 @@ def get_circuit_class(device: str = LOCAL_DEVICE):
         def run(self, *args, **kwargs):
             kwargs["device_name"] = device
             kwargs.setdefault("need_statevector", True)
+            # Canonical bit ordering: qubit 0 is the LEFTMOST character of a
+            # label, which is what the syllabus tables say (|10> -> |11>) and
+            # what quantum-sim.ts implements in the browser.
+            #
+            # The SDK's native order is the reverse, so an X on qubit 0 of |00>
+            # came back labelled "01". The Bell state hides this completely --
+            # 00 and 11 read the same either way -- which is why it survived
+            # unnoticed while every asymmetric circuit taught the wrong order.
+            #
+            # Set here rather than by rewriting strings afterwards, so the
+            # learner's own `print(counts)` is canonical too and not just the
+            # structured payload. A caller that genuinely wants raw SDK order
+            # can still pass reverse_bits=False explicitly.
+            kwargs.setdefault("reverse_bits", True)
             return super().run(*args, **kwargs)
 
     return PinnedCircuit

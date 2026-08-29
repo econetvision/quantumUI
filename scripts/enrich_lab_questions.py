@@ -221,7 +221,7 @@ TOPIC_FALLBACK = {
         "Quantum gates are reversible unitary operations, so no information is "
         "lost and every gate can be undone. That constraint is why quantum "
         "circuits look so different from classical logic.",
-    "qiskit-sdk":
+    "qiskit-sdk-deep-dive":
         "SDK fluency is what turns understanding into working circuits — "
         "building, transpiling and running against a backend.",
     "cirq-sdk":
@@ -234,11 +234,11 @@ TOPIC_FALLBACK = {
         "Quantum algorithms win by arranging interference so wrong answers "
         "cancel and right answers reinforce. Speedup comes from that structure, "
         "not from 'trying everything at once'.",
-    "quantum-cryptography":
+    "quantum-cryptography-qkd":
         "Quantum cryptography's security rests on physics rather than "
         "computational hardness — measurement disturbs a state, and that "
         "disturbance is detectable.",
-    "error-correction":
+    "quantum-error-correction":
         "Error correction is what stands between today's noisy devices and "
         "useful quantum computing, encoding one logical qubit across many "
         "physical ones.",

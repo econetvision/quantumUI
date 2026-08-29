@@ -73,7 +73,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unknown track.' }, { status: 400 });
   }
 
-  const lessonCount = getAllLessons(trackSlug).length;
+  const lessonIds = getAllLessons(trackSlug).map((lesson) => lesson.id);
+  const lessonCount = lessonIds.length;
   if (lessonCount === 0) {
     return NextResponse.json({ error: 'This track has no lessons to certify.' }, { status: 400 });
   }
@@ -81,15 +82,15 @@ export async function POST(request: NextRequest) {
   const trackName = getTrackName(trackSlug) ?? config.title;
 
   const { data, persisted } = await withDatabase(async (db) => {
-    const rows = await db.lessonProgress.findMany({
+    // Same table the lab gate reads (LessonCompletion, written by
+    // /api/lessons/progress); checked against the lesson ids that exist today,
+    // so stale rows from a renumbering neither block nor grant anything.
+    const rows = await db.lessonCompletion.findMany({
       where: { userId, trackSlug },
       select: { lessonId: true },
     });
     const done = new Set(rows.map((row) => row.lessonId));
-    const missing: number[] = [];
-    for (let lesson = 1; lesson <= lessonCount; lesson++) {
-      if (!done.has(lesson)) missing.push(lesson);
-    }
+    const missing = lessonIds.filter((lesson) => !done.has(lesson));
     if (missing.length > 0) {
       return { missing } as const;
     }

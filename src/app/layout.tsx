@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import { DM_Sans, Space_Mono } from 'next/font/google';
 import './globals.css';
+import 'katex/dist/katex.min.css';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { LearningModeProvider } from '@/components/learning/LearningModeProvider';
+import { learningInitScript } from '@/components/learning/learning-script';
 import { SessionProvider } from '@/components/auth/SessionProvider';
 import { themeInitScript } from '@/components/theme/theme-script';
 import { SiteHeader } from '@/components/layout/SiteHeader';
@@ -164,6 +167,13 @@ export default function RootLayout({
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: themeInitScript }}
         />
+        {/* Resolves learning mode and font scale before paint. Mode decides
+            which half of a lesson renders, so settling it after hydration
+            would briefly show a child the equations. */}
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: learningInitScript }}
+        />
         {/* Site-level structured data. Emitted once from the layout so every
             page inherits the organisation and website identity that the
             page-level Course/Breadcrumb blocks reference by @id. */}
@@ -172,17 +182,19 @@ export default function RootLayout({
 
         <SessionProvider>
           <ThemeProvider>
-            <a href="#main" className="skip-link">
-              Skip to content
-            </a>
-            <SiteHeader />
-            <main id="main" className="flex-1">
-              {children}
-            </main>
-            <SiteFooter />
-            {/* Records a page view on every client-side navigation. Rendered
-                inside the providers so it shares the session context. */}
-            <AnalyticsTracker />
+            <LearningModeProvider>
+              <a href="#main" className="skip-link">
+                Skip to content
+              </a>
+              <SiteHeader />
+              <main id="main" className="flex-1">
+                {children}
+              </main>
+              <SiteFooter />
+              {/* Records a page view on every client-side navigation. Rendered
+                  inside the providers so it shares the session context. */}
+              <AnalyticsTracker />
+            </LearningModeProvider>
           </ThemeProvider>
         </SessionProvider>
       </body>
