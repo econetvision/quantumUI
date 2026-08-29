@@ -4,26 +4,34 @@ import { Container, EmptyState } from '@/components/ui/primitives';
 import { SUPPORT_EMAIL, supportMailto } from '@/lib/site';
 
 export const metadata: Metadata = {
-  // Session-gated: nothing here is useful in a search result, and the lab shell
-  // spends executor capacity on anything that loads it.
-  robots: { index: false, follow: false },
-  title: 'Access denied',
+  title: 'Page not found',
 };
 
-export default function UnauthorizedPage() {
+/**
+ * The root 404, which Next also serves for any URL that matches no route at
+ * all — not only for an explicit `notFound()` call.
+ *
+ * Tracks and labs are offered rather than only "go home" because most 404s
+ * here are a mistyped or renamed lesson URL, and the nearest useful page is
+ * the index of the thing they were looking for.
+ */
+export default function NotFound() {
   return (
     <Container size="narrow" className="py-20">
       <EmptyState
-        title="Access denied"
+        title="404 — page not found"
         description={
           <>
-            You don&apos;t have permission to view this page. If you think
-            that&apos;s wrong, check which account you&apos;re signed in with.
+            That page does not exist. It may have been renamed, or the link that
+            brought you here may be out of date.
             <span className="mt-3 block">
-              Still blocked? Mail us from the address you signed in with and we
-              will sort out your access:{' '}
+              If a link inside QuantumUI led you here, tell us where it was and
+              we will fix it:{' '}
               <a
-                href={supportMailto({ subject: 'QuantumUI — access request' })}
+                href={supportMailto({
+                  subject: 'QuantumUI — broken link (404)',
+                  body: 'Which page linked here:',
+                })}
                 className="underline underline-offset-4 transition-colors hover:text-accent"
               >
                 {SUPPORT_EMAIL}

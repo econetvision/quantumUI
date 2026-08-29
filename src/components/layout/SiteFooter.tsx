@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { SUPPORT_EMAIL, supportMailto } from '@/lib/site';
 import { NAV_LINKS, SECONDARY_LINKS } from './nav-links';
 
 export function SiteFooter() {
@@ -78,6 +79,14 @@ export function SiteFooter() {
                   QWorld ↗
                 </a>
               </li>
+              <li>
+                <a
+                  href={supportMailto()}
+                  className="text-sm text-content-muted transition-colors hover:text-accent"
+                >
+                  Contact
+                </a>
+              </li>
             </ul>
           </nav>
         </div>
@@ -86,6 +95,15 @@ export function SiteFooter() {
           <p>
             QuantumUI · Built with <span className="text-accent">|ψ⟩</span> ·
             Lesson content courtesy of QWorld under its original licences.
+          </p>
+          <p className="mt-2">
+            Something not working?{' '}
+            <a
+              href={supportMailto({ subject: 'QuantumUI — issue report' })}
+              className="text-content-muted underline underline-offset-4 transition-colors hover:text-accent"
+            >
+              {SUPPORT_EMAIL}
+            </a>
           </p>
         </div>
       </div>
