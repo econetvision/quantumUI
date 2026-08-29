@@ -3,6 +3,10 @@ import Link from 'next/link';
 import { Container, PageHeader, Card, Badge } from '@/components/ui/primitives';
 
 export const metadata: Metadata = {
+  // Stated explicitly so a link arriving with tracking parameters
+  // (?utm_source=..., ?ref=...) consolidates onto one indexable URL instead of
+  // splitting this page's ranking across every variant that ever gets shared.
+  alternates: { canonical: '/labs' },
   title: 'Interactive Labs',
   description:
     'Hands-on quantum computing labs covering Bloch spheres, entanglement, Grover, Shor, teleportation and more.',

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { completeQuestion, isQuestionCompleted, recordActivity, XP_REWARDS } from '@/lib/streak';
 import { BackendPicker } from '@/components/quantum/BackendPicker';
+import { trackEvent } from '@/lib/analytics-client';
 
 interface TerminalLine {
   kind: 'input' | 'output' | 'error' | 'info';
@@ -105,6 +106,9 @@ export default function LabShell() {
           if (result.output) next.push({ kind: 'output', text: result.output.replace(/\n$/, '') });
           if (result.error) next.push({ kind: 'error', text: result.error });
           return next;
+        });
+        trackEvent('code_run', {
+          meta: { surface: 'lab-shell', backend, ok: Boolean(result.success) },
         });
         // Keep the streak alive for the attempt, award XP only for a clean run.
         // This used to be `if (result.success)`, so a lab whose published

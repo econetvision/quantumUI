@@ -4,6 +4,9 @@ import StreakBadge from '@/components/StreakBadge';
 import { Container, PageHeader } from '@/components/ui/primitives';
 
 export const metadata: Metadata = {
+  // Session-gated: nothing here is useful in a search result, and the lab shell
+  // spends executor capacity on anything that loads it.
+  robots: { index: false, follow: false },
   title: 'Lab Shell',
   description:
     'A live Python REPL running the QpiAI local statevector simulator, paired with QWorld lab questions.',

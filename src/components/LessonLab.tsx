@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import { completeQuestion, getStreakData, recordActivity, XP_REWARDS } from '@/lib/streak';
+import { trackEvent } from '@/lib/analytics-client';
 
 interface LabQuestion {
   id: string;
@@ -127,6 +128,9 @@ export default function LessonLab({
       });
       const data = await res.json();
       setResult(data);
+      trackEvent('lab_check', {
+        meta: { surface: 'lesson-lab', ok: Boolean(data.success) },
+      });
       // Streak on every attempt, XP only when it ran clean — same rule as LabShell.
       recordActivity(data.success ? XP_REWARDS.run : 0);
     } catch {
