@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import { DM_Sans, Space_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { LearningModeProvider } from '@/components/learning/LearningModeProvider';
+import { learningInitScript } from '@/components/learning/learning-script';
 import { SessionProvider } from '@/components/auth/SessionProvider';
 import { themeInitScript } from '@/components/theme/theme-script';
 import { SiteHeader } from '@/components/layout/SiteHeader';
@@ -87,8 +89,16 @@ export default function RootLayout({
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: themeInitScript }}
         />
+        {/* Resolves learning mode and font scale before paint. Mode decides
+            which half of a lesson renders, so settling it after hydration
+            would briefly show a child the equations. */}
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: learningInitScript }}
+        />
         <SessionProvider>
           <ThemeProvider>
+            <LearningModeProvider>
             <a href="#main" className="skip-link">
               Skip to content
             </a>
@@ -97,6 +107,7 @@ export default function RootLayout({
               {children}
             </main>
             <SiteFooter />
+            </LearningModeProvider>
           </ThemeProvider>
         </SessionProvider>
       </body>
