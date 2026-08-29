@@ -4,6 +4,12 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Container, Card, Badge } from "@/components/ui/primitives";
 import { getTrackImagery } from "@/lib/track-images";
+import { TRACK_CONFIGS } from "@/lib/track-mapping";
+import {
+  JsonLd,
+  breadcrumbJsonLd,
+  courseJsonLd,
+} from "@/components/seo/JsonLd";
 
 const trackData: Record<string, { name: string; icon: string; free: boolean; color: string; desc: string; overviewImage?: string; lessons: { title: string; duration: string; type: string }[] }> = {
   "quantum-fundamentals": {
@@ -216,6 +222,15 @@ export function generateStaticParams() {
   return Object.keys(trackData).map((slug) => ({ slug }));
 }
 
+/**
+ * Extra facts about a track that only `TRACK_CONFIGS` knows — difficulty and
+ * estimated hours. Both files key off the same 12 slugs; this looks the config
+ * up rather than duplicating the numbers into `trackData` a third time.
+ */
+function trackConfig(slug: string) {
+  return TRACK_CONFIGS.find((config) => config.slug === slug);
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -224,8 +239,43 @@ export async function generateMetadata({
   const { slug } = await params;
   const track = trackData[slug];
 
-  if (!track) return { title: "Track not found" };
-  return { title: track.name, description: track.desc };
+  // A missing track 404s in the page body. Marking the metadata `noindex` as
+  // well means a crawler that somehow reaches a bad slug is told not to keep it
+  // rather than being left to infer that from the status code alone.
+  if (!track) {
+    return { title: "Track not found", robots: { index: false, follow: false } };
+  }
+
+  const config = trackConfig(slug);
+  const lessonCount = track.lessons.length;
+
+  /*
+   * The description does real work here: it is the snippet under the search
+   * result, so it states what the track covers *and* what it costs in time,
+   * which is the question somebody searching "learn quantum gates" is actually
+   * asking. The generic `track.desc` alone reads as marketing copy.
+   */
+  const description = `${track.desc} ${lessonCount} lessons${
+    config?.estimatedHours ? `, about ${config.estimatedHours} hours` : ""
+  }${track.free ? ", free and open to everyone" : ""}.`;
+
+  return {
+    title: track.name,
+    description,
+    alternates: { canonical: `/tracks/${slug}` },
+    keywords: [
+      track.name.toLowerCase(),
+      `${track.name.toLowerCase()} tutorial`,
+      "quantum computing course",
+      "qiskit",
+    ],
+    openGraph: {
+      title: `${track.name} · QuantumUI`,
+      description,
+      url: `/tracks/${slug}`,
+      type: "article",
+    },
+  };
 }
 
 const LESSON_TONE = {
@@ -254,8 +304,32 @@ export default async function TrackDetailPage({
     0,
   );
 
+  const config = trackConfig(slug);
+
   return (
     <Container size="narrow" className="py-10 sm:py-14">
+      {/* Structured data: tells a search engine this page is a Course with a
+          provider, a level and a workload — the difference between a plain blue
+          link and an eligible course result. The breadcrumb renders the trail
+          "QuantumUI › Tracks › <name>" under it. */}
+      <JsonLd
+        data={courseJsonLd({
+          slug,
+          name: track.name,
+          description: track.desc,
+          hours: config?.estimatedHours,
+          difficulty: config?.difficulty,
+          free: track.free,
+        })}
+      />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "QuantumUI", path: "/" },
+          { name: "Tracks", path: "/tracks" },
+          { name: track.name, path: `/tracks/${slug}` },
+        ])}
+      />
+
       <Link
         href="/tracks"
         className="inline-flex items-center gap-1.5 font-mono text-sm text-content-muted transition-colors hover:text-accent"

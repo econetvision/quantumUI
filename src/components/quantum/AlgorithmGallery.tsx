@@ -10,6 +10,7 @@ import { Badge, Callout, Card, EmptyState } from '@/components/ui/primitives';
 import { MeasurementHistogram } from './MeasurementHistogram';
 import { BlochReadout } from './BlochReadout';
 import { BackendPicker } from './BackendPicker';
+import { trackEvent } from '@/lib/analytics-client';
 
 type ParamValues = Record<string, string | number | boolean>;
 
@@ -199,6 +200,17 @@ export function AlgorithmGallery() {
         },
       );
       const data = await response.json();
+
+      // Which algorithms people actually run is the single most useful signal
+      // for deciding what to build next, so the id travels with the event.
+      trackEvent('algorithm_run', {
+        meta: {
+          algorithm: selected.id,
+          backend,
+          shots,
+          ok: response.ok && data.success !== false,
+        },
+      });
 
       if (!response.ok || data.success === false) {
         setRunError(data.error ?? 'The run failed.');

@@ -3,6 +3,7 @@ import { hash } from 'bcryptjs';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { isDatabaseAvailable } from '@/lib/db';
+import { clientIpFrom, recordAudit } from '@/lib/analytics';
 
 /**
  * Account creation.
@@ -68,6 +69,18 @@ export async function POST(request: NextRequest) {
         password: await hash(password, 12),
       },
       select: { id: true, name: true, email: true, role: true },
+    });
+
+    // Account creation belongs in the security trail alongside sign-in and
+    // sign-out. `User.createdAt` already answers "when did they sign up"; this
+    // row answers "from where", which is what an instructor investigating a
+    // suspicious account actually needs.
+    await recordAudit({
+      userId: user.id,
+      action: 'signup',
+      resource: 'credentials',
+      ipAddress: clientIpFrom(request.headers),
+      userAgent: request.headers.get('user-agent'),
     });
 
     return NextResponse.json({ user }, { status: 201 });

@@ -9,6 +9,15 @@ import { SessionProvider } from '@/components/auth/SessionProvider';
 import { themeInitScript } from '@/components/theme/theme-script';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
+import { AnalyticsTracker } from '@/components/analytics/AnalyticsTracker';
+import { JsonLd, organisationJsonLd, websiteJsonLd } from '@/components/seo/JsonLd';
+import {
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TAGLINE,
+  SITE_URL,
+  IS_PRODUCTION_HOST,
+} from '@/lib/site';
 
 /**
  * Fonts are self-hosted through next/font. The previous markup only emitted
@@ -29,28 +38,95 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
+  /**
+   * Every URL-valued tag below — canonical, Open Graph, Twitter, the generated
+   * OG image — is written as a relative path and resolved against this. Without
+   * it Next throws at build time on the relative ones, and any that slipped
+   * through as absolutes would be whatever host happened to build the page.
+   * `SITE_URL` resolves the real production domain; see src/lib/site.ts.
+   */
+  metadataBase: new URL(SITE_URL),
+
   title: {
-    default: 'QuantumUI — Learn Quantum Computing Interactively',
-    template: '%s · QuantumUI',
+    default: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    template: `%s · ${SITE_NAME}`,
   },
-  description:
-    'Interactive quantum computing curriculum. Run real circuits on the QpiAI Quantum SDK, visualise Bloch spheres and statevectors, and prepare for certification.',
-  applicationName: 'QuantumUI',
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+
+  // Self-referencing canonical on the home page. Sub-pages set their own; the
+  // template above does not apply to `alternates`, so each page states it.
+  alternates: {
+    canonical: '/',
+  },
+
   keywords: [
     'quantum computing',
-    'qiskit',
+    'learn quantum computing',
+    'quantum computing course',
+    'qiskit tutorial',
+    'qiskit certification',
+    'IBM quantum developer certification',
     'qpiai',
     'quantum algorithms',
-    'quantum certification',
+    'quantum circuit simulator',
+    'bloch sphere visualiser',
     'quantum programming',
     'QWorld',
   ],
+
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+
+  /**
+   * Preview deployments and local builds are marked `noindex` at the tag level
+   * as well as in robots.txt. Two independent mechanisms, because a crawler
+   * that reaches a page without fetching robots.txt first still honours the
+   * meta tag — and a staging copy in the index is very hard to get back out.
+   */
+  robots: IS_PRODUCTION_HOST
+    ? {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+          'max-video-preview': -1,
+        },
+      }
+    : { index: false, follow: false },
+
   openGraph: {
-    title: 'QuantumUI — Learn Quantum Computing Interactively',
+    type: 'website',
+    siteName: SITE_NAME,
+    locale: 'en_GB',
+    url: '/',
+    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
     description:
       'Run real quantum circuits in the browser, visualise statevectors, and work through a 12-track curriculum.',
-    type: 'website',
+    // Images come from app/opengraph-image.tsx by file convention; listing them
+    // here as well would emit the tag twice.
   },
+
+  twitter: {
+    card: 'summary_large_image',
+    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    description:
+      'Run real quantum circuits in the browser, visualise statevectors, and work through a 12-track curriculum.',
+  },
+
+  // Stops iOS Safari turning strings that look like phone numbers — qubit
+  // counts, durations, version numbers — into tel: links inside lesson copy.
+  formatDetection: {
+    telephone: false,
+    date: false,
+    address: false,
+  },
+
+  category: 'education',
 };
 
 /**
@@ -97,17 +173,26 @@ export default function RootLayout({
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: learningInitScript }}
         />
+        {/* Site-level structured data. Emitted once from the layout so every
+            page inherits the organisation and website identity that the
+            page-level Course/Breadcrumb blocks reference by @id. */}
+        <JsonLd data={organisationJsonLd()} />
+        <JsonLd data={websiteJsonLd()} />
+
         <SessionProvider>
           <ThemeProvider>
             <LearningModeProvider>
-            <a href="#main" className="skip-link">
-              Skip to content
-            </a>
-            <SiteHeader />
-            <main id="main" className="flex-1">
-              {children}
-            </main>
-            <SiteFooter />
+              <a href="#main" className="skip-link">
+                Skip to content
+              </a>
+              <SiteHeader />
+              <main id="main" className="flex-1">
+                {children}
+              </main>
+              <SiteFooter />
+              {/* Records a page view on every client-side navigation. Rendered
+                  inside the providers so it shares the session context. */}
+              <AnalyticsTracker />
             </LearningModeProvider>
           </ThemeProvider>
         </SessionProvider>

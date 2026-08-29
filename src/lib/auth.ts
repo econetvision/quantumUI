@@ -3,8 +3,10 @@ import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import { compare } from "bcryptjs";
+import { headers } from "next/headers";
 import type { UserRole } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { clientIpFrom, recordAudit, recordSignIn } from "@/lib/analytics";
 
 /**
  * No database adapter here on purpose.
@@ -33,6 +35,41 @@ const GOOGLE_CLIENT_ID = (
 const GOOGLE_CLIENT_SECRET = (
   process.env.AUTH_GOOGLE_SECRET ?? process.env.GOOGLE_CLIENT_SECRET ?? ""
 ).trim();
+
+/**
+ * Record a successful sign-in.
+ *
+ * Called from the `jwt` callback rather than `events.signIn`, which is the
+ * obvious place and the wrong one. On a Google sign-in `events.signIn` receives
+ * Google's opaque `sub` as `user.id` — not a cuid from our database — and it
+ * fires *before* the upsert below has created the row at all, so a first-ever
+ * Google login had no `User` to attribute itself to. The `jwt` callback runs
+ * after that upsert and knows the real id for both providers.
+ *
+ * Best-effort throughout: `recordSignIn` swallows database failures, and this
+ * wrapper swallows anything else, because an unhandled rejection here would
+ * fail the sign-in itself.
+ */
+async function noteSignIn(userId: string, provider: string) {
+  let ipAddress: string | null = null;
+  let userAgent: string | null = null;
+
+  try {
+    // Available because this runs inside the /api/auth route handler. Wrapped
+    // anyway: `headers()` throws outside a request scope.
+    const requestHeaders = await headers();
+    ipAddress = clientIpFrom(requestHeaders);
+    userAgent = requestHeaders.get("user-agent");
+  } catch {
+    /* record the sign-in without them */
+  }
+
+  try {
+    await recordSignIn({ userId, provider, ipAddress, userAgent });
+  } catch (error) {
+    console.error("[auth] could not record sign-in:", error);
+  }
+}
 
 export const authOptions: NextAuthConfig = {
   session: {
@@ -151,6 +188,7 @@ export const authOptions: NextAuthConfig = {
 
         token.id = dbUser.id;
         token.role = dbUser.role;
+        await noteSignIn(dbUser.id, "google");
         return token;
       }
 
@@ -163,6 +201,11 @@ export const authOptions: NextAuthConfig = {
         token.id = user.id;
         const role = (user as { role?: UserRole }).role;
         if (role) token.role = role;
+
+        // `account` is set only on the initial sign-in; on every later request
+        // the token is merely being refreshed and `user` is undefined. Guarding
+        // on it is what keeps this from counting one sign-in per page load.
+        if (account) await noteSignIn(user.id, account.provider ?? "credentials");
       }
       return token;
     },
@@ -173,6 +216,26 @@ export const authOptions: NextAuthConfig = {
         (session.user as { id?: string; role?: string }).role = token.role as string;
       }
       return session;
+    },
+  },
+
+  events: {
+    // Sign-out has no such ordering problem: the token already carries our own
+    // user id by the time it fires.
+    //
+    // `events` rather than `callbacks` on purpose — a callback can change the
+    // outcome of authentication, an event cannot, and nothing about recording
+    // history should ever be able to lock somebody out.
+    async signOut(message) {
+      // The payload is a discriminated union: a JWT session reports `{ token }`,
+      // a database session `{ session }`. Only the first shape occurs here, but
+      // narrowing rather than casting keeps this correct if the strategy ever
+      // changes.
+      const userId =
+        "token" in message ? ((message.token?.id as string | undefined) ?? null) : null;
+      if (!userId) return;
+
+      await recordAudit({ userId, action: "logout" });
     },
   },
 
