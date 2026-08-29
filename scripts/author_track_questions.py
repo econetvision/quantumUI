@@ -454,7 +454,7 @@ NEW_TOPICS = [
     ("qpiai-sdk", "QpiAI Quantum SDK", "QpiAI Quantum", QPIAI),
     ("variational-quantum-algorithms", "VQE & QAOA", "IBM Qiskit Developer", VQE),
     ("quantum-machine-learning", "Quantum Machine Learning", "IBM Qiskit Developer", QML),
-    ("quantum-teleportation", "Quantum Teleportation", "Microsoft Quantum Katas", TELEPORT),
+    ("quantum-teleportation-protocols", "Quantum Teleportation", "Microsoft Quantum Katas", TELEPORT),
 ]
 
 

@@ -82,8 +82,12 @@ export default function HomePage() {
               </Link>
             </div>
 
+            {/* "No registration required" was true of the whole site and is
+                now true only of Track 0 and the visuals. Saying otherwise sends
+                a visitor into a sign-in form one click after promising they
+                would not meet one, which is the fastest way to lose them. */}
             <p className="mt-4 font-mono text-xs text-content-subtle">
-              Free · No registration required · No physics background needed
+              Track 0 is free and needs no account · No physics background needed
             </p>
           </div>
 
