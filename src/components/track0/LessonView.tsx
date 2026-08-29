@@ -7,6 +7,10 @@ import { useLearningMode } from '@/components/learning/LearningModeProvider';
 import { ModeToggle } from '@/components/learning/ModeToggle';
 import type { LessonTier, Track0Lesson } from '@/lib/track0-lessons';
 import { BinaryNameTag } from './BinaryNameTag';
+import { EntangledPair } from './EntangledPair';
+import { GateLab } from './GateLab';
+import { Interference } from './Interference';
+import { MeasurementTally } from './MeasurementTally';
 import { MiniQuiz } from './MiniQuiz';
 import { SortingGame } from './SortingGame';
 import { SpinningCoinQubit } from './SpinningCoinQubit';
@@ -110,6 +114,10 @@ export function LessonView({
           {lesson.interactive === 'binary-name-tag' && <BinaryNameTag />}
           {lesson.interactive === 'spinning-coin' && <SpinningCoinQubit />}
           {lesson.interactive === 'sorting-game' && <SortingGame />}
+          {lesson.interactive === 'measurement-tally' && <MeasurementTally />}
+          {lesson.interactive === 'entangled-pair' && <EntangledPair />}
+          {lesson.interactive === 'gate-lab' && <GateLab />}
+          {lesson.interactive === 'interference' && <Interference />}
         </section>
       )}
 
