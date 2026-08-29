@@ -51,6 +51,7 @@ DELETE FROM "User" WHERE email LIKE '%@quantumui.local';  -- quoted: Postgres fo
 | `DATABASE_URL` | PostgreSQL, **pooled** (`postgresql://…`) | yes |
 | `DIRECT_URL` | PostgreSQL, unpooled — migrations only | yes |
 | `AUTH_SECRET` | NextAuth session signing | yes |
+| `NEXT_PUBLIC_SITE_URL` | Canonical public origin — SEO | yes |
 | `QUANTUM_EXECUTOR_URL` | Executor base URL | yes |
 | `CORS_ORIGINS` | Allowed origins, executor side | yes |
 | `QWORLD_CONTENT_ROOT` | Override vendored content location | no |
@@ -61,6 +62,18 @@ DELETE FROM "User" WHERE email LIKE '%@quantumui.local';  -- quoted: Postgres fo
 Without `QPIAI_API_KEY` the platform runs entirely on the local statevector
 simulator. Everything works; only cloud/QPU targets are unavailable, and the UI
 says so rather than failing.
+
+`NEXT_PUBLIC_SITE_URL` must be the origin you want indexed (scheme included, no
+trailing slash) and must be present **at build time**, not just at runtime:
+`robots.txt`, `sitemap.xml`, every `<link rel="canonical">` and every Open Graph
+URL are baked during `next build`. Unset, the app falls back to
+`VERCEL_PROJECT_PRODUCTION_URL` and then to `localhost:3000` — a production
+build that falls through to the last of those will publish a sitemap full of
+localhost URLs and canonical tags pointing at a host nobody can reach.
+
+Preview deployments (`VERCEL_ENV != production`) serve `Disallow: /` and a
+`noindex` tag automatically, so a staging copy cannot compete with production
+for its own search results.
 
 ## Order of operations
 

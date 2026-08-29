@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLesson, getAllLessons, hasRealContent, getTrackName } from "@/lib/lesson-loader";
 import LessonLab from "@/components/LessonLab";
 import StreakBadge from "@/components/StreakBadge";
 import { Badge, Card, Container } from "@/components/ui/primitives";
+import { TRACK_CONFIGS } from "@/lib/track-mapping";
+import {
+  JsonLd,
+  breadcrumbJsonLd,
+  lessonJsonLd,
+} from "@/components/seo/JsonLd";
 
 const LESSON_TONE = {
   lab: "accent",
@@ -283,6 +290,112 @@ This creates the state: |ψ⟩ = (|0⟩ + |1⟩)/√2`
 };
 
 
+/**
+ * Resolve a lesson from either source, in the same order the page body does.
+ *
+ * Shared by `generateMetadata` and the page so the two can never disagree about
+ * which lesson a URL is — a `<title>` naming a different lesson than the page
+ * shows is a real and very confusing bug, and duplicated resolution logic is
+ * exactly how it happens.
+ */
+function resolveLesson(slug: string, lessonNumber: number) {
+  if (hasRealContent(slug)) {
+    const jsonLesson = getLesson(slug, lessonNumber);
+    if (jsonLesson) {
+      return {
+        lesson: jsonLesson as Lesson,
+        allLessons: getAllLessons(slug) as Lesson[],
+        trackName: getTrackName(slug) || "Quantum Track",
+        realContent: true,
+      };
+    }
+  }
+
+  const track = trackData[slug];
+  if (!track) return null;
+
+  const lesson = (track.lessons[lessonNumber - 1] as Lesson | undefined) ?? null;
+  if (!lesson) return null;
+
+  return {
+    lesson,
+    allLessons: track.lessons as Lesson[],
+    trackName: track.name,
+    realContent: false,
+  };
+}
+
+/**
+ * A one-sentence summary for the search snippet.
+ *
+ * Lesson bodies are markdown with headings and code fences; dropping the raw
+ * first 160 characters into a description often yields "## Introduction ```py".
+ * This strips the markup first and falls back to a constructed sentence when
+ * there is no prose to draw on.
+ */
+function lessonDescription(lesson: Lesson, trackName: string): string {
+  const prose = (lesson.content ?? "")
+    .replace(/```[\s\S]*?```/g, " ")   // fenced code
+    .replace(/!?\[[^\]]*\]\([^)]*\)/g, " ") // links and images
+    .replace(/[#*_>`|-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (prose.length > 60) {
+    return prose.length > 155 ? `${prose.slice(0, 152).trimEnd()}…` : prose;
+  }
+
+  return `${lesson.title} — a ${lesson.duration} ${lesson.type} in the ${trackName} track on QuantumUI.`;
+}
+
+/**
+ * Prerender every lesson that has real content.
+ *
+ * Two reasons, both SEO: a prerendered page is served as static HTML, so a
+ * crawler gets the full text on the first byte rather than after a render; and
+ * it guarantees these URLs exist at build time, matching what `sitemap.ts`
+ * advertises. Tracks that are still outline-only are left to render on demand —
+ * they are not in the sitemap either.
+ */
+export function generateStaticParams() {
+  return TRACK_CONFIGS.flatMap((track) =>
+    getAllLessons(track.slug).map((lesson) => ({
+      slug: track.slug,
+      lessonId: String(lesson.id),
+    })),
+  );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; lessonId: string }>;
+}): Promise<Metadata> {
+  const { slug, lessonId } = await params;
+  const resolved = resolveLesson(slug, parseInt(lessonId, 10));
+
+  if (!resolved) {
+    return { title: "Lesson not found", robots: { index: false, follow: false } };
+  }
+
+  const { lesson, trackName } = resolved;
+  const description = lessonDescription(lesson, trackName);
+
+  return {
+    // The root template appends "· QuantumUI"; naming the track here as well
+    // gives the result the context a bare lesson title lacks.
+    title: `${lesson.title} — ${trackName}`,
+    description,
+    alternates: { canonical: `/tracks/${slug}/lessons/${lessonId}` },
+    openGraph: {
+      title: `${lesson.title} · ${trackName}`,
+      description,
+      url: `/tracks/${slug}/lessons/${lessonId}`,
+      type: "article",
+    },
+  };
+}
+
 export default async function LessonPage({
   params,
 }: {
@@ -291,33 +404,12 @@ export default async function LessonPage({
   const { slug, lessonId } = await params;
   const lessonNumber = parseInt(lessonId, 10);
 
-  let lesson: Lesson | null = null;
-  let realContent = false;
-  let allLessons: Lesson[] = [];
-  let trackName = "";
+  // Same resolution the metadata uses — real notebook content when there is
+  // any, the track outline otherwise. See `resolveLesson` above.
+  const resolved = resolveLesson(slug, lessonNumber);
+  if (!resolved) notFound();
 
-  // Prefer real lesson content parsed from the QWorld notebooks.
-  if (hasRealContent(slug)) {
-    const jsonLesson = getLesson(slug, lessonNumber);
-    if (jsonLesson) {
-      lesson = jsonLesson;
-      allLessons = getAllLessons(slug);
-      realContent = true;
-      trackName = getTrackName(slug) || "Quantum Track";
-    }
-  }
-
-  // Fall back to the outline data when a JSON lesson isn't available.
-  if (!lesson) {
-    const track = trackData[slug];
-    if (!track) notFound();
-
-    lesson = track.lessons[lessonNumber - 1] as Lesson | undefined ?? null;
-    allLessons = track.lessons as Lesson[];
-    trackName = track.name;
-  }
-
-  if (!lesson) notFound();
+  const { lesson, allLessons, trackName, realContent } = resolved;
 
   const prevLesson = lessonNumber > 1 ? lessonNumber - 1 : null;
   const nextLesson = lessonNumber < allLessons.length ? lessonNumber + 1 : null;
@@ -325,6 +417,27 @@ export default async function LessonPage({
 
   return (
     <Container size="narrow" className="py-8 sm:py-12">
+      {/* Structured data. `LearningResource` linked to its parent `Course` by
+          @id is what lets a search engine present this as a lesson inside a
+          course rather than a loose page that happens to mention quantum. */}
+      <JsonLd
+        data={lessonJsonLd({
+          trackSlug: slug,
+          trackName,
+          lessonId: lessonNumber,
+          title: lesson.title,
+          description: lessonDescription(lesson, trackName),
+        })}
+      />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "QuantumUI", path: "/" },
+          { name: "Tracks", path: "/tracks" },
+          { name: trackName, path: `/tracks/${slug}` },
+          { name: lesson.title, path: `/tracks/${slug}/lessons/${lessonId}` },
+        ])}
+      />
+
       {/* Lesson header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Link

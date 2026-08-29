@@ -3,6 +3,10 @@ import { Container, PageHeader } from '@/components/ui/primitives';
 import { AlgorithmGallery } from '@/components/quantum/AlgorithmGallery';
 
 export const metadata: Metadata = {
+  // Stated explicitly so a link arriving with tracking parameters
+  // (?utm_source=..., ?ref=...) consolidates onto one indexable URL instead of
+  // splitting this page's ranking across every variant that ever gets shared.
+  alternates: { canonical: '/algorithms' },
   title: 'Algorithm Gallery',
   description:
     "Run Grover's search, Shor's factoring, QFT, phase estimation and more on the QpiAI Quantum SDK, with live measurement statistics and Bloch vectors.",
