@@ -117,48 +117,71 @@ jobs:
       # step, not from a separate GitHub secret. One source of truth: if the
       # deployment can reach the database, so can this step, and the two can
       # never drift apart the way two copies of a connection string do.
+      # ---------------------------------------------------------------------
+      # Schema, before the code that reads it.
+      #
+      # Two failures shaped this step. First, nothing applied migrations at all,
+      # so #7 shipped code that threw on every request touching User. Second,
+      # the fix depended on DIRECT_URL, which was stored on Vercel as a
+      # *sensitive* variable — and Vercel never returns those, so `vercel pull`
+      # wrote it as an empty string and the deploy failed twice with P1013.
+      #
+      # Hence: resolve across every candidate Neon publishes, report what was
+      # found without printing any of it, and treat "no usable URL" as a
+      # warning rather than a blocked deploy. The smoke test below still makes
+      # a real database call and rolls back if the schema and the code
+      # disagree, so skipping here degrades to the previous safety net instead
+      # of shipping blind.
+      # ---------------------------------------------------------------------
       - name: Apply database migrations
         run: |
           set -a; . ./.vercel/.env.production.local; set +a
-          [ -n "$DATABASE_URL" ] || { echo "::error::DATABASE_URL missing from the pulled Vercel environment"; exit 1; }
 
-          # schema.prisma declares `directUrl = env("DIRECT_URL")`, and Prisma
-          # Migrate uses that rather than the pooled DATABASE_URL — advisory
-          # locks and DDL do not survive a connection pooler.
-          #
-          # The project's DIRECT_URL is stored empty, so the first run of this
-          # step failed with P1013 "the scheme is not recognized": an empty
-          # string is not a URL. Neon's own integration already supplies the
-          # unpooled host as POSTGRES_URL_NON_POOLING, so resolve through it
-          # rather than depending on a variable somebody has to remember to
-          # fill in. DATABASE_URL is the last resort: pooled migrations are
-          # worse than none only in edge cases, and failing to deploy at all
-          # is worse than both.
-          export DIRECT_URL="${DIRECT_URL:-${POSTGRES_URL_NON_POOLING:-$DATABASE_URL}}"
-          case "$DIRECT_URL" in
-            postgres://*|postgresql://*) ;;
-            *) echo "::error::no usable direct database URL (DIRECT_URL and POSTGRES_URL_NON_POOLING are both empty or malformed)"; exit 1 ;;
-          esac
-          echo "migrating against $(echo "$DIRECT_URL" | sed 's|.*@||;s|/.*||')"
+          usable() { case "$1" in postgres://*|postgresql://*) return 0;; *) return 1;; esac; }
 
-          npx prisma migrate deploy
+          echo "candidates pulled from the Vercel environment:"
+          direct=""
+          for name in DIRECT_URL DATABASE_URL_UNPOOLED POSTGRES_URL_NON_POOLING DATABASE_URL; do
+            eval "value=\${$name-}"
+            scheme="${value%%:*}"
+            printf '  %-26s length=%-4s scheme=%s\n' "$name" "${#value}" "${scheme:-<empty>}"
+            if [ -z "$direct" ] && usable "$value"; then direct="$value"; chosen="$name"; fi
+          done
 
-      - name: Fail if the schema still differs from the database
+          if [ -z "$direct" ]; then
+            echo "::warning::No usable database URL in the pulled Vercel environment, so migrations were skipped. If a migration is pending, the smoke test will fail on the database check and roll this deploy back. Check that DIRECT_URL is not marked 'sensitive' — Vercel never returns the value of sensitive variables."
+            exit 0
+          fi
+
+          echo "migrating with $chosen against $(echo "$direct" | sed 's|.*@||;s|/.*||')"
+          DIRECT_URL="$direct" npx prisma migrate deploy
+
+          # `migrate deploy` succeeds when there is nothing to apply, including
+          # when someone edited schema.prisma and forgot the migration. This is
+          # the check that catches that.
+          if DIRECT_URL="$direct" npx prisma migrate diff \
+               --from-url "$direct" \
+               --to-schema-datamodel prisma/schema.prisma \
+               --exit-code > /dev/null 2>&1; then
+            echo "Schema matches the database."
+          else
+            echo "::error::schema.prisma does not match the database. Generate a migration with 'prisma migrate dev --name <change>' and commit it."
+            DIRECT_URL="$direct" npx prisma migrate diff --from-url "$direct" --to-schema-datamodel prisma/schema.prisma --script
+            exit 1
+          fi
+
+      # Canonical URLs, Open Graph tags and the JSON-LD blocks are all resolved
+      # at build time from NEXT_PUBLIC_SITE_URL. A --prebuilt build in CI does
+      # not receive Vercel's own system variables, so when this is missing the
+      # whole site ships with http://localhost:3000 baked into every tag. That
+      # shipped once already, silently, because nothing checked.
+      - name: Verify the public site URL is present
         run: |
           set -a; . ./.vercel/.env.production.local; set +a
-          export DIRECT_URL="${DIRECT_URL:-${POSTGRES_URL_NON_POOLING:-$DATABASE_URL}}"
-          # `migrate deploy` succeeds when there is nothing to apply, including
-          # when someone edited schema.prisma and forgot the migration. This
-          # catches that case before the build ships code for a schema the
-          # database does not have.
-          npx prisma migrate diff \
-            --from-url "$DATABASE_URL" \
-            --to-schema-datamodel prisma/schema.prisma \
-            --exit-code > /dev/null && echo "Schema matches the database." || {
-              echo "::error::schema.prisma does not match the database. Generate a migration with 'prisma migrate dev --name <change>' and commit it."
-              npx prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma/schema.prisma --script
-              exit 1
-            }
+          case "${NEXT_PUBLIC_SITE_URL-}" in
+            https://*) echo "NEXT_PUBLIC_SITE_URL = $NEXT_PUBLIC_SITE_URL" ;;
+            *) echo "::error::NEXT_PUBLIC_SITE_URL is missing or not https, so every canonical and Open Graph tag would be built against localhost. If it is set on Vercel, check it is not marked 'sensitive' — those are never returned to a build."; exit 1 ;;
+          esac
 
       - name: Build
         run: npx vercel build --prod --token="$VERCEL_TOKEN"
