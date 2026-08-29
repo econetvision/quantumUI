@@ -17,6 +17,24 @@ export interface LabQuestion {
   prompt: string;
   starterCode?: string;
   solution?: string;
+  /**
+   * A worked answer in prose, for tasks that are proofs, derivations or
+   * discussions rather than programs.
+   *
+   * Kept separate from `solution` because `solution` feeds a "copy to editor"
+   * button: putting a derivation there would load unrunnable text into a Python
+   * editor and call it the answer. A question can have either, both, or
+   * neither.
+   */
+  workedSolution?: string;
+  /**
+   * One nudge toward the first step, shown before the solution is revealed.
+   *
+   * Deliberately not a smaller solution. A hint that states the answer removes
+   * the only part of the exercise that teaches anything, so these point at the
+   * idea or the first move and stop.
+   */
+  hint?: string;
   explanation?: string;
   source?: string;
   difficulty: Difficulty;

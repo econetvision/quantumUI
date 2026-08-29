@@ -32,6 +32,10 @@ export const TRACKED_EVENTS = [
   'exam_start',
   'exam_submit',
   'lesson_open',
+  // Track 0's quizzes have no failure state, so a wrong pick is a signal about
+  // the explanation rather than about the learner — it says which idea did not
+  // land. Recorded with the lesson and the tier that was on screen.
+  'quiz_answer',
   'track_open',
   'search',
   'cta_click',
@@ -66,6 +70,7 @@ export const EVENT_LABELS: Record<TrackedEvent, string> = {
   exam_start: 'Exams started',
   exam_submit: 'Exams submitted',
   lesson_open: 'Lessons opened',
+  quiz_answer: 'Quiz answers',
   track_open: 'Tracks opened',
   search: 'Searches',
   cta_click: 'CTA clicks',

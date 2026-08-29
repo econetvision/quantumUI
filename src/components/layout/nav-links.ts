@@ -12,6 +12,15 @@ export interface NavLink {
 }
 
 export const NAV_LINKS: NavLink[] = [
+  // First, deliberately. Track 0 assumes no background and needs no account,
+  // so it is the only entry point that works for someone who arrived knowing
+  // nothing — which is most first-time visitors. It shipped reachable only by
+  // typing the URL, which made it invisible to exactly the readers it is for.
+  {
+    href: '/learn/track-0',
+    label: 'Start Here',
+    description: 'Quantum for everyone — no maths needed',
+  },
   {
     href: '/tracks',
     label: 'Tracks',

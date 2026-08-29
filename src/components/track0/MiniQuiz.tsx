@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { trackEvent } from '@/lib/analytics-client';
 import { useLearningMode } from '@/components/learning/LearningModeProvider';
 import type { QuizQuestion } from '@/lib/track0-lessons';
 
@@ -11,7 +12,16 @@ import type { QuizQuestion } from '@/lib/track0-lessons';
  * another try; nothing is scored down and nothing is locked. The goal is a
  * child who keeps going, not a mark.
  */
-export function MiniQuiz({ questions, onComplete }: { questions: QuizQuestion[]; onComplete?: () => void }) {
+export function MiniQuiz({
+  questions,
+  onComplete,
+  lessonSlug,
+}: {
+  questions: QuizQuestion[];
+  onComplete?: () => void;
+  /** Names the lesson in analytics; omit and the quiz simply is not attributed. */
+  lessonSlug?: string;
+}) {
   const { mode } = useLearningMode();
   const [picked, setPicked] = useState<Record<number, number>>({});
   const solved = questions.filter((q, i) => picked[i] === q.answer).length;
@@ -44,6 +54,21 @@ export function MiniQuiz({ questions, onComplete }: { questions: QuizQuestion[];
                       type="button"
                       onClick={() => {
                         setPicked((p) => ({ ...p, [i]: j }));
+                        // Only the first pick on a question is recorded. Re-picking
+                        // after seeing the hint is the design working, not a second
+                        // data point, and counting it would make every wrong answer
+                        // look like two.
+                        if (choice === undefined && lessonSlug) {
+                          trackEvent('quiz_answer', {
+                            path: `/learn/track-0/${lessonSlug}`,
+                            meta: {
+                              lesson: lessonSlug,
+                              question: i,
+                              correct: j === q.answer,
+                              tier: mode,
+                            },
+                          });
+                        }
                         if (j === q.answer && solved + 1 === questions.length) onComplete?.();
                       }}
                       aria-pressed={chosen}

@@ -17,6 +17,9 @@ interface LabQuestion {
   prompt: string;
   starterCode: string;
   solution: string;
+  /** Prose answer for proof/discussion tasks; never loaded into the editor. */
+  workedSolution?: string;
+  hint?: string;
   source: string;
   difficulty: 'easy' | 'medium' | 'complex';
 }
@@ -59,6 +62,7 @@ export default function LabShell() {
   const [difficulty, setDifficulty] = useState<'all' | 'easy' | 'medium' | 'complex'>('all');
   const [selected, setSelected] = useState<LabQuestion | null>(null);
   const [showSolution, setShowSolution] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
 
   const terminalRef = useRef<HTMLDivElement>(null);
@@ -197,6 +201,7 @@ export default function LabShell() {
   const selectQuestion = (q: LabQuestion) => {
     setSelected(q);
     setShowSolution(false);
+    setShowHint(false);
     setCompleted((prev) => ({ ...prev, [q.id]: isQuestionCompleted(q.id) }));
   };
 
@@ -368,7 +373,15 @@ export default function LabShell() {
                     ⤵ Load starter code into shell
                   </button>
                 )}
-                {selected.solution && (
+                {selected.hint && (
+                  <button
+                    onClick={() => setShowHint(!showHint)}
+                    className="text-xs px-3 py-1.5 rounded-lg border border-quantum-accent/30 text-quantum-accent hover:bg-quantum-accent/10 transition-colors font-mono"
+                  >
+                    {showHint ? 'Hide hint' : '💡 Hint'}
+                  </button>
+                )}
+                {(selected.solution || selected.workedSolution) && (
                   <button
                     onClick={() => setShowSolution(!showSolution)}
                     className="text-xs px-3 py-1.5 rounded-lg border border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/10 transition-colors font-mono"
@@ -384,6 +397,25 @@ export default function LabShell() {
                   {completed[selected.id] ? '✓ Completed' : 'Mark complete'}
                 </button>
               </div>
+
+              {showHint && selected.hint && (
+                <div className="rounded-lg border border-quantum-accent/30 bg-quantum-accent/5 p-3">
+                  <span className="text-xs text-quantum-accent font-mono">Hint</span>
+                  <p className="mt-1 text-sm leading-relaxed text-content-muted">{selected.hint}</p>
+                </div>
+              )}
+
+              {/* Worked answers for tasks that are proofs or discussions rather
+                  than programs. Rendered as prose, and deliberately without a
+                  "load into shell" button — it is not code and would not run. */}
+              {showSolution && selected.workedSolution && (
+                <div className="rounded-lg border border-yellow-500/30 bg-yellow-500/5 p-3">
+                  <span className="text-xs text-yellow-400 font-mono">Worked answer</span>
+                  <div className="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-content-muted">
+                    {selected.workedSolution}
+                  </div>
+                </div>
+              )}
 
               {showSolution && selected.solution && (
                 <div>

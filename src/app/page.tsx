@@ -63,26 +63,33 @@ export default function HomePage() {
               measurement counts — not canned animations.
             </p>
 
+            {/* Both hero buttons used to lead into material that assumes you
+                already know what a qubit is — /tracks opens on Dirac notation,
+                and the playground on an empty circuit editor. For a first-time
+                visitor with no background that is a closed door, so the primary
+                action is now Track 0 and the secondary is the track index. The
+                playground is a tool for people who already know what to type;
+                it stays one click away in the nav. */}
             <div className="animate-fade-up-2 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link href="/tracks" className="quantum-btn w-full sm:w-auto">
-                Start the curriculum
+              <Link href="/learn/track-0" className="quantum-btn w-full sm:w-auto">
+                Start from zero
               </Link>
               <Link
-                href="/playground"
+                href="/tracks"
                 className="inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-line-strong px-5 font-mono text-sm font-bold transition-colors hover:border-accent hover:text-accent sm:w-auto"
               >
-                Open the playground
+                Browse the 12 tracks
               </Link>
             </div>
 
             <p className="mt-4 font-mono text-xs text-content-subtle">
-              Free · No registration required
+              Free · No registration required · No physics background needed
             </p>
           </div>
 
           <div className="mx-auto mt-12 grid max-w-2xl grid-cols-3 gap-3 sm:gap-4">
             <StatTile value="12" label="Learning tracks" href="/tracks" />
-            <StatTile value="127" label="Lab questions" href="/labs" />
+            <StatTile value="143" label="Lab questions" href="/labs" />
             <StatTile value="12" label="SDK algorithms" href="/algorithms" />
           </div>
         </Container>

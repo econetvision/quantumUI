@@ -100,7 +100,7 @@ jobs:
       - name: Validate the question bank
         run: |
           python - <<'PY'
-          import json, sys
+          import json, re, sys
 
           bank = json.load(open('src/data/labs/lab-questions.json'))
           questions = [q for t in bank['topics'] for q in t['questions']]
@@ -117,6 +117,22 @@ jobs:
                   problems.append(f"{q['id']}: missing explanation")
               if q.get('difficulty') not in ('easy', 'medium', 'complex'):
                   problems.append(f"{q['id']}: bad difficulty {q.get('difficulty')!r}")
+
+              # Every question must have a hint and an answer of some kind.
+              # Both reached full coverage deliberately; without a gate the next
+              # import quietly drops back and nobody notices until a learner is
+              # stuck with no way forward.
+              if not (q.get('hint') or '').strip():
+                  problems.append(f"{q['id']}: missing hint")
+              if not ((q.get('solution') or '').strip() or (q.get('workedSolution') or '').strip()):
+                  problems.append(f"{q['id']}: no solution and no worked answer")
+
+              # A prompt that is only "Task 3" is an extraction failure, not a
+              # question. Nine of these shipped as real questions before.
+              body = re.sub(r'^\\s*#*\\s*Task\\s*\\d*\\s*:?\\s*', '',
+                            ' '.join((q.get('prompt') or '').split()), flags=re.I).strip(' ()')
+              if len(body) < 10:
+                  problems.append(f"{q['id']}: prompt has no content ({q.get('prompt')!r})")
 
           print(f'{len(questions)} questions across {len(bank["topics"])} topics')
           if problems:
