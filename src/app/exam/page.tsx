@@ -4,6 +4,10 @@ import { Container, PageHeader, Card, StatTile } from '@/components/ui/primitive
 import { SampleQuiz, type QuizQuestion } from '@/components/SampleQuiz';
 
 export const metadata: Metadata = {
+  // Stated explicitly so a link arriving with tracking parameters
+  // (?utm_source=..., ?ref=...) consolidates onto one indexable URL instead of
+  // splitting this page's ranking across every variant that ever gets shared.
+  alternates: { canonical: '/exam' },
   title: 'Certification Exam Prep',
   description:
     'Practice questions aligned to the IBM Qiskit Developer Certification blueprint, with explanations for every answer.',

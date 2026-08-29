@@ -190,9 +190,17 @@ quantumui-app/
 - **Achievement** — Unlockable badges ("Entangled Learner", "Gate Master")
 - **UserAchievement** — User's earned achievements
 
+### Analytics
+- **AnalyticsEvent** — First-party page views and interactions. Anonymous
+  (random per-browser id, no cookies, no stored IP), and the source for the
+  instructor dashboard at `/admin/dashboard`.
+- **User.lastLoginAt / loginCount** — Denormalised sign-in summary; the full
+  history lives in `AuditLog`.
+
 ### Infrastructure
 - **ContentCache** — Redis-backed cache for external APIs (IBM Docs, arXiv)
-- **AuditLog** — Security audit trail
+- **AuditLog** — Security audit trail: sign-in, sign-out and account creation,
+  with IP and user agent
 - **RateLimit** — Request throttling per user/IP
 
 ---

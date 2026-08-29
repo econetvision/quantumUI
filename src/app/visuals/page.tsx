@@ -4,6 +4,10 @@ import { Badge, Callout, Card, Container, PageHeader } from '@/components/ui/pri
 import { PHYSICS_VISUALS } from '@/lib/physics-visuals';
 
 export const metadata: Metadata = {
+  // Stated explicitly so a link arriving with tracking parameters
+  // (?utm_source=..., ?ref=...) consolidates onto one indexable URL instead of
+  // splitting this page's ranking across every variant that ever gets shared.
+  alternates: { canonical: '/visuals' },
   title: 'Physics Visualisations',
   description:
     'Animated walkthroughs of quantum tunnelling, the uncertainty principle, double-slit interference and Grover amplitude amplification — each computed by solving the physics, not illustrated.',

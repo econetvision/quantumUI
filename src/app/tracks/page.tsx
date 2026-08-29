@@ -5,6 +5,10 @@ import { Container, PageHeader, Card, Badge } from '@/components/ui/primitives';
 import { TRACK_CONFIGS, type TrackConfig } from '@/lib/track-mapping';
 
 export const metadata: Metadata = {
+  // Stated explicitly so a link arriving with tracking parameters
+  // (?utm_source=..., ?ref=...) consolidates onto one indexable URL instead of
+  // splitting this page's ranking across every variant that ever gets shared.
+  alternates: { canonical: '/tracks' },
   title: 'Learning Tracks',
   description:
     'Twelve structured quantum computing tracks, from qubits and gates through error correction, cryptography and variational algorithms.',

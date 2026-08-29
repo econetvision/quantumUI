@@ -8,6 +8,7 @@ import { Badge, Callout, Card } from '@/components/ui/primitives';
 import { MeasurementHistogram } from '@/components/quantum/MeasurementHistogram';
 import { BlochReadout } from '@/components/quantum/BlochReadout';
 import { BackendPicker } from '@/components/quantum/BackendPicker';
+import { trackEvent } from '@/lib/analytics-client';
 
 interface QuantumExample {
   name: string;
@@ -89,6 +90,13 @@ export default function QuantumCodePlayground({
         body: JSON.stringify({ code, shots, backend }),
       });
       const data: ExecutionResult = await response.json();
+
+      // Recorded here rather than in the API route so anonymous runs count too
+      // — the executor route is shared, but only the browser knows which
+      // surface the run came from, and most learners are signed out.
+      trackEvent('code_run', {
+        meta: { surface: 'playground', backend, shots, ok: Boolean(data.success) },
+      });
 
       if (!response.ok || !data.success) {
         setError(data.error ?? 'Execution failed.');
