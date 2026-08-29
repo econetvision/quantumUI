@@ -55,12 +55,36 @@ export async function proxy(req: NextRequest) {
   return NextResponse.next();
 }
 
+/**
+ * Everything except the free entry points requires an account.
+ *
+ * Public, deliberately:
+ *   /              the marketing page
+ *   /learn/track-0 "Start Here" — the whole of Track 0, no account, no maths
+ *   /visuals       the computed physics animations
+ *   /login /signup and the auth callbacks
+ *
+ * Everything else — the twelve tracks, the labs, the algorithm gallery, the
+ * playground, exam prep, the curriculum map and the project briefs — is behind
+ * a sign-in. Track 0 exists so that a visitor can judge the material before
+ * deciding, which is what makes gating the rest reasonable rather than a wall
+ * in front of an unknown.
+ *
+ * This is a redirect layer for humans, NOT the security boundary. Route
+ * handlers re-check the session themselves — /api/labs/questions returns 401
+ * on its own, because a redirect protects a page and does nothing for an API
+ * somebody calls directly.
+ */
 export const config = {
   matcher: [
     "/dashboard/:path*",
     "/tracks/:path*",
     "/labs/:path*",
+    "/algorithms/:path*",
+    "/playground/:path*",
     "/exam/:path*",
+    "/curriculum/:path*",
+    "/projects/:path*",
     "/profile/:path*",
     "/admin/:path*",
     "/pro/:path*",

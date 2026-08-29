@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLesson, getAllLessons, hasRealContent, getTrackName } from "@/lib/lesson-loader";
 import LessonLab from "@/components/LessonLab";
+import { LessonComplete } from "@/components/learning/LessonComplete";
 import StreakBadge from "@/components/StreakBadge";
 import { Badge, Card, Container } from "@/components/ui/primitives";
 import { TRACK_CONFIGS } from "@/lib/track-mapping";
@@ -586,6 +587,16 @@ export default async function LessonPage({
 
       {/* Prev / next — stacks on small screens instead of squashing three
           buttons onto one row. */}
+      {/* Recording completion is what opens this track's labs, so it sits
+          above the navigation rather than below it — a learner who clicks
+          "Next" straight away should still have passed it. */}
+      <LessonComplete
+        trackSlug={slug}
+        lessonId={lessonNumber}
+        totalLessons={allLessons.length}
+        trackTitle={trackName}
+      />
+
       <nav
         aria-label="Lesson navigation"
         className="mt-10 grid gap-3 sm:grid-cols-3 sm:items-center"

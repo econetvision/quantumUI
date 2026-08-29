@@ -24,11 +24,25 @@ interface LabQuestion {
   difficulty: 'easy' | 'medium' | 'complex';
 }
 
+interface TopicGate {
+  trackSlug: string | null;
+  lessonsTotal: number;
+  lessonsDone: number;
+  unlocked: boolean;
+}
+
 interface TopicBank {
   slug: string;
   name: string;
   certification: string;
   questions: LabQuestion[];
+  /**
+   * Set by the API when this track's lessons are not finished. The questions
+   * array arrives empty in that case — the gate is enforced server-side, so
+   * locked content never reaches the browser to be un-hidden.
+   */
+  locked?: boolean;
+  gate?: TopicGate;
 }
 
 const DIFFICULTY_LABELS: Record<string, { label: string; cls: string }> = {
@@ -74,7 +88,10 @@ export default function LabShell() {
       .then((data) => {
         const t: TopicBank[] = data.topics || [];
         setTopics(t);
-        if (t.length > 0) setTopicSlug(t[0].slug);
+        // Open on something the learner can actually work on. Landing on a
+        // locked bank looks like an empty product rather than a gate.
+        const first = t.find((x) => !x.locked) ?? t[0];
+        if (first) setTopicSlug(first.slug);
       })
       .catch(() => setTopics([]));
   }, []);
@@ -291,7 +308,9 @@ export default function LabShell() {
             >
               {topics.map((t) => (
                 <option key={t.slug} value={t.slug}>
-                  {t.name} ({t.questions.length})
+                  {t.locked
+                    ? `🔒 ${t.name} (${t.gate?.lessonsDone ?? 0}/${t.gate?.lessonsTotal ?? 0} lessons)`
+                    : `${t.name} (${t.questions.length})`}
                 </option>
               ))}
             </select>
@@ -319,7 +338,32 @@ export default function LabShell() {
         </div>
 
         <div className="flex-1 overflow-y-auto max-h-[480px]">
-          {!selected ? (
+          {currentTopic?.locked ? (
+            /* A locked bank arrives with no questions, so without this it
+               would look like an empty product. It says what is missing and
+               links straight at the work that opens it. */
+            <div className="p-6 text-center">
+              <p className="text-3xl" aria-hidden="true">🔒</p>
+              <p className="mt-3 font-mono text-sm font-bold text-content">
+                {currentTopic.name} labs are locked
+              </p>
+              <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-content-muted">
+                Finish the lessons in this track first — you have completed{' '}
+                {currentTopic.gate?.lessonsDone ?? 0} of{' '}
+                {currentTopic.gate?.lessonsTotal ?? 0}. The labs assume the
+                material those lessons cover, so opening them early is how a
+                learner concludes the exercises are broken.
+              </p>
+              {currentTopic.gate?.trackSlug && (
+                <a
+                  href={`/tracks/${currentTopic.gate.trackSlug}`}
+                  className="quantum-btn mt-4 inline-flex"
+                >
+                  Go to the lessons
+                </a>
+              )}
+            </div>
+          ) : !selected ? (
             <div className="divide-y divide-quantum-accent/10">
               {questions.length === 0 && (
                 <p className="p-4 text-sm text-content-subtle">No questions for this filter.</p>
