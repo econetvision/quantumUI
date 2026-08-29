@@ -8,7 +8,31 @@
  */
 export const LEARNING_PREFS_KEY = 'quantumui-learning';
 
-export type LearningMode = 'kid' | 'student';
+/**
+ * Three audiences, one lesson.
+ *
+ *  kid          — analogies, animation, zero notation
+ *  student      — the same idea with Dirac notation, matrices, worked examples
+ *  professional — what it costs and where it breaks: complexity, gate depth,
+ *                 decoherence, hardware limits, and what the literature says
+ *
+ * Ordered, not just enumerated: MODE_ORDER lets content declare a *minimum*
+ * tier and be inherited upward, so a professional never loses the student
+ * derivation just because a deeper block exists.
+ */
+export type LearningMode = 'kid' | 'student' | 'professional';
+
+export const MODE_ORDER: readonly LearningMode[] = ['kid', 'student', 'professional'] as const;
+
+export function modeRank(mode: LearningMode): number {
+  const i = MODE_ORDER.indexOf(mode);
+  return i === -1 ? 0 : i;
+}
+
+/** True when `current` is at least as advanced as `minimum`. */
+export function meetsMode(current: LearningMode, minimum: LearningMode): boolean {
+  return modeRank(current) >= modeRank(minimum);
+}
 
 export interface LearningPreferences {
   /** Which layer of every lesson to show. */
@@ -34,7 +58,8 @@ export function coercePreferences(raw: unknown): LearningPreferences {
   if (!raw || typeof raw !== 'object') return { ...DEFAULT_PREFERENCES };
   const r = raw as Partial<LearningPreferences>;
   return {
-    mode: r.mode === 'student' ? 'student' : 'kid',
+    mode:
+      r.mode === 'student' || r.mode === 'professional' ? r.mode : 'kid',
     soundOn: typeof r.soundOn === 'boolean' ? r.soundOn : DEFAULT_PREFERENCES.soundOn,
     reducedMotion:
       typeof r.reducedMotion === 'boolean' ? r.reducedMotion : DEFAULT_PREFERENCES.reducedMotion,

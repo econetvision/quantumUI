@@ -13,6 +13,7 @@ import {
   coercePreferences,
   DEFAULT_PREFERENCES,
   LEARNING_PREFS_KEY,
+  MODE_ORDER,
   type LearningMode,
   type LearningPreferences,
 } from './constants';
@@ -110,10 +111,13 @@ export function LearningModeProvider({ children }: { children: React.ReactNode }
   }, []);
 
   const setMode = useCallback((mode: LearningMode) => update({ mode }), [update]);
-  const toggleMode = useCallback(
-    () => update({ mode: readPrefs().mode === 'kid' ? 'student' : 'kid' }),
-    [update],
-  );
+  // Cycles kid -> student -> professional -> kid. With three tiers a boolean
+  // flip has no meaning, so the keyboard shortcut and any single-button
+  // affordance advance through the order instead.
+  const toggleMode = useCallback(() => {
+    const current = MODE_ORDER.indexOf(readPrefs().mode);
+    update({ mode: MODE_ORDER[(current + 1) % MODE_ORDER.length] });
+  }, [update]);
 
   // Mirror onto <html> so CSS and the pre-paint script agree on one source of
   // truth, and so a lesson can style by mode without threading a prop through
@@ -151,8 +155,25 @@ export function useLearningMode(): LearningContextValue {
   return ctx;
 }
 
-/** Render one of two branches by mode. Keeps lessons declarative. */
-export function ModeSwitch({ kid, student }: { kid: React.ReactNode; student: React.ReactNode }) {
+/**
+ * Render the branch for the current mode, falling back down the tiers.
+ *
+ * A lesson supplies whichever layers it has. A professional reading a topic
+ * with no professional-specific block still gets the student derivation rather
+ * than an empty page — the tiers are cumulative depth, not three disconnected
+ * rewrites, and most topics only ever need two.
+ */
+export function ModeSwitch({
+  kid,
+  student,
+  professional,
+}: {
+  kid: React.ReactNode;
+  student?: React.ReactNode;
+  professional?: React.ReactNode;
+}) {
   const { mode } = useLearningMode();
-  return <>{mode === 'kid' ? kid : student}</>;
+  if (mode === 'professional') return <>{professional ?? student ?? kid}</>;
+  if (mode === 'student') return <>{student ?? kid}</>;
+  return <>{kid}</>;
 }

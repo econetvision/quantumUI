@@ -21,7 +21,8 @@ export function ModeToggle({ className = '' }: { className?: string }) {
       {(
         [
           { value: 'kid', label: 'Kid', emoji: '🧒', hint: 'Stories, animations and games. No maths.' },
-          { value: 'student', label: 'Student', emoji: '🎓', hint: 'Full equations, matrices and worked examples.' },
+          { value: 'student', label: 'Student', emoji: '🎓', hint: 'Dirac notation, matrices and worked examples.' },
+          { value: 'professional', label: 'Pro', emoji: '⚛️', hint: 'Complexity, gate depth, decoherence and hardware limits.' },
         ] as const
       ).map((opt) => {
         const active = mode === opt.value;

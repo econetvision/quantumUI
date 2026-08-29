@@ -16,7 +16,8 @@ export const learningInitScript = `
   try {
     var raw = localStorage.getItem('${LEARNING_PREFS_KEY}');
     var p = raw ? JSON.parse(raw) : {};
-    document.documentElement.dataset.learningMode = p.mode === 'student' ? 'student' : 'kid';
+    var m = (p.mode === 'student' || p.mode === 'professional') ? p.mode : 'kid';
+    document.documentElement.dataset.learningMode = m;
     var s = typeof p.fontScale === 'number' ? Math.min(1.3, Math.max(1, p.fontScale)) : 1;
     document.documentElement.style.setProperty('--font-scale', String(s));
     if (p.reducedMotion === true) document.documentElement.dataset.reducedMotion = 'true';

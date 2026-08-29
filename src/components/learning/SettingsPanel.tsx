@@ -110,7 +110,9 @@ export function SettingsPanel() {
               <p className="mt-1.5 text-xs text-content-muted">
                 {prefs.mode === 'kid'
                   ? 'Stories, animations and games — no maths.'
-                  : 'Full equations, matrices and worked examples.'}
+                  : prefs.mode === 'student'
+                    ? 'Dirac notation, matrices and worked examples.'
+                    : 'Complexity, gate depth, decoherence and hardware limits.'}
               </p>
             </div>
 
