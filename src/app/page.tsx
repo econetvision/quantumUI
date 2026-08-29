@@ -89,7 +89,7 @@ export default function HomePage() {
 
           <div className="mx-auto mt-12 grid max-w-2xl grid-cols-3 gap-3 sm:gap-4">
             <StatTile value="12" label="Learning tracks" href="/tracks" />
-            <StatTile value="152" label="Lab questions" href="/labs" />
+            <StatTile value="143" label="Lab questions" href="/labs" />
             <StatTile value="12" label="SDK algorithms" href="/algorithms" />
           </div>
         </Container>
