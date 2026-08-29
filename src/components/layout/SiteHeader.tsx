@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
+import { SettingsPanel } from '@/components/learning/SettingsPanel';
 import { NAV_LINKS, SECONDARY_LINKS } from './nav-links';
 
 function Logo() {
@@ -106,6 +107,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
+            <SettingsPanel />
 
           {status === 'authenticated' ? (
             <div className="hidden items-center gap-2 sm:flex">

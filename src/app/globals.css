@@ -116,6 +116,12 @@
   --q-sphere: rgb(31 111 235 / 0.08);
 }
 
+/* Learner-controlled body text scale (A / A+ / A++). Set on <html> by the
+   pre-paint script and kept in sync by LearningModeProvider. Headings inherit
+   through rem, so one variable scales the whole page coherently. */
+:root { --font-scale: 1; }
+html { font-size: calc(100% * var(--font-scale)); }
+
 @theme inline {
   --color-surface: var(--surface);
   --color-surface-raised: var(--surface-raised);

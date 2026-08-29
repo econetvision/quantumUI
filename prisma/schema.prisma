@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   // Vercel's Node runtime is Amazon Linux (OpenSSL 3), which is not the
   // platform CI builds on. Without this, `vercel build` in GitHub Actions
   // emitted only a debian engine and the --prebuilt deploy shipped a client
@@ -38,14 +38,14 @@ enum UserRole {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
+  id       String   @id @default(cuid())
+  email    String   @unique
+  name     String?
   // Nullable: accounts created through Google OAuth never set one. The
   // Credentials provider treats a null password as "not a password account"
   // and refuses the sign-in rather than comparing against nothing.
-  password      String?   // bcrypt hashed
-  role          UserRole  @default(FREE)
+  password String? // bcrypt hashed
+  role     UserRole @default(FREE)
 
   // Account-wide progress. Previously these lived on a UserProgress row with
   // trackId 0 — a track that does not exist. MySQL allowed it because
@@ -63,23 +63,30 @@ model User {
   //
   // `createdAt` below is the signup time — the pair answers the two questions
   // the instructor dashboard asks of every account.
-  lastLoginAt    DateTime?
-  loginCount     Int       @default(0)
+  lastLoginAt DateTime?
+  loginCount  Int       @default(0)
 
   // OAuth fields (optional)
   emailVerified DateTime?
   image         String?
 
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  // Learning preferences: { mode, soundOn, reducedMotion, language, fontScale }.
+  // Json rather than columns because this is UI state that will keep growing,
+  // and none of it is ever queried or filtered on — only read whole and written
+  // whole for one user at a time. Anonymous visitors keep the same shape in
+  // localStorage, so signing in is a merge rather than a translation.
+  preferences Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  sessions      Session[]
-  progress      UserProgress[]
-  labAttempts   LabAttempt[]
-  examAttempts  ExamAttempt[]
-  achievements  UserAchievement[]
-  events        AnalyticsEvent[]
+  sessions     Session[]
+  progress     UserProgress[]
+  labAttempts  LabAttempt[]
+  examAttempts ExamAttempt[]
+  achievements UserAchievement[]
+  events       AnalyticsEvent[]
 
   @@index([email])
   // The roster and the "new sign-ups this week" tile both sort/filter on
@@ -110,73 +117,73 @@ enum TrackDifficulty {
 }
 
 model Track {
-  id          Int              @id @default(autoincrement())
-  slug        String           @unique // "quantum-fundamentals", "quantum-gates"
-  title       String           // "Quantum Fundamentals"
-  description String           @db.Text
+  id          Int             @id @default(autoincrement())
+  slug        String          @unique // "quantum-fundamentals", "quantum-gates"
+  title       String // "Quantum Fundamentals"
+  description String          @db.Text
   difficulty  TrackDifficulty
-  order       Int              // Display order (1-12)
+  order       Int // Display order (1-12)
 
   // Metadata
-  labCount    Int              @default(0)
-  questionCount Int            @default(0)
+  labCount       Int    @default(0)
+  questionCount  Int    @default(0)
   estimatedHours Float?
 
   // Content source tracking
-  qworldSource String?         // Which QWorld repo this maps to
+  qworldSource String? // Which QWorld repo this maps to
 
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  labs        Lab[]
-  questions   Question[]
-  progress    UserProgress[]
+  labs      Lab[]
+  questions Question[]
+  progress  UserProgress[]
 
   @@index([slug])
   @@index([order])
 }
 
 enum LabType {
-  INTERACTIVE  // Code execution required
-  TUTORIAL     // Read-only explanation
-  EXERCISE     // Graded challenge
-  PROJECT      // Capstone project
+  INTERACTIVE // Code execution required
+  TUTORIAL // Read-only explanation
+  EXERCISE // Graded challenge
+  PROJECT // Capstone project
 }
 
 model Lab {
-  id            Int         @id @default(autoincrement())
-  trackId       Int
-  track         Track       @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  id      Int   @id @default(autoincrement())
+  trackId Int
+  track   Track @relation(fields: [trackId], references: [id], onDelete: Cascade)
 
-  slug          String      @unique
-  title         String
-  description   String      @db.Text
-  order         Int         // Order within track
+  slug        String @unique
+  title       String
+  description String @db.Text
+  order       Int // Order within track
 
   // Content
-  type          LabType     @default(INTERACTIVE)
-  notebookPath  String?     // Original QWorld .ipynb path
-  markdown      String      @db.Text // Converted explanation
-  starterCode   String      @db.Text // Initial Python/Qiskit code
-  solutionCode  String?     @db.Text // Hidden solution
+  type         LabType @default(INTERACTIVE)
+  notebookPath String? // Original QWorld .ipynb path
+  markdown     String  @db.Text // Converted explanation
+  starterCode  String  @db.Text // Initial Python/Qiskit code
+  solutionCode String? @db.Text // Hidden solution
 
   // Auto-grading
-  expectedOutput String?    @db.Text // For automated checking
-  testCases      Json?      // Unit test cases
+  expectedOutput String? @db.Text // For automated checking
+  testCases      Json? // Unit test cases
 
   // Hints system
-  hints         Json?       // Array of hint strings
+  hints Json? // Array of hint strings
 
   // Difficulty & points
-  xpReward      Int         @default(10)
-  difficulty    Int         @default(1) // 1-5 scale
+  xpReward   Int @default(10)
+  difficulty Int @default(1) // 1-5 scale
 
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  attempts      LabAttempt[]
+  attempts LabAttempt[]
 
   @@index([trackId, order])
   @@index([slug])
@@ -189,28 +196,28 @@ enum LabAttemptStatus {
 }
 
 model LabAttempt {
-  id          Int              @id @default(autoincrement())
-  userId      String
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  labId       Int
-  lab         Lab              @relation(fields: [labId], references: [id], onDelete: Cascade)
+  id     Int    @id @default(autoincrement())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  labId  Int
+  lab    Lab    @relation(fields: [labId], references: [id], onDelete: Cascade)
 
   // Submission
-  submittedCode String         @db.Text
-  output        String?        @db.Text
-  circuitSvg    String?        @db.Text // Generated circuit diagram
+  submittedCode String  @db.Text
+  output        String? @db.Text
+  circuitSvg    String? @db.Text // Generated circuit diagram
 
   // Result
-  status        LabAttemptStatus
-  passed        Boolean        @default(false)
-  score         Int?           // 0-100
-  xpEarned      Int            @default(0)
+  status   LabAttemptStatus
+  passed   Boolean          @default(false)
+  score    Int? // 0-100
+  xpEarned Int              @default(0)
 
   // Metadata
-  hintsUsed     Int            @default(0)
-  timeSpentSec  Int?           // Time spent in seconds
+  hintsUsed    Int  @default(0)
+  timeSpentSec Int? // Time spent in seconds
 
-  createdAt     DateTime       @default(now())
+  createdAt DateTime @default(now())
 
   @@index([userId, labId])
   @@index([userId, createdAt])
@@ -233,53 +240,53 @@ enum QuestionType {
 }
 
 model Question {
-  id              Int                  @id @default(autoincrement())
-  trackId         Int?
-  track           Track?               @relation(fields: [trackId], references: [id], onDelete: SetNull)
+  id      Int    @id @default(autoincrement())
+  trackId Int?
+  track   Track? @relation(fields: [trackId], references: [id], onDelete: SetNull)
 
   // Question content
-  type            QuestionType         @default(MULTIPLE_CHOICE)
-  difficulty      QuestionDifficulty   @default(MEDIUM)
-  question        String               @db.Text
-  codeSnippet     String?              @db.Text
+  type        QuestionType       @default(MULTIPLE_CHOICE)
+  difficulty  QuestionDifficulty @default(MEDIUM)
+  question    String             @db.Text
+  codeSnippet String?            @db.Text
 
   // Options (JSON array)
-  options         Json                 // ["Option A", "Option B", ...]
-  correctAnswer   String               // The correct option text
-  explanation     String?              @db.Text
+  options       Json // ["Option A", "Option B", ...]
+  correctAnswer String // The correct option text
+  explanation   String? @db.Text
 
   // IBM Exam prep specific
-  ibmExamTopic    String?              // "Performing operations", "Measuring outputs", etc.
-  ibmExamWeight   Float?               // Percentage weight in exam blueprint
+  ibmExamTopic  String? // "Performing operations", "Measuring outputs", etc.
+  ibmExamWeight Float? // Percentage weight in exam blueprint
 
-  createdAt       DateTime             @default(now())
+  createdAt DateTime @default(now())
 
   @@index([trackId])
   @@index([ibmExamTopic])
 }
 
 model ExamAttempt {
-  id              Int       @id @default(autoincrement())
-  userId          String
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     Int    @id @default(autoincrement())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Exam metadata
-  type            String    // "mock_exam", "track_quiz", etc.
-  questionCount   Int
+  type          String // "mock_exam", "track_quiz", etc.
+  questionCount Int
 
   // Results
-  answers         Json      // Array of {questionId, selectedAnswer, correct}
-  score           Int       // 0-100
-  percentile      Float?    // User's percentile ranking
+  answers    Json // Array of {questionId, selectedAnswer, correct}
+  score      Int // 0-100
+  percentile Float? // User's percentile ranking
 
   // Timing
-  timeLimit       Int       // Minutes
-  timeSpent       Int       // Actual minutes spent
+  timeLimit Int // Minutes
+  timeSpent Int // Actual minutes spent
 
   // Analytics
-  weakAreas       Json?     // Topics where user struggled
+  weakAreas Json? // Topics where user struggled
 
-  createdAt       DateTime  @default(now())
+  createdAt DateTime @default(now())
 
   @@index([userId, createdAt])
   @@index([type, createdAt])
@@ -290,29 +297,29 @@ model ExamAttempt {
 // =====================================================
 
 model UserProgress {
-  id              Int       @id @default(autoincrement())
-  userId          String
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  trackId         Int
-  track           Track     @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  id      Int    @id @default(autoincrement())
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trackId Int
+  track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
 
   // Progress metrics
-  labsCompleted   Int       @default(0)
-  totalLabs       Int
-  completionPct   Float     @default(0) // 0-100
+  labsCompleted Int   @default(0)
+  totalLabs     Int
+  completionPct Float @default(0) // 0-100
 
   // XP & scoring
-  totalXP         Int       @default(0)
-  currentStreak   Int       @default(0) // Days
-  longestStreak   Int       @default(0)
+  totalXP       Int @default(0)
+  currentStreak Int @default(0) // Days
+  longestStreak Int @default(0)
 
   // Quantum state progress (fun visualization)
-  quantumState    Float     @default(0) // 0 = |0⟩, 100 = |1⟩
+  quantumState Float @default(0) // 0 = |0⟩, 100 = |1⟩
 
   // Timestamps
-  startedAt       DateTime  @default(now())
-  lastActivityAt  DateTime  @default(now())
-  completedAt     DateTime?
+  startedAt      DateTime  @default(now())
+  lastActivityAt DateTime  @default(now())
+  completedAt    DateTime?
 
   @@unique([userId, trackId])
   @@index([userId])
@@ -330,12 +337,12 @@ enum AssignmentStatus {
 
 model Assignment {
   id           Int              @id @default(autoincrement())
-  assignedById String           // admin user id
-  studentId    String           // student user id
+  assignedById String // admin user id
+  studentId    String // student user id
   title        String
-  trackSlug    String?          // assigned learning track
-  labTopic     String?          // lab-questions topic slug
-  difficulty   String?          // easy | medium | complex
+  trackSlug    String? // assigned learning track
+  labTopic     String? // lab-questions topic slug
+  difficulty   String? // easy | medium | complex
   dueDate      DateTime?
   status       AssignmentStatus @default(ASSIGNED)
   createdAt    DateTime         @default(now())
@@ -350,39 +357,39 @@ model Assignment {
 // =====================================================
 
 enum AchievementType {
-  MILESTONE       // Complete X labs
-  STREAK          // X day streak
-  PERFECT_SCORE   // 100% on exam
-  SPEED           // Complete lab under time limit
-  MASTERY         // Complete entire track
-  SPECIAL         // Special events
+  MILESTONE // Complete X labs
+  STREAK // X day streak
+  PERFECT_SCORE // 100% on exam
+  SPEED // Complete lab under time limit
+  MASTERY // Complete entire track
+  SPECIAL // Special events
 }
 
 model Achievement {
-  id          Int              @id @default(autoincrement())
-  slug        String           @unique
-  name        String           // "Entangled Learner", "Gate Master"
-  description String           @db.Text
-  icon        String?          // Emoji or icon name
+  id          Int             @id @default(autoincrement())
+  slug        String          @unique
+  name        String // "Entangled Learner", "Gate Master"
+  description String          @db.Text
+  icon        String? // Emoji or icon name
   type        AchievementType
 
   // Requirements
-  requirement Json             // Flexible criteria
+  requirement Json // Flexible criteria
 
-  createdAt   DateTime         @default(now())
+  createdAt DateTime @default(now())
 
   // Relations
-  users       UserAchievement[]
+  users UserAchievement[]
 }
 
 model UserAchievement {
-  id            Int          @id @default(autoincrement())
+  id            Int         @id @default(autoincrement())
   userId        String
-  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   achievementId Int
-  achievement   Achievement  @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
 
-  earnedAt      DateTime     @default(now())
+  earnedAt DateTime @default(now())
 
   @@unique([userId, achievementId])
   @@index([userId, earnedAt])
@@ -393,14 +400,14 @@ model UserAchievement {
 // =====================================================
 
 model ContentCache {
-  id          Int       @id @default(autoincrement())
-  source      String    // "ibm_docs", "qiskit_api", "arxiv"
-  key         String    // URL or identifier
-  content     String    @db.Text
-  metadata    Json?     // Additional data
+  id       Int    @id @default(autoincrement())
+  source   String // "ibm_docs", "qiskit_api", "arxiv"
+  key      String // URL or identifier
+  content  String @db.Text
+  metadata Json? // Additional data
 
-  createdAt   DateTime  @default(now())
-  expiresAt   DateTime  // TTL for cache invalidation
+  createdAt DateTime @default(now())
+  expiresAt DateTime // TTL for cache invalidation
 
   @@unique([source, key])
   @@index([source, expiresAt])
@@ -411,25 +418,39 @@ model ContentCache {
 // =====================================================
 
 model AuditLog {
-  id          Int       @id @default(autoincrement())
-  userId      String?   // Null for anonymous
-  action      String    // "lab_submit", "exam_attempt", "login"
-  resource    String?   // Resource ID
-  ipAddress   String?
-  userAgent   String?   @db.Text
-  metadata    Json?     // Additional context
+  id        Int     @id @default(autoincrement())
+  userId    String? // Null for anonymous
+  action    String // "lab_submit", "exam_attempt", "login"
+  resource  String? // Resource ID
+  ipAddress String?
+  userAgent String? @db.Text
+  metadata  Json? // Additional context
 
-  createdAt   DateTime  @default(now())
+  createdAt DateTime @default(now())
 
   @@index([userId, createdAt])
   @@index([action, createdAt])
 }
 
+// =====================================================
+// SITE SETTINGS
+// =====================================================
+
+/// Admin-controlled, site-wide switches: feature flags, the maintenance
+/// banner, defaults new visitors inherit. One row per key so a flag can be
+/// flipped without rewriting an unrelated one, and so the audit trail in
+/// updatedAt is per-setting rather than per-blob.
+model SiteSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
 model RateLimit {
-  id          String    @id // userId or IP address
-  endpoint    String    // API endpoint
-  count       Int       @default(0)
-  windowStart DateTime  @default(now())
+  id          String   @id // userId or IP address
+  endpoint    String // API endpoint
+  count       Int      @default(0)
+  windowStart DateTime @default(now())
 
   @@unique([id, endpoint])
   @@index([windowStart])
@@ -451,26 +472,26 @@ model RateLimit {
 // Nothing here identifies a person. visitorId is a random id the browser
 // generates for itself; no IP address is stored.
 model AnalyticsEvent {
-  id        Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   // "page_view", "sign_in", "sign_up", "code_run", "lab_check",
   // "algorithm_run", "exam_start". Kept as a string rather than an enum so a
   // new interaction can be tracked without a migration; the dashboard groups
   // by whatever it finds.
-  type      String
-  path      String?  // Route the event happened on, without query string
-  referrer  String?  // Document referrer host, for acquisition stats
+  type     String
+  path     String? // Route the event happened on, without query string
+  referrer String? // Document referrer host, for acquisition stats
 
   // Null for signed-out visitors, which is the majority of traffic — the whole
   // curriculum is usable without an account.
-  userId    String?
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   // Random per-browser id. Makes "unique visitors" countable without storing
   // anything that identifies a person.
   visitorId String
 
-  meta      Json?
+  meta Json?
 
   createdAt DateTime @default(now())
 
