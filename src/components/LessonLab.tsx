@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import { completeQuestion, getStreakData, recordActivity, XP_REWARDS } from '@/lib/streak';
 import { trackEvent } from '@/lib/analytics-client';
+import { extractPromptImages } from '@/lib/prompt-images';
 
 interface LabQuestion {
   id: string;
@@ -35,8 +36,10 @@ const DIFFICULTY_STYLES: Record<string, string> = {
  * Make notebook prompts readable in the UI: strip raw LaTeX blocks and
  * HTML tags that don't render in plain text, and tidy the whitespace.
  */
-function cleanPrompt(raw: string): { text: string; hadMath: boolean } {
-  let s = raw;
+function cleanPrompt(raw: string): { text: string; hadMath: boolean; images: string[] } {
+  // Pull referenced diagrams out before the tag strip below destroys them.
+  const { text: withoutImages, images } = extractPromptImages(raw);
+  let s = withoutImages;
   const before = s.length;
   s = s.replace(/\$\$[\s\S]*?\$\$/g, ' ');
   s = s.replace(/\$[^$]*\$/g, ' ');
@@ -48,7 +51,7 @@ function cleanPrompt(raw: string): { text: string; hadMath: boolean } {
     .replace(/[ \t]+\n/g, '\n')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
-  return { text: s, hadMath };
+  return { text: s, hadMath, images };
 }
 
 const DEFAULT_SCAFFOLD = `# Scenario: build the circuit for this task, then run it
@@ -224,6 +227,19 @@ export default function LessonLab({
             <p className="text-content-muted text-sm whitespace-pre-wrap leading-relaxed max-h-56 overflow-y-auto">
               {cleaned?.text}
             </p>
+            {cleaned?.images.map((src) => (
+              // White plate: black-line notebook figures vanish on the dark
+              // surface without a light background behind them.
+              <div key={src} className="mt-3 rounded-lg bg-white p-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={src}
+                  alt="Diagram referenced by this task"
+                  loading="lazy"
+                  className="mx-auto max-h-56 w-auto"
+                />
+              </div>
+            ))}
             {cleaned?.hadMath && (
               <p className="text-[10px] text-content-subtle font-mono mt-3">
                 ⓘ Full mathematical notation available in the source notebook.
