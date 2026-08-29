@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLesson, getAllLessons, hasRealContent, getTrackName } from "@/lib/lesson-loader";
 import LessonLab from "@/components/LessonLab";
+import { LAB_TOPIC_TRACK } from "@/lib/lab-access";
 import { LessonComplete } from "@/components/learning/LessonComplete";
 import StreakBadge from "@/components/StreakBadge";
 import { Badge, Card, Container } from "@/components/ui/primitives";
@@ -19,27 +20,31 @@ const LESSON_TONE = {
   lesson: "neutral",
 } as const;
 
-// Maps track slugs to lab-question topic banks (src/data/labs/lab-questions.json)
+/**
+ * Which bank of lab questions a lesson in this track should offer.
+ *
+ * Nearly always the bank of the same name, so it is derived from
+ * LAB_TOPIC_TRACK rather than restated — one list to keep correct instead of
+ * two that must agree. The previous version was a hand-written table that had
+ * drifted: it carried entries for both spellings of the four slugs that used to
+ * differ, plus keys like "advanced-qiskit", "cert-exam-prep", "quantum-ml" and
+ * "vqe-qaoa" that are not track slugs at all and could never match.
+ *
+ * BORROWED covers the real exception: two tracks have no lab bank of their own
+ * and practise against the closest one that does.
+ */
+const BORROWED_LAB_TOPIC: Record<string, string> = {
+  "advanced-qiskit-topics": "qiskit-sdk-deep-dive",
+  "ibm-cert-exam-prep": "qiskit-sdk-deep-dive",
+};
+
 const LAB_TOPIC_BY_TRACK: Record<string, string> = {
-  "quantum-fundamentals": "quantum-fundamentals",
-  "quantum-gates": "quantum-gates",
-  "qiskit-sdk-deep-dive": "qiskit-sdk",
-  "quantum-entanglement": "quantum-entanglement",
-  "quantum-algorithms": "quantum-algorithms",
-  "quantum-cryptography": "quantum-cryptography",
-  "quantum-cryptography-qkd": "quantum-cryptography",
-  "error-correction": "error-correction",
-  "quantum-error-correction": "error-correction",
-  "advanced-qiskit": "qiskit-sdk",
-  "advanced-qiskit-topics": "qiskit-sdk",
-  "cert-exam-prep": "qiskit-sdk",
-  "ibm-cert-exam-prep": "qiskit-sdk",
-  "quantum-teleportation": "quantum-teleportation",
-  "quantum-teleportation-protocols": "quantum-teleportation",
-  "vqe-qaoa": "quantum-algorithms",
-  "variational-quantum-algorithms": "variational-quantum-algorithms",
-  "quantum-ml": "quantum-algorithms",
-  "quantum-machine-learning": "quantum-machine-learning",
+  ...Object.fromEntries(
+    Object.entries(LAB_TOPIC_TRACK)
+      .filter(([, track]) => track !== null)
+      .map(([topic, track]) => [track as string, topic]),
+  ),
+  ...BORROWED_LAB_TOPIC,
 };
 
 // Image type for lesson visuals

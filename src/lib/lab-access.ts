@@ -3,14 +3,26 @@ import { getAllLessons } from '@/lib/lesson-loader';
 /**
  * Which track's lessons unlock which bank of labs.
  *
- * The two lists were named independently and only six of the twelve slugs
- * happen to match, so the mapping is written out rather than inferred. An
- * inferred join would silently unlock nothing for the six that differ, which
- * is the kind of gate failure nobody notices until a learner is stuck.
+ * Every entry is the identity, because the lab topic slugs are named after the
+ * track they belong to. That is the point of keeping the constant: it states
+ * the rule — a lab bank is opened by the track of the same name — and names the
+ * two exceptions, rather than encoding a translation somebody has to maintain.
  *
- * `null` means no track teaches this topic. Those banks are reachable by any
- * signed-in learner: gating them behind lessons that do not exist would lock
- * them permanently.
+ * It used to be a real translation. Four banks were named differently from
+ * their track (`error-correction` against `quantum-error-correction`,
+ * `qiskit-sdk` against `qiskit-sdk-deep-dive`, and two more), and the cost was
+ * not hypothetical: src/app/labs/page.tsx still carried a comment recording
+ * that two of those slugs had been used as track slugs and 404'd. Anything
+ * joining the two lists by name found nothing for those four and would have
+ * locked their labs permanently.
+ *
+ * `null` means no track teaches this topic. Those banks are open to any
+ * signed-in learner, because gating them behind lessons that do not exist would
+ * lock them forever.
+ *
+ * Keep this exhaustive. lab-access.test.ts fails when a bank in the question
+ * file is missing here or names a track that does not exist, so a new bank
+ * cannot ship silently ungated.
  */
 export const LAB_TOPIC_TRACK: Record<string, string | null> = {
   'quantum-fundamentals': 'quantum-fundamentals',
@@ -19,10 +31,11 @@ export const LAB_TOPIC_TRACK: Record<string, string | null> = {
   'quantum-algorithms': 'quantum-algorithms',
   'quantum-machine-learning': 'quantum-machine-learning',
   'variational-quantum-algorithms': 'variational-quantum-algorithms',
-  'error-correction': 'quantum-error-correction',
-  'qiskit-sdk': 'qiskit-sdk-deep-dive',
-  'quantum-cryptography': 'quantum-cryptography-qkd',
-  'quantum-teleportation': 'quantum-teleportation-protocols',
+  'quantum-error-correction': 'quantum-error-correction',
+  'qiskit-sdk-deep-dive': 'qiskit-sdk-deep-dive',
+  'quantum-cryptography-qkd': 'quantum-cryptography-qkd',
+  'quantum-teleportation-protocols': 'quantum-teleportation-protocols',
+
   // No track covers either SDK, so there is nothing to complete first.
   'cirq-sdk': null,
   'qpiai-sdk': null,

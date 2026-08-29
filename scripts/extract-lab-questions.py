@@ -45,7 +45,7 @@ TOPICS = {
             "qbook101/qbook101/QB32_*.ipynb",
         ],
     },
-    "qiskit-sdk": {
+    "qiskit-sdk-deep-dive": {
         "name": "Qiskit SDK",
         "cert": "IBM Qiskit Developer",
         "globs": [
@@ -75,14 +75,14 @@ TOPICS = {
             "silver-qcourse511/silver/D*_*.ipynb",
         ],
     },
-    "quantum-cryptography": {
+    "quantum-cryptography-qkd": {
         "name": "Quantum Cryptography & QKD",
         "cert": "Microsoft Quantum Katas",
         "globs": [
             "qkd/notebooks/QC*.ipynb",
         ],
     },
-    "error-correction": {
+    "quantum-error-correction": {
         "name": "Quantum Error Correction",
         "cert": "IBM Qiskit Developer",
         "globs": [

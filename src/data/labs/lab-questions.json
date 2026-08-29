@@ -697,14 +697,14 @@
       ]
     },
     {
-      "slug": "qiskit-sdk",
+      "slug": "qiskit-sdk-deep-dive",
       "name": "Qiskit SDK",
       "certification": "IBM Qiskit Developer",
       "questionCount": 2,
       "questions": [
         {
-          "id": "qiskit-sdk-1",
-          "topic": "qiskit-sdk",
+          "id": "qiskit-sdk-deep-dive-1",
+          "topic": "qiskit-sdk-deep-dive",
           "title": "Guess the outcome by checking the circuit.",
           "prompt": "Task 1 \n\nGuess the outcome by checking the circuit.\n\nThen, compare your guess with the result obtained after executing our circuit 100 times.",
           "starterCode": "job = execute(qc2,Aer.get_backend('qasm_simulator'),shots=100)\ncounts = job.result().get_counts(qc2)\nprint(counts)",
@@ -719,8 +719,8 @@
           "hint": "Predict before you run. H then CNOT correlates the two qubits — decide which of the four outcomes can appear at all, then check."
         },
         {
-          "id": "qiskit-sdk-2",
-          "topic": "qiskit-sdk",
+          "id": "qiskit-sdk-deep-dive-2",
+          "topic": "qiskit-sdk-deep-dive",
           "title": "Randomly picking an 8-bit binary number",
           "prompt": "Task 2: Randomly picking an 8-bit binary number \n\nDesign a quantum circuit with 8 quantum bits and 8 classical bits.\n\nFor each quantum bit, flip a coin by python, and apply x-gate if the outcome is head.\n\nMeasure your quantum bits.\n\nExecute your circuit 10 times.\n\nRepeat this task as much as you want, and enjoy your random choices.",
           "starterCode": "#\n# your solution is here\n#",
@@ -1439,14 +1439,14 @@
       ]
     },
     {
-      "slug": "quantum-cryptography",
+      "slug": "quantum-cryptography-qkd",
       "name": "Quantum Cryptography & QKD",
       "certification": "Microsoft Quantum Katas",
       "questionCount": 22,
       "questions": [
         {
-          "id": "quantum-cryptography-1",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-1",
+          "topic": "quantum-cryptography-qkd",
           "title": "Can XOR be a valid operation for cryptography algorithms?",
           "prompt": "Task 1 \n\nCan XOR be a valid operation for cryptography algorithms? Performing bitwise operations, verify this using a binary message string 010110 and binary key string 111011.\n\n(**Hint:** $ a \\oplus b \\oplus b = a  $)",
           "starterCode": "",
@@ -1461,8 +1461,8 @@
           "hint": "Apply the key twice and see what comes back. a XOR b XOR b = a is the whole argument."
         },
         {
-          "id": "quantum-cryptography-2",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-2",
+          "topic": "quantum-cryptography-qkd",
           "title": "Calculate the total number of possibilities that Espian will have to choose…",
           "prompt": "Task 1 \n\nCalculate the total number of possibilities that Espian will have to choose from if **Balvis** encrypts his name using this One-time Pad cipher. \n\n**Note:** You have to calculate a number. Do not list down all possibilities.",
           "starterCode": "",
@@ -1477,8 +1477,8 @@
           "hint": "The pad is as long as the message and every bit is free. Count the bits, then raise 2 to that power."
         },
         {
-          "id": "quantum-cryptography-3",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-3",
+          "topic": "quantum-cryptography-qkd",
           "title": "Re-run the code above with different binary strings and verify the operations.",
           "prompt": "Task 2 \n\nRe-run the code above with different binary strings and verify the operations. You will have to change 'a' and 'b'.\n\n***",
           "starterCode": "#Generating random key\nfrom random import randrange\nlst=[]\ni=0\n\nwhile i<31:\n    lst.append(randrange(2))\n    i=i+1\n    \nkey=int(''.join(map(str, lst)), 2) #converting key to binary format and then as an integer",
@@ -1493,8 +1493,8 @@
           "hint": "Change both strings and confirm the round trip still returns the original. Keep them the same length."
         },
         {
-          "id": "quantum-cryptography-4",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-4",
+          "topic": "quantum-cryptography-qkd",
           "title": "Try the above example using any other encoding scheme of your own and verify…",
           "prompt": "Task 3 \n\nTry the above example using any other encoding scheme of your own and verify that you get back the original message after performing XOR operation twice. \n\n***",
           "starterCode": "",
@@ -1509,8 +1509,8 @@
           "hint": "The pad does not care how letters became bits. Pick any encoding, encode, XOR twice, decode."
         },
         {
-          "id": "quantum-cryptography-5",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-5",
+          "topic": "quantum-cryptography-qkd",
           "title": "Encrypt and decrypt the message \"15\" using RSA encryption scheme.",
           "prompt": "Task 1 \n\nEncrypt and decrypt the message \"15\" using RSA encryption scheme. Let $A=3$ & $B=7$.",
           "starterCode": "import math\n\nA = 3\nB = 11\nn = A*B\nphi = (A-1)*(B-1)\n\nk = 1\ne = 7\nd = (k*phi + 1)//e\n \nM = 5\n\n# Encryption E = (M ^ e) % n\nE = (M**e) % n\nprint(\"Encrypted Data = \", int(E))\n \n# Decryption\n\nM = ### YOUR CODE HERE ###\n\nprint(\"Decrypted Data = \", int(M))",
@@ -1524,8 +1524,8 @@
           "hint": "Work through RSA in order: pick p and q, compute n and the totient, choose e coprime to it, then find d as the modular inverse."
         },
         {
-          "id": "quantum-cryptography-6",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-6",
+          "topic": "quantum-cryptography-qkd",
           "title": "Complete the following code and verify the results for Example 1 & 2",
           "prompt": "Task 2 \n\nComplete the following code and verify the results for Example 1 & 2.",
           "starterCode": "import math\n\nA = 3\nB = 11\nn = A*B\nphi = (A-1)*(B-1)\n\nk = 1\ne = 7\nd = (k*phi + 1)//e\n \nM = 5\n\n# Encryption E = (M ^ e) % n\nE = (M**e) % n\nprint(\"Encrypted Data = \", int(E))\n \n# Decryption\n\nM = ### YOUR CODE HERE ###\n\nprint(\"Decrypted Data = \", int(M))",
@@ -1539,8 +1539,8 @@
           "hint": "Fill in the missing lines one at a time and print after each, so you can see which step diverges from the expected value."
         },
         {
-          "id": "quantum-cryptography-7",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-7",
+          "topic": "quantum-cryptography-qkd",
           "title": "Using the code in Task 2 and changing the values, verify the results for Task…",
           "prompt": "Task 3 \n\nUsing the code in Task 2 and changing the values, verify the results for Task 1.",
           "starterCode": "",
@@ -1554,8 +1554,8 @@
           "hint": "Only the numbers change, not the method. If the result looks wrong, check e and the totient are still coprime."
         },
         {
-          "id": "quantum-cryptography-8",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-8",
+          "topic": "quantum-cryptography-qkd",
           "title": "Decryption in Standard Basis Using the encrypted message string and the key…",
           "prompt": "Task 1 \n\n**Decryption in Standard Basis**\n\nUsing the encrypted message string and the key from the above example, create a program for Balvis to decrypt the 8-bit cipher using the same key and the standard basis ($\\ket{0}$ and $\\ket{1}$) using \n\nCheck if the protocol is correct.",
           "starterCode": "# Decryption\n\n\n# create a quantum curcuit for Balvis' qubits.\n# It's initially set to |0>.\n# You can use qregB and cregB instead of qregA and cregA to distinguish.\n\n### YOUR CODE HERE ###\n\nmycircuitB = None\n\n# apply x-gate to change initial states from 0 to 1, preparing the state with encrypted message\nfor m in range(len(encrypted_message)):\n    if encrypted_message[m]==1:\n        ### YOUR CODE HERE ###\n\n\n# use the same random key and apply x gates to decrypt message\n### YOUR CODE HERE ###\n        \n    \n\n# Perform Measurement\n### YOUR CODE HERE ###\n\nmycircuitB.draw(output='mpl')",
@@ -1574,8 +1574,8 @@
           "hint": "Standard basis means measuring directly. Compare the received bits with what was sent and count the disagreements."
         },
         {
-          "id": "quantum-cryptography-9",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-9",
+          "topic": "quantum-cryptography-qkd",
           "title": "Create a program where Asja encrypts a 16-bit message \"1001000110001100\"…",
           "prompt": "Task 2 \n\nCreate a program where Asja encrypts a 16-bit message \"1001000110001100\" using states in standard basis  {|0⟩,|1⟩}  and a randomly generated key string (equal length).\nWe will assume that  𝑞(0)  is our most-significant-bit (MSB).  \n\nThen, check if the protocol is correct.",
           "starterCode": "### YOUR CODE HERE ###",
@@ -1594,8 +1594,8 @@
           "hint": "Encode each of the 16 bits on its own qubit. X for a 1, nothing for a 0."
         },
         {
-          "id": "quantum-cryptography-10",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-10",
+          "topic": "quantum-cryptography-qkd",
           "title": "Hadamard Basis What happens if Asja decides to change the basis?",
           "prompt": "Hadamard Basis $\\{ \\ket{+}, \\ket{-}\\}$\n\nWhat happens if Asja decides to change the basis? \n\nSuppose that Asja changes the quantum basis from standard to Hadamard $\\{ \\ket{+}, \\ket{-}\\}$. \n\n Task 3 \n\nUsing Hadamard Basis and replacing $\\ket{0}$ with $\\ket{+}$ and $\\ket{1}$ with $\\ket{-}$, encrypt message from **Example 1** with $X$ gates and check if the protocol is correct.",
           "starterCode": "### YOUR CODE HERE ###",
@@ -1614,8 +1614,8 @@
           "hint": "Changing basis without telling the other party randomises half the results. Work out what fraction survives."
         },
         {
-          "id": "quantum-cryptography-11",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-11",
+          "topic": "quantum-cryptography-qkd",
           "title": "Complete the code below to create a random string",
           "prompt": "Task 1 \n\nComplete the code below to create a random string.",
           "starterCode": "from random import randrange\n\nsend=[] #Initial bit string to send\n\n#Creating random bit string\nfor i in range(8):\n    #YOUR CODE HERE#\n    \n    \n    \n#Apply X gate if bit is equal 1\nfor i, n in enumerate(send):\n    if n==1:\n        # apply x-gate\n        #YOUR CODE HERE# \n        \n        \n\nsend_str = ''.join(str(e) for e in send)\nprint(send_str)\n\nasja.draw()",
@@ -1880,8 +1880,8 @@
           "hint": "A random bit per position: randint(0, 1) in a list comprehension is enough."
         },
         {
-          "id": "quantum-cryptography-12",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-12",
+          "topic": "quantum-cryptography-qkd",
           "title": "Complete the code below to perform a measurement",
           "prompt": "Task 2 \n\nComplete the code below to perform a measurement.",
           "starterCode": "#Balvis performs a measurement\n#YOUR CODE HERE#",
@@ -1896,8 +1896,8 @@
           "hint": "Measure in the chosen basis by applying H first when the basis is Hadamard, then measuring as usual."
         },
         {
-          "id": "quantum-cryptography-13",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-13",
+          "topic": "quantum-cryptography-qkd",
           "title": "Repeat all the steps for 4 qubits",
           "prompt": "Task 3 \n\nRepeat all the steps for 4 qubits.",
           "starterCode": "",
@@ -1916,8 +1916,8 @@
           "hint": "Everything scales — four qubits means four bases, four measurements and a four-bit key."
         },
         {
-          "id": "quantum-cryptography-14",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-14",
+          "topic": "quantum-cryptography-qkd",
           "title": "Measuring in incorrect basis Create a program for 16 bits, where Asja sends…",
           "prompt": "Task 1 \n\nMeasuring in incorrect basis\n\nCreate a program for 16 bits, where Asja sends first 8 bits encoded using $X$-basis and next 8 bits encoded in $Z$-basis, but Balvis measures first 8 qubits using $Z$-basis and next 8 qubits using $X$-basis.",
           "starterCode": "### YOUR CODE HERE ###",
@@ -2188,8 +2188,8 @@
           "hint": "A wrong basis gives a random answer, so expect about half of those positions to disagree. That is the signature of an eavesdropper too."
         },
         {
-          "id": "quantum-cryptography-15",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-15",
+          "topic": "quantum-cryptography-qkd",
           "title": "Run the above protocol for a -bit string.",
           "prompt": "Task 2 \n\nRun the above protocol for a $16$-bit string. Find the limiting length of the bit string for your computer below which the simulation doesn't fail. \n\n**Hint:** You can take help from the above example.",
           "starterCode": "### YOUR CODE HERE ###",
@@ -2335,8 +2335,8 @@
           "hint": "Run the protocol end to end and keep only the positions where the bases matched. That sifted subset is the key."
         },
         {
-          "id": "quantum-cryptography-16",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-16",
+          "topic": "quantum-cryptography-qkd",
           "title": "Run this program (both sifting and QBER) for 24 bits",
           "prompt": "Task 1 \n\nRun this program (both sifting and QBER) for 24 bits.",
           "starterCode": "### YOUR CODE HERE ###",
@@ -2482,8 +2482,8 @@
           "hint": "QBER is the fraction of disagreements among the sifted bits. With no eavesdropper and no noise it should be zero."
         },
         {
-          "id": "quantum-cryptography-17",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-17",
+          "topic": "quantum-cryptography-qkd",
           "title": "Run the complete program (including sifting, QBER and privacy amplification)…",
           "prompt": "Task 1 \n\nRun the complete program (including sifting, QBER and privacy amplification) for 24 bits.",
           "starterCode": "### YOUR CODE HERE ###",
@@ -2629,8 +2629,8 @@
           "hint": "Privacy amplification shortens the key to remove what an eavesdropper might know. Hash the sifted key down rather than using it directly."
         },
         {
-          "id": "quantum-cryptography-18",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-18",
+          "topic": "quantum-cryptography-qkd",
           "title": "Parity Check Game",
           "prompt": "Task 1: Parity Check Game \n    \nCreate a $ (5 \\times 5) $-dimensional matrix with random binary input: $(i,j)$n $→$ {0, 1}m.\n\nThe $ (i,j) $-th entry of matrix refers to the entry in $ i $-th row and $ j $-th column.\n\nAdd a parity bit to each row and column by adding additional column (to the right) and row (at the bottom) of your matrix.\n\n Flip one random bit and see if you can correct the error by looking at parity column and row. \n What if you flip two random bits?\n What if you flip three random bits?",
           "starterCode": "",
@@ -2644,8 +2644,8 @@
           "hint": "One flipped entry breaks exactly one row parity and one column parity. Their intersection names the cell."
         },
         {
-          "id": "quantum-cryptography-19",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-19",
+          "topic": "quantum-cryptography-qkd",
           "title": "Re-run this program for different number of EPR pairs.",
           "prompt": "Task 1 \n\nRe-run this program for different number of EPR pairs.\n\nHint: You only need to change the number of loop iterations at the very start.",
           "starterCode": "",
@@ -2660,8 +2660,8 @@
           "hint": "Only the loop bound changes. Check that the two halves of every pair still agree whatever count you pick."
         },
         {
-          "id": "quantum-cryptography-20",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-20",
+          "topic": "quantum-cryptography-qkd",
           "title": "Calculating correlation values",
           "prompt": "Task 1: Calculating correlation values \n\nCalculate correlation value for each experiment using the formula:\n\n$⟨A\\otimes B⟩=P(1,1)+P(0,0)-P(1,0)-P(0,1)$\n\nwhere $P(1,1)$ and $P(0,0)$ are probabilities of correlated results.\\\nThey can be calculated as number of rounds where Asja and Balvis obtained identical bits after measurement ($11$ and $00$) divided by 100 (all rounds);\n\n$P(1,0)$ and $P(0,1)$ are probabilities of uncorrelated results.\\\nThey can be calculated as number of rounds where Asja and Balvis obtained different bits ($10$ and $01$) divided by 100 (all rounds).",
           "starterCode": "ZW= ### YOUR CODE HERE ###\nXW= ### YOUR CODE HERE ###\nXV= ### YOUR CODE HERE ###\nZV= ### YOUR CODE HERE ###\n\nprint(ZW, XW, XV, ZV)",
@@ -2675,8 +2675,8 @@
           "hint": "A correlation is the average of the product of the two outcomes, with 0 and 1 mapped to +1 and −1."
         },
         {
-          "id": "quantum-cryptography-21",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-21",
+          "topic": "quantum-cryptography-qkd",
           "title": "CHSH inequality value",
           "prompt": "Task 2: CHSH inequality value \n\nCalculate CHSH inequality value using formula $S=ZW+XW-XV+ZV$ and correlation values calculated previously.",
           "starterCode": "S= ### YOUR CODE HERE ###\n\nprint(\"CHSH inequality value is\", S)",
@@ -2690,8 +2690,8 @@
           "hint": "Combine the four correlation terms with the right signs. Anything above 2 rules out a classical explanation."
         },
         {
-          "id": "quantum-cryptography-22",
-          "topic": "quantum-cryptography",
+          "id": "quantum-cryptography-qkd-22",
+          "topic": "quantum-cryptography-qkd",
           "title": "Re-run this program for different number of EPR pairs.",
           "prompt": "Task 1 \n\nRe-run this program for different number of EPR pairs.\n\nHint: You only need to change the number of loop iterations at the very start.",
           "starterCode": "",
@@ -2708,14 +2708,14 @@
       ]
     },
     {
-      "slug": "error-correction",
+      "slug": "quantum-error-correction",
       "name": "Quantum Error Correction",
       "certification": "IBM Qiskit Developer",
       "questionCount": 8,
       "questions": [
         {
-          "id": "error-correction-1",
-          "topic": "error-correction",
+          "id": "quantum-error-correction-1",
+          "topic": "quantum-error-correction",
           "title": "Create the syndrome measurement circuit for detecting errors in the Shor code",
           "prompt": "#### Task 2\nCreate the syndrome measurement circuit for detecting $X$ errors in the Shor code.",
           "starterCode": "# specify how many qubits you will need\nsync_circ_x = stac.Circuit.simple()",
@@ -2729,8 +2729,8 @@
           "hint": "Compare neighbours rather than measuring the data. Two CNOTs onto an ancilla give the parity of a pair without revealing either value."
         },
         {
-          "id": "error-correction-2",
-          "topic": "error-correction",
+          "id": "quantum-error-correction-2",
+          "topic": "quantum-error-correction",
           "title": "Decode the zero and one state for the code, and make sure you get the right answer",
           "prompt": "#### Task 1\nDecode the zero and one state for the $[[5,1,3]]$ code, and make sure you get the right answer.",
           "starterCode": "",
@@ -2744,8 +2744,8 @@
           "hint": "Build the codewords from the stabilisers instead of a table, then check the two are orthogonal and each is an equal superposition of 16 states."
         },
         {
-          "id": "error-correction-3",
-          "topic": "error-correction",
+          "id": "quantum-error-correction-3",
+          "topic": "quantum-error-correction",
           "title": "Identify and for the matrix above",
           "prompt": "#### Task 1\nIdentify $A_1, A_2, B, C_1, C_2, D$ and $E_2$ for the matrix above.",
           "starterCode": "cd.construct_logical_operators()\nprint(\"Logical X =\", cd.logical_xs)\nstac.print_paulis(cd.logical_xs)\n\nprint(\"\\nLogical Z =\", cd.logical_zs)\nstac.print_paulis(cd.logical_zs)",
@@ -2758,8 +2758,8 @@
           "solutionAuthored": true
         },
         {
-          "id": "error-correction-4",
-          "topic": "error-correction",
+          "id": "quantum-error-correction-4",
+          "topic": "quantum-error-correction",
           "title": "Use stac to construct the logical operators for the code",
           "prompt": "#### Task 1\nUse `stac` to construct the logical operators for the $[[5,1,3]]$ code.",
           "starterCode": "#",
@@ -2773,8 +2773,8 @@
           "hint": "A logical operator commutes with every stabiliser but is not itself in the group. Try the all-X and all-Z strings."
         },
         {
-          "id": "error-correction-5",
-          "topic": "error-correction",
+          "id": "quantum-error-correction-5",
+          "topic": "quantum-error-correction",
           "title": "Use stac to create the encoding circuit for the code. Simulate it to determine the encoded zero and one states",
           "prompt": "#### Task 2\nUse `stac` to create the encoding circuit for the $[[5,1,3]]$ code. Simulate it to determine the encoded zero and one states.",
           "starterCode": "#",
@@ -2788,8 +2788,8 @@
           "hint": "Project |00000⟩ onto the stabiliser group by applying (I + g)/2 for each generator, then normalise."
         },
         {
-          "id": "error-correction-6",
-          "topic": "error-correction",
+          "id": "quantum-error-correction-6",
+          "topic": "quantum-error-correction",
           "title": "Determine the syndromes for each possible one qubit error and each possible one qubit error",
           "prompt": "#### Task 1\nDetermine the syndromes for each possible one qubit $X$ error and each possible one qubit $Z$ error.",
           "starterCode": "#",
@@ -2803,8 +2803,8 @@
           "hint": "The syndrome bit for a generator is 1 exactly when the error anticommutes with it. The symplectic inner product computes that in one line."
         },
         {
-          "id": "error-correction-7",
-          "topic": "error-correction",
+          "id": "quantum-error-correction-7",
+          "topic": "quantum-error-correction",
           "title": "Determine the syndromes when there is a two qubit error (errors such as ). Compare the syndromes with the one-qubit error syndromes. What does this tell you about correcting two-qubit errors with the Steane code?",
           "prompt": "#### Task 2\nDetermine the syndromes when there is a two qubit $X$ error (errors such as $X_0 X_3$). Compare the syndromes with the one-qubit error syndromes. What does this tell you about correcting two-qubit errors with the Steane code?",
           "starterCode": "#",
@@ -2818,8 +2818,8 @@
           "hint": "Compute the two-qubit syndromes and look for ones that match a single-qubit syndrome. Those collisions are why distance 3 stops at one error."
         },
         {
-          "id": "error-correction-8",
-          "topic": "error-correction",
+          "id": "quantum-error-correction-8",
+          "topic": "quantum-error-correction",
           "title": "In Task 1 in we computed everything by hand. Now use the symplecticinnerproduct function to recompute the table with code",
           "prompt": "#### Task 4\nIn Task 1 in [stabilizer codes](../stabilizer-codes/stabilizer-codes.ipynb) we computed everything by hand. Now use the `symplectic_inner_product` function to recompute the table with code.",
           "starterCode": "",
@@ -3033,7 +3033,7 @@
       "questionCount": 5,
       "questions": [
         {
-          "id": "vqa-1",
+          "id": "variational-quantum-algorithms-1",
           "title": "Parameterised single-qubit ansatz",
           "prompt": "Task 1: Build a one-qubit ansatz with Ry(theta) for theta = pi/4 and measure it.",
           "difficulty": "easy",
@@ -3051,7 +3051,7 @@
           "hint": "One ry rotation is the whole ansatz. Sweep the angle and watch the measured probability follow sin²(theta/2)."
         },
         {
-          "id": "vqa-2",
+          "id": "variational-quantum-algorithms-2",
           "title": "Two-parameter ansatz",
           "prompt": "Task 2: Build a 2-qubit ansatz applying Ry(pi/3) to qubit 0 and Ry(pi/6) to qubit 1.",
           "difficulty": "easy",
@@ -3071,7 +3071,7 @@
           "hint": "Two rotations about different axes reach states one axis alone cannot. Try ry then rz."
         },
         {
-          "id": "vqa-3",
+          "id": "variational-quantum-algorithms-3",
           "title": "Hardware-efficient ansatz with entanglement",
           "prompt": "Task 3: Build a layer of Ry rotations followed by a CNOT entangling layer on 2 qubits.",
           "difficulty": "medium",
@@ -3091,7 +3091,7 @@
           "hint": "Alternate a layer of single-qubit rotations with a layer of entangling gates. Without the entangling layer the qubits stay independent."
         },
         {
-          "id": "vqa-4",
+          "id": "variational-quantum-algorithms-4",
           "title": "QAOA mixing layer",
           "prompt": "Task 4: Build the QAOA starting state — equal superposition over 3 qubits — then apply an Rx mixer.",
           "difficulty": "medium",
@@ -3115,7 +3115,7 @@
           "hint": "The mixer is an rx rotation on every qubit. It is what lets amplitude move between candidate solutions."
         },
         {
-          "id": "vqa-5",
+          "id": "variational-quantum-algorithms-5",
           "title": "MaxCut cost layer",
           "prompt": "Task 5: Apply a ZZ interaction between qubits 0 and 1 using two CNOTs and an Rz.",
           "difficulty": "complex",
@@ -3143,7 +3143,7 @@
       "questionCount": 5,
       "questions": [
         {
-          "id": "qml-1",
+          "id": "quantum-machine-learning-1",
           "title": "Angle encoding",
           "prompt": "Task 1: Encode the classical value 0.5 into a qubit using Ry(2*0.5) — angle encoding.",
           "difficulty": "easy",
@@ -3161,7 +3161,7 @@
           "hint": "Angle encoding puts one feature into one rotation angle. Scale your features to a sensible range first."
         },
         {
-          "id": "qml-2",
+          "id": "quantum-machine-learning-2",
           "title": "Encoding a two-feature sample",
           "prompt": "Task 2: Encode the vector [0.3, 0.8] into two qubits by angle encoding.",
           "difficulty": "easy",
@@ -3181,7 +3181,7 @@
           "hint": "Two features, two qubits, one rotation each. Check that different samples give distinguishable states."
         },
         {
-          "id": "qml-3",
+          "id": "quantum-machine-learning-3",
           "title": "Feature map with entanglement",
           "prompt": "Task 3: Encode two features, then entangle them with a CNOT to build a non-linear feature map.",
           "difficulty": "medium",
@@ -3201,7 +3201,7 @@
           "hint": "Add entangling gates between the encoding rotations so the feature map is not just a product of single-qubit states."
         },
         {
-          "id": "qml-4",
+          "id": "quantum-machine-learning-4",
           "title": "Variational classifier circuit",
           "prompt": "Task 4: Build encode -> entangle -> trainable rotation, the standard QML classifier shape.",
           "difficulty": "medium",
@@ -3221,7 +3221,7 @@
           "hint": "Encode the data first, then apply trainable rotations, then measure. Only the second block has parameters to learn."
         },
         {
-          "id": "qml-5",
+          "id": "quantum-machine-learning-5",
           "title": "Swap test for state overlap",
           "prompt": "Task 5: Build a swap test using a control qubit, Hadamard, controlled-swap and Hadamard.",
           "difficulty": "complex",
@@ -3241,13 +3241,13 @@
       ]
     },
     {
-      "slug": "quantum-teleportation",
+      "slug": "quantum-teleportation-protocols",
       "name": "Quantum Teleportation",
       "certification": "Microsoft Quantum Katas",
       "questionCount": 5,
       "questions": [
         {
-          "id": "teleport-1",
+          "id": "quantum-teleportation-protocols-1",
           "title": "Prepare the shared Bell pair",
           "prompt": "Task 1: Build the entangled pair shared between sender and receiver, on qubits 1 and 2.",
           "difficulty": "easy",
@@ -3261,11 +3261,11 @@
             "000": 483
           },
           "verifiedAgainst": "QpiAI-QSV-Local",
-          "topic": "quantum-teleportation",
+          "topic": "quantum-teleportation-protocols",
           "hint": "H then CNOT gives the Bell pair. Confirm the two qubits always agree before building anything on top."
         },
         {
-          "id": "teleport-2",
+          "id": "quantum-teleportation-protocols-2",
           "title": "Prepare the message qubit",
           "prompt": "Task 2: Put the message qubit (qubit 0) into the |+> state before teleporting it.",
           "difficulty": "easy",
@@ -3281,11 +3281,11 @@
             "000": 269
           },
           "verifiedAgainst": "QpiAI-QSV-Local",
-          "topic": "quantum-teleportation",
+          "topic": "quantum-teleportation-protocols",
           "hint": "Any single-qubit state will do, but pick one that is not |0⟩ or you cannot tell whether teleportation did anything."
         },
         {
-          "id": "teleport-3",
+          "id": "quantum-teleportation-protocols-3",
           "title": "Bell measurement",
           "prompt": "Task 3: Perform the sender's Bell measurement — CNOT from message to her half, then Hadamard.",
           "difficulty": "medium",
@@ -3305,11 +3305,11 @@
             "001": 109
           },
           "verifiedAgainst": "QpiAI-QSV-Local",
-          "topic": "quantum-teleportation",
+          "topic": "quantum-teleportation-protocols",
           "hint": "A Bell measurement is CNOT then H on the two qubits, then measure both. It is the Bell-pair preparation run backwards."
         },
         {
-          "id": "teleport-4",
+          "id": "quantum-teleportation-protocols-4",
           "title": "Full teleportation circuit",
           "prompt": "Task 4: Assemble the complete protocol: prepare, entangle, Bell-measure, correct.",
           "difficulty": "complex",
@@ -3329,11 +3329,11 @@
             "111": 125
           },
           "verifiedAgainst": "QpiAI-QSV-Local",
-          "topic": "quantum-teleportation",
+          "topic": "quantum-teleportation-protocols",
           "hint": "Three qubits: message, and both halves of the pair. The two measured bits decide which of X, Z, both or neither to apply at the end."
         },
         {
-          "id": "teleport-5",
+          "id": "quantum-teleportation-protocols-5",
           "title": "Superdense coding",
           "prompt": "Task 5: Build superdense coding — send two classical bits using one qubit and prior entanglement.",
           "difficulty": "complex",
@@ -3346,7 +3346,7 @@
             "11": 1024
           },
           "verifiedAgainst": "QpiAI-QSV-Local",
-          "topic": "quantum-teleportation",
+          "topic": "quantum-teleportation-protocols",
           "hint": "Superdense coding is teleportation reversed — two classical bits through one qubit. Encode with I, X, Z or XZ before sending."
         }
       ]

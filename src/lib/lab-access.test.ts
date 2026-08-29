@@ -23,6 +23,30 @@ describe('lab access gate', () => {
     }
   });
 
+  it('names every lab bank after the track that unlocks it', () => {
+    // The whole point of the rename: the two lists agree, so a join by name
+    // works and a mistyped slug is visible instead of silently matching
+    // nothing. The two SDK banks are the stated exceptions.
+    for (const [topic, track] of Object.entries(LAB_TOPIC_TRACK)) {
+      if (track === null) {
+        expect(['cirq-sdk', 'qpiai-sdk'], `unexpected ungated bank: ${topic}`).toContain(topic);
+      } else {
+        expect(track, `${topic} should be unlocked by the track of the same name`).toBe(topic);
+      }
+    }
+  });
+
+  it('prefixes every question id with its own topic slug', () => {
+    // Question ids used to carry short prefixes of their own (vqa-, qml-,
+    // teleport-) and four carried the topic's old name. Grepping an id no
+    // longer required knowing which era it came from.
+    for (const topic of TOPICS) {
+      for (const q of topic.questions) {
+        expect(q.id.startsWith(`${topic.id}-`), `${q.id} is not prefixed with ${topic.id}`).toBe(true);
+      }
+    }
+  });
+
   it('maps no two topics onto the same track', () => {
     // Two banks sharing a track would unlock together, which is not what
     // "finish this track to open its labs" promises.
