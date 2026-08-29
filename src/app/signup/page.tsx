@@ -206,8 +206,10 @@ export default function SignupPage() {
 
         <div className="mt-6 space-y-2 text-center text-sm">
           <p>
-            <Link href="/tracks" className="text-accent hover:underline">
-              Start learning without an account →
+            {/* /tracks is sign-in-only (see src/proxy.ts), so this must point
+                at the account-free content or it loops through /login. */}
+            <Link href="/learn/track-0" className="text-accent hover:underline">
+              Start Track 0 without an account →
             </Link>
           </p>
           <p className="text-content-subtle">

@@ -50,7 +50,7 @@ export const TRACK_IMAGERY: Record<string, TrackImagery> = {
         caption: 'The spinning-coin analogy: not secretly heads or tails, but genuinely both.',
       },
       {
-        src: dir('quantum-fundamentals', 'amplitude-to-probability.png'),
+        src: dir('quantum-fundamentals', 'amplitude-to-probability.svg'),
         alt: 'Diagram showing a probability amplitude being squared to give a measurement probability',
         caption: 'Probability is the square of the amplitude — which is why negative amplitudes matter.',
       },
