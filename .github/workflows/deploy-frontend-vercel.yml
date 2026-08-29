@@ -99,11 +99,95 @@ jobs:
       - name: Pull Vercel environment
         run: npx vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
 
+      # ---------------------------------------------------------------------
+      # Schema, before the code that reads it.
+      #
+      # Nothing here used to apply migrations, so a merge whose code expected
+      # new columns deployed against a database that did not have them. That
+      # is not hypothetical: #7 added AnalyticsEvent, lastLoginAt and
+      # loginCount, deployed green, and every request that touched User threw
+      # until the columns were added by hand.
+      #
+      # `migrate deploy` only ever applies committed migration files forward.
+      # It will not generate, reset, or drop anything, so a schema edit that
+      # arrives without a migration file fails the deploy loudly here instead
+      # of silently at runtime.
+      # ---------------------------------------------------------------------
+      # Credentials come from the Vercel environment pulled in the previous
+      # step, not from a separate GitHub secret. One source of truth: if the
+      # deployment can reach the database, so can this step, and the two can
+      # never drift apart the way two copies of a connection string do.
+      - name: Apply database migrations
+        run: |
+          set -a; . ./.vercel/.env.production.local; set +a
+          [ -n "$DATABASE_URL" ] || { echo "::error::DATABASE_URL missing from the pulled Vercel environment"; exit 1; }
+          npx prisma migrate deploy
+
+      - name: Fail if the schema still differs from the database
+        run: |
+          set -a; . ./.vercel/.env.production.local; set +a
+          # `migrate deploy` succeeds when there is nothing to apply, including
+          # when someone edited schema.prisma and forgot the migration. This
+          # catches that case before the build ships code for a schema the
+          # database does not have.
+          npx prisma migrate diff \
+            --from-url "$DATABASE_URL" \
+            --to-schema-datamodel prisma/schema.prisma \
+            --exit-code > /dev/null && echo "Schema matches the database." || {
+              echo "::error::schema.prisma does not match the database. Generate a migration with 'prisma migrate dev --name <change>' and commit it."
+              npx prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma/schema.prisma --script
+              exit 1
+            }
+
       - name: Build
         run: npx vercel build --prod --token="$VERCEL_TOKEN"
 
       - name: Deploy
-        run: npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+        id: deploy
+        run: |
+          url=$(npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Deployed: $url"
+
+      # ---------------------------------------------------------------------
+      # Put the new build in front of traffic, and prove it got there.
+      #
+      # `vercel rollback` pins the production alias to the deployment it
+      # reverted to. Every later `vercel deploy --prod` then builds, uploads
+      # and reports success while the alias keeps serving the pinned build —
+      # the deploy is green and the site never changes. That happened here: a
+      # failed deploy rolled back, and the three successful deploys after it
+      # were invisible in production for hours.
+      #
+      # It is worse than a silent no-op, because the smoke test below requests
+      # PROD_URL. Against a pinned alias it tests the *old* deployment and
+      # passes, certifying a build that is not serving. So: promote, then
+      # assert that the deployment answering PROD_URL is the one just built.
+      # ---------------------------------------------------------------------
+      - name: Promote to production and verify the alias moved
+        run: |
+          serving() {
+            npx vercel inspect "$PROD_URL" --token="$VERCEL_TOKEN" 2>&1 \
+              | awk '$1 == "url" { print $2; exit }'
+          }
+          new="${{ steps.deploy.outputs.url }}"
+          new="${new#https://}"
+
+          if [ "$(serving)" = "$new" ]; then
+            echo "Production alias already points at the new deployment."
+            exit 0
+          fi
+
+          echo "Alias is not on the new deployment — promoting (production was pinned)."
+          npx vercel promote "${{ steps.deploy.outputs.url }}" --token="$VERCEL_TOKEN" --timeout 5m
+
+          for attempt in 1 2 3 4 5 6; do
+            [ "$(serving)" = "$new" ] && { echo "Alias now serves $new"; exit 0; }
+            echo "alias not moved yet (attempt $attempt), waiting 10s"; sleep 10
+          done
+
+          echo "::error::$PROD_URL still serves $(serving), not the new deployment $new. Production is pinned; the smoke test below would have tested the wrong build."
+          exit 1
 
       # ---------------------------------------------------------------------
       # Smoke test. A green `vercel deploy` only means the build shipped; it
