@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { TRACK_CONFIGS } from '@/lib/track-mapping';
+import { TRACK0_LESSONS } from '@/lib/track0-lessons';
 import { getAllLessons } from '@/lib/lesson-loader';
 import { absoluteUrl } from '@/lib/site';
 
@@ -35,6 +36,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'];
   }[] = [
     { path: '/', priority: 1, changeFrequency: 'weekly' },
+    // Track 0 is the entry point for readers with no background, and the
+    // only part of the curriculum that needs no account at all. It ranks
+    // alongside /tracks rather than below it.
+    { path: '/learn/track-0', priority: 0.9, changeFrequency: 'weekly' },
     { path: '/tracks', priority: 0.9, changeFrequency: 'weekly' },
     { path: '/labs', priority: 0.9, changeFrequency: 'weekly' },
     { path: '/algorithms', priority: 0.8, changeFrequency: 'monthly' },
@@ -52,6 +57,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: page.changeFrequency,
     priority: page.priority,
   }));
+
+  // Track 0 lessons are typed data rather than JSON content files, so they
+  // are not reachable through getAllLessons below. Listed explicitly, and
+  // driven off TRACK0_LESSONS so a new lesson is crawlable the day it is
+  // authored rather than whenever somebody remembers this file.
+  for (const lesson of TRACK0_LESSONS) {
+    entries.push({
+      url: absoluteUrl(`/learn/track-0/${lesson.slug}`),
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    });
+  }
 
   for (const track of TRACK_CONFIGS) {
     entries.push({

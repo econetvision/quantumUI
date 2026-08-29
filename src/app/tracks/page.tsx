@@ -95,6 +95,43 @@ export default function TracksPage() {
           each concept is now a full-resolution figure on the track that
           teaches it, rather than a 96px tile in a shared image. */}
 
+      {/* Track 0 sits above the twelve because it is not one of them: no
+          account, no maths, no prerequisites. Someone who lands on this page
+          and finds twelve tracks all starting at "qubits and Dirac notation"
+          has no way to tell that there is a gentler door — so it is named
+          here rather than left to the nav. */}
+      <div className="mt-10">
+        <Card
+          href="/learn/track-0"
+          className="flex flex-col gap-4 border-accent/40 bg-accent/[0.04] sm:flex-row sm:items-center"
+        >
+          <span
+            aria-hidden="true"
+            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-accent/30 bg-surface-overlay text-3xl"
+          >
+            🌍
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-xs text-content-subtle">#0</span>
+              <Badge tone="accent">start here</Badge>
+              <Badge tone="neutral">no account needed</Badge>
+            </div>
+            <h2 className="mt-1.5 font-mono text-base font-bold leading-tight">
+              Quantum World for Everyone
+            </h2>
+            <p className="mt-1.5 text-sm leading-relaxed text-content-muted">
+              The whole idea with no equations — then the same idea again with
+              them, when you want it. Written for a curious ten-year-old and a
+              working engineer at the same time, with a mode switch between.
+            </p>
+          </div>
+          <span className="shrink-0 font-mono text-sm text-accent sm:self-end">
+            Start &rarr;
+          </span>
+        </Card>
+      </div>
+
       <div className="mt-12">
         <h2 className="font-mono text-lg font-bold">All 12 tracks</h2>
         <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
