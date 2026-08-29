@@ -3,6 +3,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Container, Card, Badge } from "@/components/ui/primitives";
+import { TrackAccessGate } from "@/components/tracks/TracksGrid";
+import { CertificateClaim } from "@/components/tracks/CertificateClaim";
+import { getAllLessons } from "@/lib/lesson-loader";
 import { getTrackImagery } from "@/lib/track-images";
 import { TRACK_CONFIGS } from "@/lib/track-mapping";
 import {
@@ -307,6 +310,7 @@ export default async function TrackDetailPage({
   const config = trackConfig(slug);
 
   return (
+    <TrackAccessGate slug={slug} trackTitle={track.name}>
     <Container size="narrow" className="py-10 sm:py-14">
       {/* Structured data: tells a search engine this page is a Course with a
           provider, a level and a workload — the difference between a plain blue
@@ -459,6 +463,16 @@ export default async function TrackDetailPage({
           </li>
         ))}
       </ol>
+
+      {/* Appears once every lesson is complete. The count comes from the
+          lesson JSON (what the lesson pages actually serve), falling back to
+          the outline above for tracks without real content. */}
+      <CertificateClaim
+        slug={slug}
+        trackTitle={track.name}
+        lessonCount={getAllLessons(slug).length || track.lessons.length}
+      />
     </Container>
+    </TrackAccessGate>
   );
 }

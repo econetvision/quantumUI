@@ -7,6 +7,7 @@ import { headers } from "next/headers";
 import type { UserRole } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { clientIpFrom, recordAudit, recordSignIn } from "@/lib/analytics";
+import { sendWelcomeIfFirstLogin } from "@/lib/email/lifecycle";
 
 /**
  * No database adapter here on purpose.
@@ -69,6 +70,11 @@ async function noteSignIn(userId: string, provider: string) {
   } catch (error) {
     console.error("[auth] could not record sign-in:", error);
   }
+
+  // Welcome letter on the first completed sign-in. Deliberately not awaited:
+  // an SMTP round-trip has no business inside the jwt callback's latency, and
+  // the helper swallows its own failures.
+  void sendWelcomeIfFirstLogin(userId).catch(() => {});
 }
 
 export const authOptions: NextAuthConfig = {

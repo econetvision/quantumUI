@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Brand mark: the header's gradient tile with a geometric Q drawn as a
+       ring and tail, so it stays crisp at 16px with no font dependency. -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4d8dff"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#g)"/>
+  <!-- Q ring -->
+  <circle cx="30" cy="29" r="14" fill="none" stroke="#06101f" stroke-width="6"/>
+  <!-- Q tail -->
+  <line x1="38" y1="38" x2="48" y2="48" stroke="#06101f" stroke-width="6" stroke-linecap="round"/>
+  <!-- Orbiting electron dot — the quantum nod -->
+  <circle cx="44" cy="17" r="4" fill="#ffffff"/>
+</svg>

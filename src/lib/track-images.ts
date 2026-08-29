@@ -268,7 +268,7 @@ export const TRACK_IMAGERY: Record<string, TrackImagery> = {
 /**
  * Concept figures generated individually via GPAI.
  *
- * These sixteen were previously a single 384x384 animated grid shown once on
+ * These figures were previously a single 384x384 animated grid shown once on
  * /tracks — about 96px per concept, unreadable, and attached to no particular
  * track. They are now full-resolution figures filed under the track that
  * teaches each one. Written by `scripts/import_concept_figures.py`.

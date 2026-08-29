@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ORG_NAME, SITE_BYLINE } from '@/lib/site';
 import { NAV_LINKS, SECONDARY_LINKS } from './nav-links';
 
 export function SiteFooter() {
@@ -14,8 +15,13 @@ export function SiteFooter() {
               >
                 Q
               </span>
-              <span className="font-mono text-base font-bold">
-                Quantum<span className="text-accent">UI</span>
+              <span className="flex flex-col leading-none">
+                <span className="font-mono text-base font-bold">
+                  Quantum<span className="text-accent">UI</span>
+                </span>
+                <span className="mt-0.5 text-[0.6rem] font-medium tracking-wide text-content-subtle">
+                  {SITE_BYLINE}
+                </span>
               </span>
             </div>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-content-muted">
@@ -84,8 +90,12 @@ export function SiteFooter() {
 
         <div className="mt-10 border-t border-line pt-6 text-sm text-content-subtle">
           <p>
-            QuantumUI · Built with <span className="text-accent">|ψ⟩</span> ·
-            Lesson content courtesy of QWorld under its original licences.
+            QuantumUI {SITE_BYLINE} · Built with{' '}
+            <span className="text-accent">|ψ⟩</span> · Lesson content courtesy
+            of QWorld under its original licences.
+          </p>
+          <p className="mt-2">
+            © {new Date().getFullYear()} {ORG_NAME}. All rights reserved.
           </p>
         </div>
       </div>

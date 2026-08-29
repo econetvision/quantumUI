@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
+import { SITE_BYLINE } from '@/lib/site';
 import { NAV_LINKS, SECONDARY_LINKS } from './nav-links';
 
 function Logo() {
@@ -20,8 +21,13 @@ function Logo() {
       >
         Q
       </span>
-      <span className="font-mono text-lg font-bold tracking-tight">
-        Quantum<span className="text-accent">UI</span>
+      <span className="flex flex-col leading-none">
+        <span className="font-mono text-lg font-bold tracking-tight">
+          Quantum<span className="text-accent">UI</span>
+        </span>
+        <span className="mt-0.5 text-[0.6rem] font-medium tracking-wide text-content-subtle">
+          {SITE_BYLINE}
+        </span>
       </span>
     </Link>
   );

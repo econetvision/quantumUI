@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { TrackDifficulty } from '@prisma/client';
-import { Container, PageHeader, Card, Badge } from '@/components/ui/primitives';
-import { TRACK_CONFIGS, type TrackConfig } from '@/lib/track-mapping';
+import { Container, PageHeader } from '@/components/ui/primitives';
+import { TracksGrid, type TrackCardData } from '@/components/tracks/TracksGrid';
+import { TRACK_CONFIGS } from '@/lib/track-mapping';
 
 export const metadata: Metadata = {
   // Stated explicitly so a link arriving with tracking parameters
@@ -37,45 +38,20 @@ const DIFFICULTY_TONE = {
   [TrackDifficulty.EXPERT]: 'danger',
 } as const;
 
-function TrackCard({ track, index }: { track: TrackConfig; index: number }) {
-  return (
-    <Card href={`/tracks/${track.slug}`} className="flex h-full flex-col gap-3">
-      <div className="flex items-start gap-3">
-        <span
-          aria-hidden="true"
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-line bg-surface-overlay text-xl"
-        >
-          {TRACK_ICONS[track.slug] ?? '⚛️'}
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs text-content-subtle">
-              #{index + 1}
-            </span>
-            <Badge tone={DIFFICULTY_TONE[track.difficulty] ?? 'neutral'}>
-              {track.difficulty.toLowerCase()}
-            </Badge>
-          </div>
-          <h2 className="mt-1 font-mono text-sm font-bold leading-tight">
-            {track.title}
-          </h2>
-        </div>
-      </div>
-
-      <p className="line-clamp-3 text-xs leading-relaxed text-content-muted">
-        {track.description}
-      </p>
-
-      <div className="mt-auto flex items-center justify-between border-t border-line pt-3 font-mono text-xs text-content-subtle">
-        <span className="flex gap-3">
-          <span>{track.labCount} labs</span>
-          <span>{track.estimatedHours}h</span>
-        </span>
-        <span className="text-accent">Start →</span>
-      </div>
-    </Card>
-  );
-}
+/**
+ * Serializable card data for the client-side grid, which applies sequential
+ * unlocking from localStorage. See src/components/tracks/TracksGrid.tsx.
+ */
+const TRACK_CARDS: TrackCardData[] = TRACK_CONFIGS.map((track) => ({
+  slug: track.slug,
+  title: track.title,
+  description: track.description,
+  difficulty: track.difficulty,
+  labCount: track.labCount,
+  estimatedHours: track.estimatedHours,
+  icon: TRACK_ICONS[track.slug] ?? '⚛️',
+  tone: DIFFICULTY_TONE[track.difficulty] ?? 'neutral',
+}));
 
 export default function TracksPage() {
   return (
@@ -97,11 +73,11 @@ export default function TracksPage() {
 
       <div className="mt-12">
         <h2 className="font-mono text-lg font-bold">All 12 tracks</h2>
-        <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {TRACK_CONFIGS.map((track, index) => (
-            <TrackCard key={track.slug} track={track} index={index} />
-          ))}
-        </div>
+        <p className="mt-1.5 text-sm text-content-muted">
+          Tracks unlock in order — finish the first lesson of a track to open
+          the next one.
+        </p>
+        <TracksGrid tracks={TRACK_CARDS} />
       </div>
     </Container>
   );

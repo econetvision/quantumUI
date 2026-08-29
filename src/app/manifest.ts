@@ -20,11 +20,30 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: '#07090d',
     categories: ['education', 'science', 'productivity'],
     lang: 'en',
+    // 192/512 PNGs are what Android's install prompt actually uses; the
+    // maskable variant fills the full square so adaptive-icon shapes do not
+    // letterbox it. All three are renders of the same mark as src/app/icon.svg.
     icons: [
       {
         src: '/favicon.ico',
         sizes: '48x48',
         type: 'image/x-icon',
+      },
+      {
+        src: '/icons/icon-192.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        src: '/icons/icon-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+      {
+        src: '/icons/icon-maskable-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
       },
     ],
   };

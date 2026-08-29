@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { getLesson, getAllLessons, hasRealContent, getTrackName } from "@/lib/lesson-loader";
 import LessonLab from "@/components/LessonLab";
 import StreakBadge from "@/components/StreakBadge";
+import { LessonNav } from "@/components/tracks/LessonNav";
+import { TrackAccessGate } from "@/components/tracks/TracksGrid";
 import { Badge, Card, Container } from "@/components/ui/primitives";
 import { TRACK_CONFIGS } from "@/lib/track-mapping";
 import {
@@ -411,11 +413,10 @@ export default async function LessonPage({
 
   const { lesson, allLessons, trackName, realContent } = resolved;
 
-  const prevLesson = lessonNumber > 1 ? lessonNumber - 1 : null;
-  const nextLesson = lessonNumber < allLessons.length ? lessonNumber + 1 : null;
   const progress = Math.round((lessonNumber / allLessons.length) * 100);
 
   return (
+    <TrackAccessGate slug={slug} trackTitle={trackName}>
     <Container size="narrow" className="py-8 sm:py-12">
       {/* Structured data. `LearningResource` linked to its parent `Course` by
           @id is what lets a search engine present this as a lesson inside a
@@ -584,41 +585,15 @@ export default async function LessonPage({
         </div>
       )}
 
-      {/* Prev / next — stacks on small screens instead of squashing three
-          buttons onto one row. */}
-      <nav
-        aria-label="Lesson navigation"
-        className="mt-10 grid gap-3 sm:grid-cols-3 sm:items-center"
-      >
-        {prevLesson !== null ? (
-          <Link
-            href={`/tracks/${slug}/lessons/${prevLesson}`}
-            className="inline-flex min-h-11 items-center justify-center rounded-lg border border-line-strong px-5 font-mono text-sm transition-colors hover:border-accent hover:text-accent"
-          >
-            ← Previous
-          </Link>
-        ) : (
-          <span className="hidden sm:block" />
-        )}
-
-        <Link
-          href={`/tracks/${slug}`}
-          className="inline-flex min-h-11 items-center justify-center rounded-lg border border-line px-5 font-mono text-sm text-content-muted transition-colors hover:text-content"
-        >
-          Back to track
-        </Link>
-
-        <Link
-          href={
-            nextLesson !== null
-              ? `/tracks/${slug}/lessons/${nextLesson}`
-              : `/tracks/${slug}`
-          }
-          className="quantum-btn"
-        >
-          {nextLesson !== null ? "Next →" : "Complete →"}
-        </Link>
-      </nav>
+      {/* Prev / next. Client component: pressing "Complete & next" is what
+          marks this lesson done, which is the signal that unlocks the next
+          track. */}
+      <LessonNav
+        slug={slug}
+        lessonNumber={lessonNumber}
+        lessonCount={allLessons.length}
+      />
     </Container>
+    </TrackAccessGate>
   );
 }
