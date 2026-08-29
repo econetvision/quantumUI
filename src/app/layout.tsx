@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { DM_Sans, Space_Mono } from 'next/font/google';
 import './globals.css';
+import 'katex/dist/katex.min.css';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import { LearningModeProvider } from '@/components/learning/LearningModeProvider';
 import { learningInitScript } from '@/components/learning/learning-script';
