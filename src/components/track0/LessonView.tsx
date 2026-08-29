@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
+import { trackEvent } from '@/lib/analytics-client';
 import { useLearningMode } from '@/components/learning/LearningModeProvider';
 import { ModeToggle } from '@/components/learning/ModeToggle';
 import type { LessonTier, Track0Lesson } from '@/lib/track0-lessons';
@@ -41,6 +43,25 @@ export function LessonView({
   const tierKey =
     tier === lesson.professional ? 'professional' : tier === lesson.student ? 'student' : 'kid';
   const equations = mathHtml[tierKey] ?? [];
+
+  /*
+   * Which lesson, and which tier it was read at.
+   *
+   * AnalyticsTracker already records a page view for this route, but a page
+   * view cannot answer the two questions Track 0 exists to answer: how far
+   * along the sequence people get before they stop, and whether anybody moves
+   * up from the kid tier once they are here. `lesson.order` makes the first a
+   * single grouped query; `tierKey` makes the second one.
+   *
+   * Keyed on both so switching mode mid-lesson records the new tier — that is
+   * the moment worth counting, not just the arrival.
+   */
+  useEffect(() => {
+    trackEvent('lesson_open', {
+      path: `/learn/track-0/${lesson.slug}`,
+      meta: { track: 'track-0', lesson: lesson.slug, order: lesson.order, tier: tierKey },
+    });
+  }, [lesson.slug, lesson.order, tierKey]);
 
   return (
     <article className="space-y-6">
@@ -92,7 +113,7 @@ export function LessonView({
         </section>
       )}
 
-      <MiniQuiz questions={lesson.quiz} />
+      <MiniQuiz questions={lesson.quiz} lessonSlug={lesson.slug} />
 
       {mode !== 'kid' && lesson.bridge && (
         <Link
