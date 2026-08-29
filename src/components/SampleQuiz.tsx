@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Badge, Card } from '@/components/ui/primitives';
+import { trackEvent } from '@/lib/analytics-client';
 
 export interface QuizQuestion {
   id: number;
@@ -146,7 +147,12 @@ export function SampleQuiz({ questions }: { questions: QuizQuestion[] }) {
         {!submitted ? (
           <button
             type="button"
-            onClick={() => setSubmitted(true)}
+            onClick={() => {
+              setSubmitted(true);
+              trackEvent('exam_submit', {
+                meta: { questions: questions.length, score },
+              });
+            }}
             disabled={answeredCount === 0}
             className="quantum-btn w-full sm:w-auto"
           >

@@ -56,6 +56,16 @@ model User {
   longestStreak  Int       @default(0)
   lastActivityAt DateTime?
 
+  // Sign-in history, denormalised onto the row the admin roster already reads.
+  // The full history lives in AuditLog (action "login"); these two columns
+  // exist so "when did each of 500 users last sign in" is one indexed scan
+  // rather than a correlated subquery per user.
+  //
+  // `createdAt` below is the signup time — the pair answers the two questions
+  // the instructor dashboard asks of every account.
+  lastLoginAt    DateTime?
+  loginCount     Int       @default(0)
+
   // OAuth fields (optional)
   emailVerified DateTime?
   image         String?
@@ -69,8 +79,13 @@ model User {
   labAttempts   LabAttempt[]
   examAttempts  ExamAttempt[]
   achievements  UserAchievement[]
+  events        AnalyticsEvent[]
 
   @@index([email])
+  // The roster and the "new sign-ups this week" tile both sort/filter on
+  // these, and both scan the whole table without an index.
+  @@index([createdAt])
+  @@index([lastLoginAt])
 }
 
 model Session {
@@ -418,4 +433,52 @@ model RateLimit {
 
   @@unique([id, endpoint])
   @@index([windowStart])
+}
+
+// =====================================================
+// PRODUCT ANALYTICS
+// =====================================================
+
+// One row per meaningful thing somebody did on the site.
+//
+// Deliberately separate from AuditLog: that table is a security trail (who
+// signed in, from where, with what user agent) and is queried by user; this one
+// is a product-analytics stream queried by time bucket and by type, and it
+// takes anonymous traffic — most page views have no userId at all. Mixing page
+// views into AuditLog would have made "show me this account's security history"
+// wade through thousands of navigation rows.
+//
+// Nothing here identifies a person. visitorId is a random id the browser
+// generates for itself; no IP address is stored.
+model AnalyticsEvent {
+  id        Int      @id @default(autoincrement())
+
+  // "page_view", "sign_in", "sign_up", "code_run", "lab_check",
+  // "algorithm_run", "exam_start". Kept as a string rather than an enum so a
+  // new interaction can be tracked without a migration; the dashboard groups
+  // by whatever it finds.
+  type      String
+  path      String?  // Route the event happened on, without query string
+  referrer  String?  // Document referrer host, for acquisition stats
+
+  // Null for signed-out visitors, which is the majority of traffic — the whole
+  // curriculum is usable without an account.
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // Random per-browser id. Makes "unique visitors" countable without storing
+  // anything that identifies a person.
+  visitorId String
+
+  meta      Json?
+
+  createdAt DateTime @default(now())
+
+  // Every dashboard query is "rows of type X in the last N days", "rows in the
+  // last N days grouped by day", or "this user's activity" — one index each.
+  @@index([type, createdAt])
+  @@index([createdAt])
+  @@index([userId, createdAt])
+  @@index([visitorId, createdAt])
+  @@index([path, createdAt])
 }
