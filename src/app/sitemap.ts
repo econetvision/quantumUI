@@ -1,7 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { TRACK_CONFIGS } from '@/lib/track-mapping';
 import { TRACK0_LESSONS } from '@/lib/track0-lessons';
-import { getAllLessons } from '@/lib/lesson-loader';
 import { absoluteUrl } from '@/lib/site';
 
 /**
@@ -40,16 +38,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // only part of the curriculum that needs no account at all. It ranks
     // alongside /tracks rather than below it.
     { path: '/learn/track-0', priority: 0.9, changeFrequency: 'weekly' },
-    { path: '/tracks', priority: 0.9, changeFrequency: 'weekly' },
-    { path: '/labs', priority: 0.9, changeFrequency: 'weekly' },
-    { path: '/algorithms', priority: 0.8, changeFrequency: 'monthly' },
-    { path: '/playground', priority: 0.8, changeFrequency: 'monthly' },
     { path: '/visuals', priority: 0.7, changeFrequency: 'monthly' },
-    { path: '/exam', priority: 0.8, changeFrequency: 'monthly' },
-    { path: '/curriculum', priority: 0.7, changeFrequency: 'monthly' },
-    { path: '/projects', priority: 0.6, changeFrequency: 'monthly' },
     { path: '/upgrade', priority: 0.4, changeFrequency: 'yearly' },
   ];
+
+  /*
+   * /tracks, /labs, /algorithms, /playground, /exam, /curriculum and /projects
+   * used to be listed here and are not any more, because they now require an
+   * account. A crawler following them receives a 307 to /login, so they could
+   * never be indexed — 94 URLs of the previous sitemap were unreachable in
+   * exactly that way, and submitting URLs that answer with a redirect is worse
+   * than omitting them.
+   *
+   * What remains is what a signed-out visitor can actually read: the home page,
+   * the whole of Track 0, and the visuals.
+   */
 
   const entries: MetadataRoute.Sitemap = topLevel.map((page) => ({
     url: absoluteUrl(page.path),
@@ -69,28 +72,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.7,
     });
-  }
-
-  for (const track of TRACK_CONFIGS) {
-    entries.push({
-      url: absoluteUrl(`/tracks/${track.slug}`),
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    });
-
-    // Lesson pages come from the JSON content files. A track whose lessons are
-    // still just an outline has nothing worth crawling at the lesson level, and
-    // `getAllLessons` returns an empty array for it — so those simply do not
-    // appear rather than becoming thin-content URLs in the index.
-    for (const lesson of getAllLessons(track.slug)) {
-      entries.push({
-        url: absoluteUrl(`/tracks/${track.slug}/lessons/${lesson.id}`),
-        lastModified,
-        changeFrequency: 'monthly',
-        priority: 0.6,
-      });
-    }
   }
 
   return entries;

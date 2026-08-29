@@ -26,12 +26,12 @@ const TRACKS = [
 const LAB_TOPICS = [
   'quantum-fundamentals',
   'quantum-gates',
-  'qiskit-sdk',
+  'qiskit-sdk-deep-dive',
   'cirq-sdk',
   'quantum-entanglement',
   'quantum-algorithms',
-  'quantum-cryptography',
-  'error-correction',
+  'quantum-cryptography-qkd',
+  'quantum-error-correction',
 ];
 
 const STATUS_STYLES: Record<DemoAssignment['status'], string> = {

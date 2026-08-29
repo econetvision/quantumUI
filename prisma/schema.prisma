@@ -83,6 +83,7 @@ model User {
   // Relations
   sessions     Session[]
   progress     UserProgress[]
+  lessonsDone  LessonCompletion[]
   labAttempts  LabAttempt[]
   examAttempts ExamAttempt[]
   achievements UserAchievement[]
@@ -295,6 +296,34 @@ model ExamAttempt {
 // =====================================================
 // PROGRESS TRACKING
 // =====================================================
+
+// One row per lesson a learner has finished.
+//
+// Separate from UserProgress, which counts labs and is keyed on the Track table
+// by integer id. Lessons live in JSON content files rather than the database
+// and are addressed by track *slug*, so joining them to a Track row would mean
+// keeping two sources of truth for the same list in step. This table records
+// the slug directly, which is what the lab gate actually asks about.
+model LessonCompletion {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Track slug as used by src/data/lessons/<slug>.json and TRACK_CONFIGS.
+  trackSlug String
+  // Lesson id within that file. Not a foreign key: lesson content ships with
+  // the build, so a row can outlive a lesson being renumbered — the gate counts
+  // distinct completions against the current lesson list and simply ignores
+  // ids that no longer exist.
+  lessonId  Int
+
+  completedAt DateTime @default(now())
+
+  // A lesson can only be completed once. The unlock check counts rows, so a
+  // duplicate would let somebody unlock labs by reopening one lesson.
+  @@unique([userId, trackSlug, lessonId])
+  @@index([userId, trackSlug])
+}
 
 model UserProgress {
   id      Int    @id @default(autoincrement())

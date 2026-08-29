@@ -86,7 +86,7 @@ export default function OpenGraphImage() {
             }}
           >
             12 guided tracks, hands-on labs, and a playground that executes real
-            circuits — free, no registration required.
+            circuits. Start free with Track 0.
           </div>
         </div>
 
