@@ -118,7 +118,7 @@
       "content": "<h1 class=\"text-3xl font-mono font-bold text-quantum-accent mb-6\">Rotation Gates: Rx, Ry, Rz</h1><div class=\"border-l-4 border-quantum-accent bg-quantum-accent/5 p-4 my-6\"><p class=\"text-content font-bold mb-2\">💡 The Intuition</p><p class=\"text-content-muted\">Rotation gates let you move to ANY point on the Bloch sphere. They are parameterized, meaning you provide an angle θ to define how far to rotate.</p></div><h3 class=\"text-xl font-mono font-bold text-content mt-6 mb-3\">Parameterized Matrices</h3><div class=\"bg-quantum-bg-tertiary p-4 rounded-lg mb-6\"><p class=\"text-quantum-purple font-mono\">Ry(θ) = [[cos(θ/2), -sin(θ/2)], [sin(θ/2), cos(θ/2)]]</p></div><p class=\"text-content-muted\">By combining rotations around different axes (Euler angles), we can reach any arbitrary single-qubit state from |0⟩.</p>",
       "images": [
         {
-          "src": "/images/lesson-images/quantum-gates/rotations.png",
+          "src": "/images/lesson-images/quantum-gates/rotations.jpg",
           "alt": "Rotations on Bloch Sphere",
           "caption": "Visualizing arbitrary rotations using angles."
         }

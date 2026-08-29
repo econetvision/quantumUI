@@ -3,7 +3,7 @@
   "tracks": {
     "quantum-fundamentals": [
       {
-        "src": "/images/lesson-images/quantum-fundamentals/bit-vs-qubit.png",
+        "src": "/images/lesson-images/quantum-fundamentals/bit-vs-qubit.svg",
         "alt": "A classical bit showing only 0 or 1 beside a qubit on a Bloch sphere holding both at once",
         "caption": "A bit is one of two values. A qubit is a combination of both until measured."
       },
@@ -18,7 +18,7 @@
         "caption": "Amplitudes add and cancel. Interference is what separates quantum from merely random."
       },
       {
-        "src": "/images/lesson-images/quantum-fundamentals/amplitude-to-probability.png",
+        "src": "/images/lesson-images/quantum-fundamentals/amplitude-to-probability.svg",
         "alt": "A probability amplitude being squared to give a measurement probability, with bar charts",
         "caption": "Born's rule: probability is the square of the amplitude — which is why amplitudes may be negative."
       },
@@ -52,7 +52,7 @@
         "caption": "CNOT applied to a superposed control does not pick a branch — it correlates both."
       },
       {
-        "src": "/images/lesson-images/quantum-entanglement/bell-states-circuits.png",
+        "src": "/images/lesson-images/quantum-entanglement/bell-states-circuits.svg",
         "alt": "The four Bell states in Dirac notation with the circuit preparing each",
         "caption": "All four Bell states are one Hadamard and one CNOT, differing only in the input."
       },

@@ -130,8 +130,11 @@ function LoginForm() {
 
         <div className="mt-6 space-y-2 text-center text-sm">
           <p>
-            <Link href="/tracks" className="text-accent hover:underline">
-              Browse the curriculum without an account →
+            {/* Must point at a route the proxy does NOT guard: /tracks is
+                sign-in-only, so linking there bounced straight back to this
+                page. Track 0 is the content that genuinely needs no account. */}
+            <Link href="/learn/track-0" className="text-accent hover:underline">
+              Browse Track 0 without an account →
             </Link>
           </p>
           <p className="text-content-subtle">

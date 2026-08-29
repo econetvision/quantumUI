@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { completeQuestion, isQuestionCompleted, recordActivity, XP_REWARDS } from '@/lib/streak';
+import { extractPromptImages } from '@/lib/prompt-images';
 import { BackendPicker } from '@/components/quantum/BackendPicker';
 import { trackEvent } from '@/lib/analytics-client';
 
@@ -400,9 +401,31 @@ export default function LabShell() {
                 </span>
               </div>
               <h3 className="font-mono font-bold text-content">{selected.title}</h3>
-              <pre className="whitespace-pre-wrap text-sm text-content-muted bg-surface-sunken/40 p-3 rounded-lg border border-quantum-accent/10 max-h-48 overflow-y-auto">
-                {selected.prompt}
-              </pre>
+              {(() => {
+                // Prompts can carry an <img> tag naming a diagram the task
+                // refers to; shown as an image rather than literal markup.
+                const parts = extractPromptImages(selected.prompt);
+                return (
+                  <>
+                    <pre className="whitespace-pre-wrap text-sm text-content-muted bg-surface-sunken/40 p-3 rounded-lg border border-quantum-accent/10 max-h-48 overflow-y-auto">
+                      {parts.text}
+                    </pre>
+                    {parts.images.map((src) => (
+                      // White plate: these are black-line figures from the
+                      // notebooks and vanish on the dark surface without it.
+                      <div key={src} className="rounded-lg bg-white p-3">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={src}
+                          alt="Diagram referenced by this task"
+                          loading="lazy"
+                          className="mx-auto max-h-56 w-auto"
+                        />
+                      </div>
+                    ))}
+                  </>
+                );
+              })()}
               <p className="text-xs text-content-subtle font-mono">Source: {selected.source}</p>
 
               <div className="flex flex-wrap gap-2">

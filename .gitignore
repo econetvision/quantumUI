@@ -54,3 +54,4 @@ quantum-executor/qcloud.env
 # Vendored QWorld content is committed (see content/qworld/SOURCES.md);
 # only the notebook checkpoint noise is ignored.
 .ipynb_checkpoints/
+.playwright-mcp/
