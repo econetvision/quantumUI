@@ -21,7 +21,8 @@ interface LabQuestion {
   /** Prose answer for proof/discussion tasks; never loaded into the editor. */
   workedSolution?: string;
   hint?: string;
-  source: string;
+  /** QWorld notebook this was harvested from; absent for questions authored here. */
+  source?: string;
   difficulty: 'easy' | 'medium' | 'complex';
 }
 
@@ -426,7 +427,9 @@ export default function LabShell() {
                   </>
                 );
               })()}
-              <p className="text-xs text-content-subtle font-mono">Source: {selected.source}</p>
+              {selected.source && (
+                <p className="text-xs text-content-subtle font-mono">Source: {selected.source}</p>
+              )}
 
               <div className="flex flex-wrap gap-2">
                 {selected.starterCode && (
