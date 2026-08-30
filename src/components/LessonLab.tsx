@@ -13,7 +13,8 @@ interface LabQuestion {
   prompt: string;
   starterCode: string;
   solution: string;
-  source: string;
+  /** QWorld notebook this was harvested from; absent for questions authored here. */
+  source?: string;
   difficulty: 'easy' | 'medium' | 'complex';
 }
 
@@ -220,9 +221,18 @@ export default function LessonLab({
           <div className="bg-surface-sunken border border-quantum-accent/20 rounded-xl p-5">
             <div className="flex items-center justify-between gap-2 mb-3">
               <p className="font-mono text-sm text-blue-300 font-bold">📋 {active.title}</p>
-              <span className="text-[10px] text-content-subtle font-mono truncate" title={active.source}>
-                {active.source.split('/').pop()}
-              </span>
+              {/* `source` names the QWorld notebook a question was harvested from,
+                  and 25 of the 143 have none because they were written for this
+                  platform rather than extracted. Calling .split() on that
+                  undefined threw during render, which the error boundary caught
+                  as "Something went wrong" — so three whole tracks could not open
+                  a single lesson. Rendered only when there is something to
+                  attribute. */}
+              {active.source && (
+                <span className="text-[10px] text-content-subtle font-mono truncate" title={active.source}>
+                  {active.source.split('/').pop()}
+                </span>
+              )}
             </div>
             <p className="text-content-muted text-sm whitespace-pre-wrap leading-relaxed max-h-56 overflow-y-auto">
               {cleaned?.text}
