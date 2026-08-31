@@ -99,6 +99,8 @@ model User {
   achievements UserAchievement[]
   events       AnalyticsEvent[]
   certificates Certificate[]
+  threads      CommunityThread[]
+  replies      CommunityReply[]
 
   @@index([email])
   // The roster and the "new sign-ups this week" tile both sort/filter on
@@ -557,4 +559,47 @@ model AnalyticsEvent {
   @@index([userId, createdAt])
   @@index([visitorId, createdAt])
   @@index([path, createdAt])
+}
+
+// =====================================================
+// COMMUNITY Q&A
+// =====================================================
+
+// A learner's question to the community. Reading is public; posting requires
+// an account, so every thread has a real author. Threaded Q&A rather than live
+// chat, deliberately: the app deploys to serverless (Vercel) where a websocket
+// has nowhere to live, and a question board is also the shape that helps the
+// next learner who searches.
+model CommunityThread {
+  id    String @id @default(cuid())
+  title String
+  body  String
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  replies CommunityReply[]
+
+  // The board lists newest-first; a profile lists one author's questions.
+  @@index([createdAt])
+  @@index([authorId])
+}
+
+model CommunityReply {
+  id   String @id @default(cuid())
+  body String
+
+  threadId String
+  thread   CommunityThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  // A thread renders its replies oldest-first, in one indexed scan.
+  @@index([threadId, createdAt])
 }

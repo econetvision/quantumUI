@@ -5,6 +5,7 @@ import { completeQuestion, isQuestionCompleted, recordActivity, XP_REWARDS } fro
 import { extractPromptImages } from '@/lib/prompt-images';
 import { BackendPicker } from '@/components/quantum/BackendPicker';
 import { trackEvent } from '@/lib/analytics-client';
+import { CelebrationBurst } from '@/components/learning/CelebrationBurst';
 
 interface TerminalLine {
   kind: 'input' | 'output' | 'error' | 'info';
@@ -79,6 +80,7 @@ export default function LabShell() {
   const [showSolution, setShowSolution] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
+  const [celebration, setCelebration] = useState(0);
 
   const terminalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -224,8 +226,10 @@ export default function LabShell() {
   };
 
   const markComplete = (q: LabQuestion) => {
+    if (completed[q.id]) return;
     completeQuestion(q.id, XP_REWARDS[q.difficulty]);
     setCompleted((prev) => ({ ...prev, [q.id]: true }));
+    setCelebration((n) => n + 1);
   };
 
   return (
@@ -291,6 +295,22 @@ export default function LabShell() {
               autoFocus
             />
           </div>
+        </div>
+
+        {/* Run bar — Enter already runs, but an explicit button is the
+            affordance a first-time (or eight-year-old) visitor actually
+            finds. Sits outside the scroll area so it can never scroll away. */}
+        <div className="flex items-center justify-between gap-3 border-t border-quantum-accent/10 bg-quantum-bg-secondary px-4 py-3">
+          <p className="hidden font-mono text-xs text-content-subtle sm:block">
+            Enter runs · Shift+Enter for a new line
+          </p>
+          <button
+            onClick={() => runCode(input)}
+            disabled={busy || !input.trim()}
+            className="quantum-btn ml-auto !min-h-[2.5rem] px-6 text-xs disabled:opacity-50"
+          >
+            {busy ? '⏳ Running…' : '▶ Run'}
+          </button>
         </div>
       </div>
 
@@ -456,13 +476,16 @@ export default function LabShell() {
                     {showSolution ? 'Hide solution' : 'Show solution'}
                   </button>
                 )}
-                <button
-                  onClick={() => markComplete(selected)}
-                  disabled={completed[selected.id]}
-                  className="text-xs px-3 py-1.5 rounded-lg border border-green-500/30 text-green-400 hover:bg-green-500/10 transition-colors font-mono disabled:opacity-50"
-                >
-                  {completed[selected.id] ? '✓ Completed' : 'Mark complete'}
-                </button>
+                <span className="relative inline-flex">
+                  <button
+                    onClick={() => markComplete(selected)}
+                    disabled={completed[selected.id]}
+                    className="text-xs px-3 py-1.5 rounded-lg border border-green-500/30 text-green-400 hover:bg-green-500/10 transition-colors font-mono disabled:opacity-50"
+                  >
+                    {completed[selected.id] ? '✓ Completed' : 'Mark complete'}
+                  </button>
+                  <CelebrationBurst burstKey={celebration} />
+                </span>
               </div>
 
               {showHint && selected.hint && (

@@ -51,6 +51,11 @@ export const NAV_LINKS: NavLink[] = [
     label: 'Exam Prep',
     description: 'Timed certification practice',
   },
+  {
+    href: '/community',
+    label: 'Community',
+    description: 'Ask questions, help other learners',
+  },
 ];
 
 export const SECONDARY_LINKS: NavLink[] = [

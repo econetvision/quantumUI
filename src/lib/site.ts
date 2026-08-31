@@ -50,8 +50,12 @@ export const SITE_TAGLINE = 'Learn Quantum Computing Interactively';
 /**
  * The studio behind the site. Shown as the byline under the wordmark and named
  * as the issuer on completion certificates.
+ *
+ * Spelled to match the production domain, sroobservotary.com — the domain is
+ * registered and cannot drift, so it is the authority. A previous value read
+ * "Sroorbitary Labs", which contradicted the byline's own website.
  */
-export const ORG_NAME = 'Sroorbitary Labs';
+export const ORG_NAME = 'Sroobservotary Labs';
 export const SITE_BYLINE = `by ${ORG_NAME}`;
 
 export const SITE_DESCRIPTION =

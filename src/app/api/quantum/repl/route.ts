@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { quantumExecutor, toErrorResponse } from '@/lib/quantum-client';
 import { requireSession } from '@/lib/api-auth';
+import { enforceRateLimit, RATE_LIMITS } from '@/lib/rate-limit';
 
 interface ReplBody {
   sessionId?: string;
@@ -29,6 +30,27 @@ export async function POST(request: NextRequest) {
       { success: false, error: 'No sessionId provided', output: '' },
       { status: 400 },
     );
+  }
+
+  // Session resets carry no code and cost the executor nothing, so only real
+  // runs draw on the budget — shared with /execute under one endpoint key,
+  // because both feed the same Python service.
+  if (body.code?.trim()) {
+    const budget = await enforceRateLimit({
+      subject: gate.user.id,
+      endpoint: 'quantum-run',
+      ...RATE_LIMITS.codeRun,
+    });
+    if (!budget.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `You're running code very fast — take a breath. Try again in ${budget.retryAfterSeconds}s.`,
+          output: '',
+        },
+        { status: 429, headers: { 'Retry-After': String(budget.retryAfterSeconds) } },
+      );
+    }
   }
 
   try {

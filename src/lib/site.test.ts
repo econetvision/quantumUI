@@ -1,5 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { SUPPORT_EMAIL, supportMailto } from '@/lib/site';
+import { ORG_NAME, SITE_BYLINE, SUPPORT_EMAIL, supportMailto } from '@/lib/site';
+
+/**
+ * The byline renders on every page, on certificates, and in outbound email.
+ * It once said "Sroorbitary Labs" while the site lived at sroobservotary.com —
+ * two different words. The registered domain is the spelling that cannot
+ * change, so the name is asserted against it.
+ */
+describe('organisation name', () => {
+  it('matches the production domain spelling', () => {
+    expect(ORG_NAME).toBe('Sroobservotary Labs');
+    expect(SITE_BYLINE).toBe('by Sroobservotary Labs');
+  });
+});
 
 /**
  * The support address is the only route a stuck user has back to a human, and

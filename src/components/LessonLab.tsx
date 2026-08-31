@@ -5,6 +5,8 @@ import Editor from '@monaco-editor/react';
 import { completeQuestion, getStreakData, recordActivity, XP_REWARDS } from '@/lib/streak';
 import { trackEvent } from '@/lib/analytics-client';
 import { extractPromptImages } from '@/lib/prompt-images';
+import { CelebrationBurst } from '@/components/learning/CelebrationBurst';
+import { MotionSafe } from '@/components/learning/MotionSafe';
 
 interface LabQuestion {
   id: string;
@@ -81,6 +83,7 @@ export default function LessonLab({
   const [showSolution, setShowSolution] = useState(false);
   const [completed, setCompleted] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [celebration, setCelebration] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -147,6 +150,7 @@ export default function LessonLab({
     if (!active || completed.includes(active.id)) return;
     completeQuestion(active.id, XP_REWARDS[active.difficulty] ?? XP_REWARDS.easy);
     setCompleted(getStreakData().completedQuestions);
+    setCelebration((n) => n + 1);
   };
 
   if (!loaded || questions.length === 0) return null;
@@ -267,7 +271,16 @@ export default function LessonLab({
           {/* Actions */}
           <div className="flex flex-wrap gap-2">
             <button onClick={handleRun} disabled={running} className="quantum-btn text-xs px-4 py-2 disabled:opacity-50">
-              {running ? '⏳ Running…' : '▶ Run on simulator'}
+              {running ? (
+                <>
+                  {/* A spinning atom beats a static hourglass for the Track 0
+                      crowd; the global reduced-motion CSS stills it. */}
+                  <span className="mr-1.5 inline-block animate-spin" aria-hidden="true">⚛️</span>
+                  Running…
+                </>
+              ) : (
+                '▶ Run on simulator'
+              )}
             </button>
             {active.solution && (
               <button
@@ -277,19 +290,22 @@ export default function LessonLab({
                 {showSolution ? 'Hide solution' : '💡 Show solution'}
               </button>
             )}
-            <button
-              onClick={handleComplete}
-              disabled={completed.includes(active.id)}
-              className={`px-4 py-2 rounded-lg border text-xs font-mono transition-colors ${
-                completed.includes(active.id)
-                  ? 'border-green-500/40 text-green-400 bg-green-500/10 cursor-default'
-                  : 'border-blue-500/40 text-blue-400 hover:bg-blue-500/10'
-              }`}
-            >
-              {completed.includes(active.id)
-                ? '✓ Completed'
-                : `✓ Mark complete (+${XP_REWARDS[active.difficulty] ?? XP_REWARDS.easy} XP)`}
-            </button>
+            <span className="relative inline-flex">
+              <button
+                onClick={handleComplete}
+                disabled={completed.includes(active.id)}
+                className={`px-4 py-2 rounded-lg border text-xs font-mono transition-colors ${
+                  completed.includes(active.id)
+                    ? 'border-green-500/40 text-green-400 bg-green-500/10 cursor-default'
+                    : 'border-blue-500/40 text-blue-400 hover:bg-blue-500/10'
+                }`}
+              >
+                {completed.includes(active.id)
+                  ? '✓ Completed'
+                  : `✓ Mark complete (+${XP_REWARDS[active.difficulty] ?? XP_REWARDS.easy} XP)`}
+              </button>
+              <CelebrationBurst burstKey={celebration} />
+            </span>
           </div>
 
           {/* Solution */}
@@ -310,9 +326,13 @@ export default function LessonLab({
             </div>
           )}
 
-          {/* Result */}
+          {/* Result — eases in so the outcome reads as an arrival, not a
+              layout jump; reduced motion lands it instantly via MotionSafe. */}
           {result && (
-            <div
+            <MotionSafe
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
               className={`rounded-lg border p-4 ${
                 result.success ? 'border-green-500/30 bg-green-500/5' : 'border-red-500/30 bg-red-500/5'
               }`}
@@ -354,7 +374,7 @@ export default function LessonLab({
                     ))}
                 </div>
               )}
-            </div>
+            </MotionSafe>
           )}
         </div>
       )}

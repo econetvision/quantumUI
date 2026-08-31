@@ -39,6 +39,8 @@ export const TRACKED_EVENTS = [
   'track_open',
   'search',
   'cta_click',
+  'community_ask',
+  'community_reply',
 ] as const;
 
 export type TrackedEvent = (typeof TRACKED_EVENTS)[number];
@@ -74,6 +76,8 @@ export const EVENT_LABELS: Record<TrackedEvent, string> = {
   track_open: 'Tracks opened',
   search: 'Searches',
   cta_click: 'CTA clicks',
+  community_ask: 'Questions asked',
+  community_reply: 'Answers posted',
 };
 
 export function eventLabel(type: string): string {

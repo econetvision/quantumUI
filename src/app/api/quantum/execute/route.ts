@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { quantumExecutor, toErrorResponse } from '@/lib/quantum-client';
 import { requireSession } from '@/lib/api-auth';
+import { enforceRateLimit, RATE_LIMITS } from '@/lib/rate-limit';
 
 export type {
   ExecutionResult,
@@ -27,6 +28,24 @@ export async function POST(request: NextRequest) {
   // The executor runs submitted Python. Anonymous callers do not get to.
   const gate = await requireSession();
   if (gate.response) return gate.response;
+
+  // The sandbox bounds each run; this bounds how many runs one account gets,
+  // so a submit loop cannot starve the executor for every other learner.
+  const budget = await enforceRateLimit({
+    subject: gate.user.id,
+    endpoint: 'quantum-run',
+    ...RATE_LIMITS.codeRun,
+  });
+  if (!budget.allowed) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: `You're running code very fast — take a breath. Try again in ${budget.retryAfterSeconds}s.`,
+        output: '',
+      },
+      { status: 429, headers: { 'Retry-After': String(budget.retryAfterSeconds) } },
+    );
+  }
 
   let body: ExecuteBody;
   try {
