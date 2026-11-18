@@ -74,6 +74,14 @@ export default async function PhysicsFoundationsPage({ searchParams }: Props) {
         description={`${current.audience} Every figure is plotted from the physics it illustrates, so the numbers in the walkthrough and the shape of the curve come from the same calculation.`}
       />
 
+      <p className="mt-4 text-sm text-content-muted">
+        These questions assess the{' '}
+        <Link href="/learn/foundations" className="text-accent hover:underline">
+          Quantum Physics Foundations syllabus
+        </Link>
+        ; each lesson there lists the questions that belong to it.
+      </p>
+
       <nav aria-label="Level" className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {LEVELS.map((l) => {
           const active = l.level === level;

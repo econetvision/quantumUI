@@ -92,7 +92,7 @@ export default function HomePage() {
           </div>
 
           <div className="mx-auto mt-12 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-            <StatTile value="100" label="Physics foundations" href="/learn/physics-foundations" />
+            <StatTile value="106" label="Foundation topics" href="/learn/foundations" />
             <StatTile value="12" label="Learning tracks" href="/tracks" />
             <StatTile value="143" label="Lab questions" href="/labs" />
             <StatTile value="12" label="SDK algorithms" href="/algorithms" />

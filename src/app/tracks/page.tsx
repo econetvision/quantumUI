@@ -112,7 +112,7 @@ export default function TracksPage() {
             levels — which is why it is not a track, and why someone who found
             the twelve tracks too steep is pointed at it from here. */}
         <Card
-          href="/learn/physics-foundations"
+          href="/learn/foundations"
           className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center"
         >
           <span
@@ -124,15 +124,16 @@ export default function TracksPage() {
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <Badge tone="neutral">no account needed</Badge>
-              <Badge tone="neutral">4 levels · 100 questions</Badge>
+              <Badge tone="neutral">106 topics · 100 questions</Badge>
             </div>
             <h2 className="mt-1.5 font-mono text-base font-bold leading-tight">
               Quantum Physics Foundations
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-content-muted">
-              The physics under the computing — scientific notation, waves,
-              photons, Bohr levels, quantum numbers — as a hundred questions
-              with an animated figure and a worked explanation on each.
+              The physics under the computing, as the syllabus prints it:
+              nine modules from scientific notation to quantum advantage, each
+              topic read three ways, with figures computed from the physics
+              and a hundred animated questions.
             </p>
           </div>
           <span className="shrink-0 font-mono text-sm text-accent sm:self-end">

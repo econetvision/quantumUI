@@ -64,9 +64,9 @@ export const SECONDARY_LINKS: NavLink[] = [
   // screen); it is reached from the home hero, the Start Here index and the
   // Tracks page instead, and from here in the drawer.
   {
-    href: '/learn/physics-foundations',
-    label: 'Foundations quiz',
-    description: '100 animated physics questions, four levels',
+    href: '/learn/foundations',
+    label: 'Foundations',
+    description: 'The physics syllabus — 106 topics, three readings each',
   },
   { href: '/curriculum', label: 'Curriculum', description: 'Full syllabus map' },
   { href: '/projects', label: 'Projects', description: 'Build something real' },

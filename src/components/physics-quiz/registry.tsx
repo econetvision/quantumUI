@@ -42,6 +42,14 @@ import {
   UnitCircle,
   WaveSpeed,
 } from './animations/Foundations';
+import {
+  ElectricField,
+  EmSpectrum,
+  EnergyConservation,
+  Induction,
+  NewtonCart,
+  ScaleLadder,
+} from './animations/Classical';
 
 /**
  * Animation id to component, in two states, fed by the question's params.
@@ -214,11 +222,21 @@ export const ANIMATIONS: Record<AnimationId, Entry> = {
     ),
   },
   'electron-hole-pairs': { question: (p) => <ElectronHolePairs cooling={bool(p, 'cooling')} /> },
+  'newton-cart': { question: (p) => <NewtonCart mass={num(p, 'mass')} force={num(p, 'force')} /> },
+  'energy-conservation': { question: () => <EnergyConservation /> },
+  'electric-field': { question: () => <ElectricField /> },
+  'induction': { question: () => <Induction /> },
+  'em-spectrum': { question: () => <EmSpectrum /> },
+  'scale-ladder': { question: () => <ScaleLadder /> },
 };
+
+/** A figure by id and params — what a lesson embeds. */
+export function figureForSpec(animation: AnimationId, params: FigureParams = {}, revealed = false): ReactNode {
+  const entry = ANIMATIONS[animation];
+  return revealed ? (entry.answer ?? entry.question)(params) : entry.question(params);
+}
 
 /** The figure for a question, in its pre- or post-answer state. */
 export function figureFor(question: PhysicsMCQ, revealed: boolean): ReactNode {
-  const entry = ANIMATIONS[question.animation];
-  const params = question.params ?? {};
-  return revealed ? (entry.answer ?? entry.question)(params) : entry.question(params);
+  return figureForSpec(question.animation, question.params ?? {}, revealed);
 }
