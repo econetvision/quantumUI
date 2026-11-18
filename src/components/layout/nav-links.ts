@@ -59,6 +59,15 @@ export const NAV_LINKS: NavLink[] = [
 ];
 
 export const SECONDARY_LINKS: NavLink[] = [
+  // The second no-account door, after Track 0. It is not in NAV_LINKS because
+  // a ninth primary item overflows the header below 1280px (Sign in goes off
+  // screen); it is reached from the home hero, the Start Here index and the
+  // Tracks page instead, and from here in the drawer.
+  {
+    href: '/learn/physics-foundations',
+    label: 'Foundations quiz',
+    description: '100 animated physics questions, four levels',
+  },
   { href: '/curriculum', label: 'Curriculum', description: 'Full syllabus map' },
   { href: '/projects', label: 'Projects', description: 'Build something real' },
 ];

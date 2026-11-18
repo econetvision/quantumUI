@@ -106,6 +106,39 @@ export default function TracksPage() {
             Start &rarr;
           </span>
         </Card>
+
+        {/* The foundations quiz is the other door that needs no account. It
+            is physics rather than quantum computing — waves, photons, Bohr
+            levels — which is why it is not a track, and why someone who found
+            the twelve tracks too steep is pointed at it from here. */}
+        <Card
+          href="/learn/physics-foundations"
+          className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center"
+        >
+          <span
+            aria-hidden="true"
+            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-line bg-surface-overlay text-3xl"
+          >
+            📐
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge tone="neutral">no account needed</Badge>
+              <Badge tone="neutral">4 levels · 100 questions</Badge>
+            </div>
+            <h2 className="mt-1.5 font-mono text-base font-bold leading-tight">
+              Quantum Physics Foundations
+            </h2>
+            <p className="mt-1.5 text-sm leading-relaxed text-content-muted">
+              The physics under the computing — scientific notation, waves,
+              photons, Bohr levels, quantum numbers — as a hundred questions
+              with an animated figure and a worked explanation on each.
+            </p>
+          </div>
+          <span className="shrink-0 font-mono text-sm text-accent sm:self-end">
+            Try a level &rarr;
+          </span>
+        </Card>
       </div>
 
       <div className="mt-12">
