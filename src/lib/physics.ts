@@ -184,5 +184,97 @@ export function sci(value: number, figures = 2): string {
     .split('')
     .map((d) => sup[Number(d) + 1])
     .join('');
-  return `${mantissa.toFixed(figures)} × 10${exp < 0 ? sup[0] : ''}${digits}`;
+  // A hair of slack so an exact half (1.105 → 1.11) rounds the way the paper
+  // rounds it, rather than the way binary floating point happens to land.
+  return `${(mantissa + 1e-12).toFixed(figures)} × 10${exp < 0 ? sup[0] : ''}${digits}`;
 }
+
+// ---------------------------------------------------------------------------
+// Added for Levels 1, 3 and 4 — Q1–25, Q51–100
+// ---------------------------------------------------------------------------
+
+/** hc in eV·nm, the form the paper uses for photon ↔ wavelength arithmetic. */
+export const HC_EV_NM = 1240;
+
+/** Photon energy in eV from wavelength in nm: E = 1240/λ. */
+export const photonEnergyEv = (wavelengthNm: number): number => HC_EV_NM / wavelengthNm;
+
+/** Wavelength in nm from an energy gap in eV: λ = 1240/E. */
+export const wavelengthNmFromEv = (energyEv: number): number => HC_EV_NM / energyEv;
+
+/** Threshold wavelength for a work function in eV. */
+export const thresholdWavelengthNm = (workFunctionEv: number): number => HC_EV_NM / workFunctionEv;
+
+/**
+ * Stopping potential in volts for light of a given wavelength on a metal of a
+ * given work function. Returns 0 when there is no emission, for the same reason
+ * maxKineticEnergy clamps: a negative stopping potential is not a thing.
+ */
+export function stoppingPotential(wavelengthNm: number, workFunctionEv: number): number {
+  return Math.max(0, photonEnergyEv(wavelengthNm) - workFunctionEv);
+}
+
+/** v = fλ. */
+export const waveSpeed = (frequencyHz: number, wavelengthM: number): number => frequencyHz * wavelengthM;
+
+/** λ = v/f. */
+export const wavelengthFromSpeed = (speed: number, frequencyHz: number): number => speed / frequencyHz;
+
+/** Phase difference between two points a fraction of a wavelength apart. */
+export const phaseForSeparation = (separationM: number, wavelengthM: number): number =>
+  (2 * Math.PI * separationM) / wavelengthM;
+
+/** |a + bi|. */
+export const complexMagnitude = (re: number, im: number): number => Math.hypot(re, im);
+
+/** sin of an angle in degrees, exact at the cardinal points. */
+export function sinDeg(degrees: number): number {
+  const v = Math.sin((degrees * Math.PI) / 180);
+  return Math.abs(v) < 1e-12 ? 0 : Math.abs(Math.abs(v) - 1) < 1e-12 ? Math.sign(v) : v;
+}
+
+/**
+ * Sum of two complex amplitudes and the probability that follows, against the
+ * probability you would get by adding the two squared magnitudes instead.
+ *
+ * The pair is returned together because that comparison is the whole content
+ * of Q66, Q80 and Q91: indistinguishable paths add as amplitudes, which can
+ * cancel to nothing; distinguishable paths add as probabilities, which cannot.
+ */
+export function combineAmplitudes(
+  a: { re: number; im: number },
+  b: { re: number; im: number },
+) {
+  const sumRe = a.re + b.re;
+  const sumIm = a.im + b.im;
+  return {
+    indistinguishable: sumRe * sumRe + sumIm * sumIm,
+    distinguishable: a.re * a.re + a.im * a.im + (b.re * b.re + b.im * b.im),
+  };
+}
+
+/** Number of subshells in shell n: ℓ = 0 … n−1. */
+export const subshellCount = (n: number): number => n;
+
+/** Orbitals in a subshell: 2ℓ + 1. */
+export const orbitalCount = (l: number): number => 2 * l + 1;
+
+/** Electrons a subshell holds: 2(2ℓ + 1). */
+export const subshellCapacity = (l: number): number => 2 * orbitalCount(l);
+
+/** Electrons a shell holds: 2n². */
+export const shellCapacity = (n: number): number => 2 * n * n;
+
+/** Orbitals in a whole shell: Σ(2ℓ+1) = n². */
+export const shellOrbitals = (n: number): number => n * n;
+
+/** All allowed mℓ for a given ℓ. */
+export const magneticNumbers = (l: number): number[] =>
+  Array.from({ length: 2 * l + 1 }, (_, i) => i - l);
+
+/** Pauli-Z, for Q67: flips the sign of the second component. */
+export const PAULI_Z: [number, number, number, number] = [1, 0, 0, -1];
+export const PAULI_X: [number, number, number, number] = [0, 1, 1, 0];
+
+/** Factor by which y changes when x changes, for y ∝ x^k. */
+export const powerLawFactor = (xFrom: number, xTo: number, k: number): number => (xTo / xFrom) ** k;

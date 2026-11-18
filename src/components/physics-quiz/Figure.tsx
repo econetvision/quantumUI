@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useLearningMode } from '@/components/learning/LearningModeProvider';
 
 /**
@@ -91,4 +91,53 @@ export function Axes({
 /** Turn sampled points into an SVG path. */
 export function polyline(points: { x: number; y: number }[]): string {
   return points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' ');
+}
+
+/**
+ * Loops 0→1 forever; returns 1 when motion is off so a figure holds its final
+ * frame rather than its first. Derived, not set, for the reduced-motion case:
+ * writing state synchronously inside the effect would cascade a render.
+ */
+export function useLoop(periodMs: number, enabled: boolean): number {
+  const [raw, setRaw] = useState(0);
+  const t = enabled ? raw : 1;
+  useEffect(() => {
+    if (!enabled) return;
+    let frame = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      setRaw(((now - start) % periodMs) / periodMs);
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [periodMs, enabled]);
+  return t;
+}
+
+/** A single 0→1 run, for reveals. Returns 1 at once when motion is off. */
+export function useProgress(durationMs: number, enabled: boolean): number {
+  const [raw, setRaw] = useState(0);
+  const t = enabled ? raw : 1;
+  useEffect(() => {
+    if (!enabled) return;
+    let frame = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / durationMs);
+      setRaw(p);
+      if (p < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [durationMs, enabled]);
+  return t;
+}
+
+/** "π/2", "π", "2π", "3π/4" — the way the paper writes a phase. */
+export function piLabel(radians: number): string {
+  const q = radians / Math.PI;
+  const table: [number, string][] = [[0, '0'], [0.25, 'π/4'], [0.5, 'π/2'], [0.75, '3π/4'], [1, 'π'], [1.5, '3π/2'], [2, '2π']];
+  const hit = table.find(([v]) => Math.abs(v - q) < 1e-6);
+  return hit ? hit[1] : `${q.toFixed(2)}π`;
 }

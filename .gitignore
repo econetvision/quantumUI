@@ -55,3 +55,6 @@ quantum-executor/qcloud.env
 # only the notebook checkpoint noise is ignored.
 .ipynb_checkpoints/
 .playwright-mcp/
+
+# Claude Code per-developer settings (holds MCP API keys)
+.claude/settings.local.json
