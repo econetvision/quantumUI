@@ -48,7 +48,7 @@ export function QuestionCard({
 
       <p className="mt-2 text-base leading-relaxed text-content">{question.prompt}</p>
 
-      <div className="mt-4">{figureFor(question.animation, question.id, revealed)}</div>
+      <div className="mt-4">{figureFor(question, revealed)}</div>
 
       <ul className="mt-4 space-y-2">
         {question.options.map((opt, i) => {

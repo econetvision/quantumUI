@@ -1,4 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import type React from 'react';
+import { describe, expect, it, vi } from 'vitest';
+
+// Figures read the learner's reduced-motion preference through this provider.
+// Mocked so they render on the server here, holding their final frame.
+vi.mock('@/components/learning/LearningModeProvider', () => ({
+  useLearningMode: () => ({ reducedMotion: true }),
+}));
 import { PHYSICS_MCQS, getQuestion, questionsForLevel } from '@/lib/physics-mcq';
 
 /**
@@ -60,9 +67,19 @@ describe('physics MCQ bank', () => {
   it('looks questions up by id and by level', () => {
     expect(getQuestion(41)?.answer).toBe(0);
     expect(getQuestion(999)).toBeUndefined();
-    const level2 = questionsForLevel(2);
-    expect(level2.length).toBe(PHYSICS_MCQS.length);
-    expect(level2[0].id).toBeLessThan(level2[level2.length - 1].id);
+    for (const level of [1, 2, 3, 4]) {
+      const set = questionsForLevel(level);
+      expect(set.length, `level ${level}`).toBe(25);
+      expect(set[0].id).toBe((level - 1) * 25 + 1);
+      expect(set[24].id).toBe(level * 25);
+    }
+    expect(PHYSICS_MCQS.length).toBe(100);
+  });
+
+  it('keeps each level to its own slice of the paper', () => {
+    for (const q of PHYSICS_MCQS) {
+      expect(q.level, `Q${q.id}`).toBe(Math.ceil(q.id / 25));
+    }
   });
 });
 
@@ -99,6 +116,29 @@ describe('every question has a figure to draw', () => {
       const entry = ANIMATIONS[q.animation];
       if (q.animation === 'phase-difference') continue; // the sweep is its own reveal
       expect(entry.answer, `Q${q.id} has no annotated answer figure`).toBeDefined();
+    }
+  });
+});
+
+/**
+ * Every question's figure, rendered server-side in both states.
+ *
+ * Params are a loosely typed bag, so a misspelt key or a number where a list
+ * was expected compiles fine and only fails when the figure draws. Rendering
+ * all two hundred states here turns that into a test failure with the question
+ * number in the message.
+ */
+describe('every figure renders in both states', () => {
+  it('renders without throwing and names the figure for screen readers', async () => {
+    const { renderToStaticMarkup } = await import('react-dom/server');
+    const { figureFor } = await import('@/components/physics-quiz/registry');
+    for (const q of PHYSICS_MCQS) {
+      for (const revealed of [false, true]) {
+        const html = renderToStaticMarkup(figureFor(q, revealed) as React.ReactElement);
+        expect(html, `Q${q.id} ${revealed ? 'answer' : 'question'} state`).toContain('<svg');
+        expect(html, `Q${q.id} has no aria-label`).toMatch(/aria-label="[^"]{20,}"/);
+        expect(html, `Q${q.id} renders NaN`).not.toContain('NaN');
+      }
     }
   });
 });
