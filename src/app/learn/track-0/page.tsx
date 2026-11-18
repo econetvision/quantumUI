@@ -37,17 +37,17 @@ export default function Track0Index() {
           </li>
         ))}
       </ol>
-      <Link href="/learn/physics-foundations" className="mt-8 block">
+      <Link href="/learn/foundations" className="mt-8 block">
         <Card className="transition-colors hover:border-accent">
           <div className="flex items-start gap-4">
             <span aria-hidden="true" className="text-3xl">📐</span>
             <div className="min-w-0 flex-1">
               <p className="font-mono text-xs uppercase tracking-wider text-content-subtle">
-                Test yourself · no account needed
+                Next · no account needed
               </p>
-              <h2 className="mt-0.5 font-bold text-content">Quantum Physics Foundations quiz</h2>
+              <h2 className="mt-0.5 font-bold text-content">Quantum Physics Foundations</h2>
               <p className="mt-1 text-sm text-content-muted">
-                A hundred questions in four levels, each with an animated figure and a worked answer. Start at Level 1.
+                The syllabus behind the computing: 106 topics, each read three ways, with a hundred animated questions to check yourself.
               </p>
             </div>
             <span aria-hidden="true" className="text-accent">→</span>

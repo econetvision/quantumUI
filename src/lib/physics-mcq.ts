@@ -47,7 +47,14 @@ export type AnimationId =
   | 'amplitude-sum'
   | 'quantum-numbers'
   | 'shell-counting'
-  | 'electron-hole-pairs';
+  | 'electron-hole-pairs'
+  // Module 02 lesson figures (no question in the bank uses these yet)
+  | 'newton-cart'
+  | 'energy-conservation'
+  | 'electric-field'
+  | 'induction'
+  | 'em-spectrum'
+  | 'scale-ladder';
 
 /**
  * Per-question inputs to a figure: which wavelength, which matrix, which

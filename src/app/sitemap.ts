@@ -1,5 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { TRACK0_LESSONS } from '@/lib/track0-lessons';
+import { SYLLABUS, topicPath } from '@/lib/foundations-syllabus';
+import { hasLesson } from '@/lib/foundations-lessons';
 import { absoluteUrl } from '@/lib/site';
 
 /**
@@ -72,6 +74,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.7,
     });
+  }
+
+  // The foundations syllabus: the hub plus all 106 topic pages. A topic with
+  // a written lesson ranks like a Track 0 lesson; one that is questions-only
+  // or still being written is listed lower but listed, so the crawl matches
+  // the site's own index page.
+  entries.push({ url: absoluteUrl('/learn/foundations'), lastModified, changeFrequency: 'weekly', priority: 0.9 });
+  entries.push({ url: absoluteUrl('/learn/physics-foundations'), lastModified, changeFrequency: 'monthly', priority: 0.8 });
+  for (const m of SYLLABUS) {
+    for (const t of m.topics) {
+      entries.push({
+        url: absoluteUrl(topicPath(m.slug, t.slug)),
+        lastModified,
+        changeFrequency: 'monthly',
+        priority: hasLesson(t.id) ? 0.7 : 0.4,
+      });
+    }
   }
 
   return entries;
