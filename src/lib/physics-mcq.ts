@@ -54,7 +54,32 @@ export type AnimationId =
   | 'electric-field'
   | 'induction'
   | 'em-spectrum'
-  | 'scale-ladder';
+  | 'scale-ladder'
+  // Modules 03–06
+  | 'compton'
+  | 'electron-diffraction'
+  | 'bloch-sphere'
+  | 'measurement-collapse'
+  | 'wave-in-box'
+  | 'tunnelling'
+  | 'uncertainty'
+  | 'incompatible-observables'
+  | 'operator-action'
+  | 'time-evolution'
+  | 'hydrogen-orbital'
+  // Module 07
+  | 'stern-gerlach'
+  | 'two-qubit'
+  | 'bell-test'
+  | 'cloning-attempt'
+  // Modules 08–09
+  | 'circuit'
+  | 'classical-gates'
+  | 'period-finding'
+  | 'grover-scaling'
+  | 'hardware'
+  | 'decoherence'
+  | 'repetition-code';
 
 /**
  * Per-question inputs to a figure: which wavelength, which matrix, which

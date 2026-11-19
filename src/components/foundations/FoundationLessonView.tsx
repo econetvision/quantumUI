@@ -100,7 +100,7 @@ export function FoundationLessonView({
             Check yourself · {questions.length} question{questions.length === 1 ? '' : 's'}
           </h2>
           <p className="text-xs text-content-subtle">
-            From the Quantum Physics Foundations bank; each comes with a worked answer.
+            Each comes with an animated figure and a worked answer.
           </p>
           <QuizRunner questions={questions} />
         </section>

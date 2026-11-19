@@ -1,4 +1,5 @@
 import type { AnimationId, FigureParams } from '@/lib/physics-mcq';
+import { FOUNDATION_TOPIC_QUESTIONS } from '@/lib/foundations-mcq';
 
 /**
  * The Quantum Physics topic hierarchy, adopted as printed.
@@ -35,6 +36,8 @@ export interface SyllabusModule {
 
 const slugify = (title: string) =>
   title
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Schrödinger → Schrodinger, not schr-dinger
     .toLowerCase()
     .replace(/['’]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
@@ -270,7 +273,11 @@ export const TOPIC_QUESTIONS: Record<string, number[]> = {
   '09.01': [50, 75, 98],
 };
 
-export const questionIdsForTopic = (id: string): number[] => TOPIC_QUESTIONS[id] ?? [];
+/** Questions from both banks for a topic: the paper's hundred, then the ones written for the syllabus. */
+export const questionIdsForTopic = (id: string): number[] => [
+  ...(TOPIC_QUESTIONS[id] ?? []),
+  ...(FOUNDATION_TOPIC_QUESTIONS[id] ?? []),
+];
 
 /** Shape of the figure a lesson embeds — the same registry the quiz draws from. */
 export interface FigureSpec {

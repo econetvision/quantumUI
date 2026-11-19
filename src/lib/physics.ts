@@ -278,3 +278,61 @@ export const PAULI_X: [number, number, number, number] = [0, 1, 1, 0];
 
 /** Factor by which y changes when x changes, for y ∝ x^k. */
 export const powerLawFactor = (xFrom: number, xTo: number, k: number): number => (xTo / xFrom) ** k;
+
+// ---------------------------------------------------------------------------
+// Added for the foundations syllabus, modules 03–09
+// ---------------------------------------------------------------------------
+
+export const ELECTRON_MASS = 9.109e-31; // kg
+export const HBAR = PLANCK / (2 * Math.PI);
+/** Compton wavelength h/(mₑc), in metres: 2.43 pm. */
+export const COMPTON_WAVELENGTH = PLANCK / (ELECTRON_MASS * LIGHT_SPEED);
+
+/** Compton shift Δλ = λ_C (1 − cos θ), metres. Zero forward, 2λ_C straight back. */
+export const comptonShift = (thetaRad: number): number => COMPTON_WAVELENGTH * (1 - Math.cos(thetaRad));
+
+/** Energy of level n for a particle of mass m in a 1-D box of width L (joules): n²h²/8mL². */
+export const boxEnergy = (n: number, widthM: number, massKg = ELECTRON_MASS): number =>
+  (n * n * PLANCK * PLANCK) / (8 * massKg * widthM * widthM);
+
+/** Normalised box eigenfunction ψₙ(x) = √(2/L) sin(nπx/L) on 0 ≤ x ≤ L. */
+export const boxWavefunction = (n: number, x: number, widthM: number): number =>
+  x < 0 || x > widthM ? 0 : Math.sqrt(2 / widthM) * Math.sin((n * Math.PI * x) / widthM);
+
+/** Harmonic-oscillator level Eₙ = ħω(n + ½), joules. */
+export const oscillatorEnergy = (n: number, omega: number): number => HBAR * omega * (n + 0.5);
+
+/**
+ * Tunnelling transmission through a rectangular barrier of height V₀ and
+ * width L for a particle of energy E < V₀ (WKB estimate T ≈ e^{−2κL}).
+ */
+export function tunnelProbability(energyJ: number, barrierJ: number, widthM: number, massKg = ELECTRON_MASS): number {
+  if (energyJ >= barrierJ) return 1;
+  const kappa = Math.sqrt(2 * massKg * (barrierJ - energyJ)) / HBAR;
+  return Math.exp(-2 * kappa * widthM);
+}
+
+/** Minimum uncertainty product: Δx·Δp ≥ ħ/2, so the smallest Δp for a given Δx. */
+export const minMomentumSpread = (dxM: number): number => HBAR / (2 * dxM);
+
+/**
+ * CHSH correlation E(a, b) = −cos(a − b) for the singlet, and the CHSH
+ * combination S for the standard angle choices; |S| reaches 2√2 at 22.5°.
+ */
+export const singletCorrelation = (aRad: number, bRad: number): number => -Math.cos(aRad - bRad);
+export function chsh(aRad: number, a2Rad: number, bRad: number, b2Rad: number): number {
+  const E = singletCorrelation;
+  return E(aRad, bRad) - E(aRad, b2Rad) + E(a2Rad, bRad) + E(a2Rad, b2Rad);
+}
+
+/** Probability of measuring spin-up along an axis at angle θ from the preparation axis: cos²(θ/2). */
+export const spinUpProbability = (thetaRad: number): number => Math.cos(thetaRad / 2) ** 2;
+
+/** Grover's optimal iteration count for N items with one marked: ⌊(π/4)√N⌋. */
+export const groverIterations = (n: number): number => Math.floor((Math.PI / 4) * Math.sqrt(n));
+
+/** Exponential decay survival e^{−t/T}, used for T₁/T₂ curves. */
+export const decay = (t: number, tau: number): number => Math.exp(-t / tau);
+
+/** Three-qubit repetition code: logical error when 2 or 3 of 3 bits flip, p² (3 − 2p). */
+export const repetitionLogicalError = (p: number): number => 3 * p * p - 2 * p * p * p;

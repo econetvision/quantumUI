@@ -103,9 +103,11 @@ describe('every question has a figure to draw', () => {
   it('leaves no registry entry unused', async () => {
     const { ANIMATIONS } = await import('@/components/physics-quiz/registry');
     const { FOUNDATION_LESSONS } = await import('@/lib/foundations-lessons');
-    // A figure may be drawn by a question, by a lesson, or by both.
+    const { FOUNDATION_MCQS } = await import('@/lib/foundations-mcq');
+    // A figure may be drawn by a question in either bank, by a lesson, or by all three.
     const used = new Set<string>([
       ...PHYSICS_MCQS.map((q) => q.animation),
+      ...FOUNDATION_MCQS.map((q) => q.animation),
       ...FOUNDATION_LESSONS.map((l) => l.figure.animation),
     ]);
     for (const key of Object.keys(ANIMATIONS)) {

@@ -3,6 +3,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { FOUNDATION_LESSONS } from '@/lib/foundations-lessons';
 import { ALL_TOPICS, SYLLABUS, TOPIC_QUESTIONS, getTopic, topicNeighbours } from '@/lib/foundations-syllabus';
 import { PHYSICS_MCQS } from '@/lib/physics-mcq';
+import { ALL_QUESTIONS, FOUNDATION_MCQS, FOUNDATION_TOPIC_QUESTIONS } from '@/lib/foundations-mcq';
+import { questionIdsForTopic } from '@/lib/foundations-syllabus';
 
 vi.mock('@/components/learning/LearningModeProvider', () => ({
   useLearningMode: () => ({ reducedMotion: true }),
@@ -66,13 +68,11 @@ describe('the question bank mapped onto the syllabus', () => {
 });
 
 describe('the lessons', () => {
-  it('cover modules 01 and 02 completely, once each', () => {
+  it('cover every one of the 106 topics, once each', () => {
     const topics = FOUNDATION_LESSONS.map((l) => l.topic);
     expect(new Set(topics).size).toBe(topics.length);
-    for (const m of SYLLABUS.slice(0, 2)) {
-      for (const t of m.topics) expect(topics, `${t.id} ${t.title}`).toContain(t.id);
-    }
-    for (const t of topics) expect(getTopic(t), t).toBeDefined();
+    for (const t of ALL_TOPICS) expect(topics, `${t.id} ${t.title}`).toContain(t.id);
+    expect(FOUNDATION_LESSONS.length).toBe(106);
   });
 
   it('are written three times, not once with extras', () => {
@@ -116,6 +116,48 @@ describe('the lessons', () => {
           });
           expect(html, `${l.topic} ${key}: ${src}`).not.toContain('katex-error');
         }
+      }
+    }
+  });
+});
+
+describe('the second question bank', () => {
+  it('numbers its questions 101–248 with no gaps and no clashes with the paper', () => {
+    const ids = FOUNDATION_MCQS.map((q) => q.id);
+    expect(ids).toEqual(Array.from({ length: 148 }, (_, i) => 101 + i));
+    const paper = new Set(PHYSICS_MCQS.map((q) => q.id));
+    for (const id of ids) expect(paper.has(id), `Q${id} clashes`).toBe(false);
+    expect(new Set(ALL_QUESTIONS.map((q) => q.id)).size).toBe(ALL_QUESTIONS.length);
+  });
+
+  it('has a valid answer, distinct options and a real walkthrough on every question', () => {
+    for (const q of FOUNDATION_MCQS) {
+      expect(q.answer, `Q${q.id}`).toBeGreaterThanOrEqual(0);
+      expect(q.answer, `Q${q.id}`).toBeLessThan(q.options.length);
+      expect(new Set(q.options).size, `Q${q.id} repeats an option`).toBe(q.options.length);
+      expect(q.reason.length, `Q${q.id} walkthrough`).toBeGreaterThan(60);
+      expect([1, 2, 3, 4], `Q${q.id} level`).toContain(q.level);
+    }
+  });
+
+  it('assigns every question to exactly one topic and every topic some questions', () => {
+    const assigned = Object.values(FOUNDATION_TOPIC_QUESTIONS).flat();
+    expect(new Set(assigned).size).toBe(assigned.length);
+    expect([...assigned].sort((a, b) => a - b)).toEqual(FOUNDATION_MCQS.map((q) => q.id));
+    for (const topic of Object.keys(FOUNDATION_TOPIC_QUESTIONS)) expect(getTopic(topic), topic).toBeDefined();
+    // After both banks, no syllabus row is left without a check-yourself.
+    for (const t of ALL_TOPICS) expect(questionIdsForTopic(t.id).length, `${t.id} has no questions`).toBeGreaterThan(0);
+  });
+
+  it('draws figures the registry provides, rendering cleanly in both states', async () => {
+    const { renderToStaticMarkup } = await import('react-dom/server');
+    const { ANIMATIONS, figureFor } = await import('@/components/physics-quiz/registry');
+    for (const q of FOUNDATION_MCQS) {
+      expect(Object.hasOwn(ANIMATIONS, q.animation), `Q${q.id} names "${q.animation}"`).toBe(true);
+      for (const revealed of [false, true]) {
+        const html = renderToStaticMarkup(figureFor(q, revealed) as React.ReactElement);
+        expect(html, `Q${q.id}`).toContain('<svg');
+        expect(html, `Q${q.id} renders NaN`).not.toContain('NaN');
       }
     }
   });
