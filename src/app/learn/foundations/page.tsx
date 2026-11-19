@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Badge, Container, PageHeader } from '@/components/ui/primitives';
 import { hasLesson, FOUNDATION_LESSONS } from '@/lib/foundations-lessons';
 import { ALL_TOPICS, SYLLABUS, questionIdsForTopic, topicPath } from '@/lib/foundations-syllabus';
+import { FOUNDATION_MCQS } from '@/lib/foundations-mcq';
 
 export const metadata: Metadata = {
   title: 'Quantum Physics Foundations — the syllabus',
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
 export default function FoundationsIndexPage() {
   const lessons = FOUNDATION_LESSONS.length;
   const assessed = ALL_TOPICS.filter((t) => questionIdsForTopic(t.id).length > 0).length;
+  const extra = FOUNDATION_MCQS.length;
   const parts = [...new Set(SYLLABUS.map((m) => m.part))];
 
   return (
@@ -28,7 +30,7 @@ export default function FoundationsIndexPage() {
       <PageHeader
         eyebrow="Quantum Physics Foundations"
         title="The syllabus"
-        description={`Nine modules, ${ALL_TOPICS.length} topics, in the order the syllabus prints them. ${lessons} lessons written so far, ${assessed} topics with questions from the hundred-question bank. Each lesson reads three ways — pick Kid, Student or Pro at the top of any page.`}
+        description={`Nine modules, ${ALL_TOPICS.length} topics, in the order the syllabus prints them. ${lessons} lessons written so far, ${assessed} topics with questions — the paper's hundred plus ${extra} written for the rest. Each lesson reads three ways — pick Kid, Student or Pro at the top of any page.`}
       />
 
       <div className="mt-6 flex flex-wrap gap-2">

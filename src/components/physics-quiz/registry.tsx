@@ -50,6 +50,29 @@ import {
   NewtonCart,
   ScaleLadder,
 } from './animations/Classical';
+import {
+  BlochSphere,
+  Compton,
+  ElectronDiffraction,
+  HydrogenOrbital,
+  IncompatibleObservables,
+  MeasurementCollapse,
+  OperatorAction,
+  TimeEvolution,
+  Tunnelling,
+  Uncertainty,
+  WaveInBox,
+} from './animations/Quantum';
+import { BellTest, CloningAttempt, SternGerlach, TwoQubit } from './animations/Spin';
+import {
+  Circuit,
+  ClassicalGates,
+  Decoherence,
+  GroverScaling,
+  Hardware,
+  PeriodFinding,
+  RepetitionCode,
+} from './animations/Computing';
 
 /**
  * Animation id to component, in two states, fed by the question's params.
@@ -228,6 +251,43 @@ export const ANIMATIONS: Record<AnimationId, Entry> = {
   'induction': { question: () => <Induction /> },
   'em-spectrum': { question: () => <EmSpectrum /> },
   'scale-ladder': { question: () => <ScaleLadder /> },
+  // Modules 03–06
+  'compton': { question: (p) => <Compton deg={num(p, 'deg')} /> },
+  'electron-diffraction': { question: (p) => <ElectronDiffraction energyEv={num(p, 'energyEv')} /> },
+  'bloch-sphere': {
+    question: (p) => (
+      <BlochSphere theta={num(p, 'theta')} phi={num(p, 'phi')} gate={str(p, 'gate')} spin={bool(p, 'spin')} decohere={str<'dephase' | 'relax'>(p, 'decohere')} />
+    ),
+  },
+  'measurement-collapse': {
+    question: (p) => <MeasurementCollapse theta={num(p, 'theta')} phi={num(p, 'phi')} basis={str<'z' | 'x'>(p, 'basis')} shots={num(p, 'shots')} />,
+  },
+  'wave-in-box': {
+    question: (p) => <WaveInBox n={num(p, 'n')} mode={str<'box' | 'oscillator'>(p, 'mode')} density={bool(p, 'density')} />,
+  },
+  'tunnelling': {
+    question: (p) => (
+      <Tunnelling barrierEv={num(p, 'barrierEv')} widthNm={num(p, 'widthNm')} energyEv={num(p, 'energyEv')} mode={str<'barrier' | 'well'>(p, 'mode')} />
+    ),
+  },
+  'uncertainty': { question: () => <Uncertainty /> },
+  'incompatible-observables': { question: () => <IncompatibleObservables /> },
+  'operator-action': { question: (p) => <OperatorAction mode={str<'inner' | 'eigen' | 'expectation'>(p, 'mode')} /> },
+  'time-evolution': { question: (p) => <TimeEvolution mode={str<'eigenstate' | 'superposition' | 'unitary'>(p, 'mode')} /> },
+  'hydrogen-orbital': { question: (p) => <HydrogenOrbital orbital={str<'1s' | '2s' | '2p'>(p, 'orbital')} /> },
+  // Module 07
+  'stern-gerlach': { question: (p) => <SternGerlach sequence={str<'z' | 'zx' | 'zxz'>(p, 'sequence')} /> },
+  'two-qubit': { question: (p) => <TwoQubit mode={str<'product' | 'bell' | 'ghz' | 'cnot' | 'superdense'>(p, 'mode')} /> },
+  'bell-test': { question: (p) => <BellTest mode={str<'chsh' | 'marginals'>(p, 'mode')} /> },
+  'cloning-attempt': { question: () => <CloningAttempt /> },
+  // Modules 08–09
+  'circuit': { question: (p) => <Circuit program={str(p, 'program') ?? 'H0;CX0,1'} qubits={num(p, 'qubits')} note={str(p, 'note')} /> },
+  'classical-gates': { question: () => <ClassicalGates /> },
+  'period-finding': { question: (p) => <PeriodFinding base={num(p, 'base')} modulus={num(p, 'modulus')} /> },
+  'grover-scaling': { question: () => <GroverScaling /> },
+  'hardware': { question: (p) => <Hardware kind={str<'overview' | 'transmon' | 'ion' | 'photon'>(p, 'kind')} /> },
+  'decoherence': { question: (p) => <Decoherence mode={str<'t1' | 't2' | 'nisq' | 'advantage'>(p, 'mode')} /> },
+  'repetition-code': { question: (p) => <RepetitionCode p={num(p, 'p')} /> },
 };
 
 /** A figure by id and params — what a lesson embeds. */

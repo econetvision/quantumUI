@@ -10,7 +10,7 @@ import {
   questionIdsForTopic,
   topicNeighbours,
 } from '@/lib/foundations-syllabus';
-import { getQuestion } from '@/lib/physics-mcq';
+import { getAnyQuestion } from '@/lib/foundations-mcq';
 
 type Params = Promise<{ module: string; topic: string }>;
 
@@ -57,7 +57,7 @@ export default async function FoundationTopicPage({ params }: { params: Params }
   }
 
   const questions = questionIdsForTopic(hit.topic.id)
-    .map((id) => getQuestion(id))
+    .map((id) => getAnyQuestion(id))
     .filter((q): q is NonNullable<typeof q> => q !== undefined);
   const { previous, next } = topicNeighbours(hit.topic.id);
 
